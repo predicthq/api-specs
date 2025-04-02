@@ -10,7 +10,7 @@ servers:
   - url: https://api.predicthq.com
 externalDocs: 
   url: https://docs.predicthq.com
-  description: PredictHQ API Documentation
+  description: PredictHQ Tech Docs
 x-hideTryItPanel: true
 security:
   - BearerAuth: []
