@@ -279,11 +279,12 @@ components:
         Filters events that are active on or after the specified date.
 
         Expected format: `YYYY-MM-DD` or `YYYY-MM-DDThh:mm:ss`.
+
+        Example: `2025-01-01`
       required: false
       schema:
         type: string
         format: date-time
-      example: "2025-01-01"
     ActiveGtParam:
       in: query
       name: active.gt
@@ -302,11 +303,12 @@ components:
         Filters events that are active on or before the specified date.
 
         Expected format: `YYYY-MM-DD` or `YYYY-MM-DDThh:mm:ss`.
+
+        Example: `2025-02-01`
       required: false
       schema:
         type: string
         format: date-time
-      example: "2025-02-01"
     ActiveLtParam:
       in: query
       name: active.lt
@@ -325,10 +327,11 @@ components:
         Specifies the timezone for the `active.*` date parameters.
         
         Timezone must be in the [TZ Database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) format (e.g. `America/Los_Angeles`).
+
+        Default: `UTC`
       required: false
       schema:
         type: string
-        default: UTC
     BeamAnalysisIdParam:
       in: query
       name: beam.analysis_id
@@ -356,13 +359,14 @@ components:
         Whether or not to exclude potentially brand-unsafe events. Potentially brand-unsafe events are included by default.
 
         Examples of brand-unsafe events include content that promotes hate, violence or discrimination, coarse language, content that is sexually suggestive or explicit, etc.
+
+        Default: `false`
       required: false
       schema:
         type: string
         enum:
           - "true"
           - "false"
-        default: "false"
     CancelledGteParam:
       in: query
       name: cancelled.gte
@@ -370,11 +374,12 @@ components:
         Filters events that were cancelled on or after the specified date.
 
         Expected format: `YYYY-MM-DD` or `YYYY-MM-DDThh:mm:ss`.
+
+        Example: `2025-01-01`
       required: false
       schema:
         type: string
         format: date-time
-      example: "2025-01-01"
     CancelledGtParam:
       in: query
       name: cancelled.gt
@@ -393,11 +398,12 @@ components:
         Filters events that were cancelled on or before the specified date.
 
         Expected format: `YYYY-MM-DD` or `YYYY-MM-DDThh:mm:ss`.
+
+        Example: `2025-02-01`
       required: false
       schema:
         type: string
         format: date-time
-      example: "2025-02-01"
     CancelledLtParam:
       in: query
       name: cancelled.lt
@@ -416,10 +422,11 @@ components:
         Specifies the timezone for the `cancelled.*` date parameters.
         
         Timezone must be in the [TZ Database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) format (e.g. `America/Los_Angeles`).
+
+        Default: `UTC`
       required: false
       schema:
         type: string
-        default: UTC
     CategoryParam:
       in: query
       name: category
@@ -427,6 +434,8 @@ components:
         A comma-separated list of categories.
 
         Take a look at the [Event Categories](https://docs.predicthq.com/getting-started/predicthq-data/event-categories) page for an overview of the different categories.
+
+        Example: `concerts,sports`
       required: false
       schema:
         type: array
@@ -452,27 +461,26 @@ components:
             - "terror"
             - "health-warnings"
       style: simple
-      example:
-        - "concerts"
-        - "sports"
     CountryParam:
       in: query
       name: country
       description: |-
         A comma-separated list of 2-letter country codes.
+
+        Example: `US`
       required: false
       schema:
         type: array
         items:
           type: string
       style: simple
-      example:
-        - "US"
     DeletedReasonParam:
       in: query
       name: deleted_reason
       description: |-
         A comma-separated list of deleted reasons for the events.
+
+        Example: `cancelled,duplicate`
       required: false
       schema:
         type: array
@@ -484,9 +492,6 @@ components:
             - duplicate
             - postponed
       style: simple
-      example:
-        - cancelled
-        - duplicate
     EndGteParam:
       in: query
       name: end.gte
@@ -494,11 +499,12 @@ components:
         Filters events that end on or after the specified date.
 
         Expected format: `YYYY-MM-DD` or `YYYY-MM-DDThh:mm:ss`.
+
+        Example: `2025-01-01`
       required: false
       schema:
         type: string
         format: date-time
-      example: "2025-01-01"
     EndGtParam:
       in: query
       name: end.gt
@@ -517,11 +523,12 @@ components:
         Filters events that end on or before the specified date.
 
         Expected format: `YYYY-MM-DD` or `YYYY-MM-DDThh:mm:ss`.
+
+        Example: `2025-02-01`
       required: false
       schema:
         type: string
         format: date-time
-      example: "2025-02-01"
     EndLtParam:
       in: query
       name: end.lt
@@ -540,10 +547,11 @@ components:
         Specifies the timezone for the `end.*` date parameters.
         
         Timezone must be in the [TZ Database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) format (e.g. `America/Los_Angeles`).
+
+        Default: `UTC`
       required: false
       schema:
         type: string
-        default: UTC
     EndAroundOriginParam:
       in: query
       name: end_around.origin
@@ -551,41 +559,50 @@ components:
         Fuzzy date search around event end datetime. When using `end_around.*` params, `origin` is required.
 
         Can influence `relevance`.
+
+        Example: `2025-02-01`
       required: false
       deprecated: true
       schema:
         type: string
         format: date
-      example: "2025-02-01"
     EndAroundOffsetParam:
       in: query
       name: end_around.offset
       description: |-
         The number of days from the origin before the score starts to decay (optional).
+
+        Example: `5d`
+
+        Default: `0d`
       required: false
       deprecated: true
       schema:
         type: string
         pattern: '^\d{1,3}d$'
-        default: "0d"
-      example: "5d"
     EndAroundScaleParam:
       in: query
       name: end_around.scale
       description: |-
         Distance from origin +/- offset at which the score will equal the decay value (optional).
+
+        Example: `10d`
+
+        Default: `3d`
       required: false
       deprecated: true
       schema:
         type: string
         pattern: '^\d{1,3}d$'
-        default: "3d"
-      example: "10d"
     EndAroundDecayParam:
       in: query
       name: end_around.decay
       description: |-
         Score value at the scale distance (optional).
+
+        Example: `0.9`
+
+        Default: `0.5`
       required: false
       deprecated: true
       schema:
@@ -593,21 +610,19 @@ components:
         format: double
         minimum: 0.0
         maximum: 1.0
-        default: 0.5
-      example: 0.9
     EntityIdParam:
       in: query
       name: entity.id
       description: |-
         A comma-separated list of Entity identifiers.
+
+        Example: `XABWvihQAj8TnjvF6WNzLW`
       required: false
       schema:
         type: array
         items:
           type: string
       style: simple
-      example:
-        - "XABWvihQAj8TnjvF6WNzLW"
     FirstSeenGteParam:
       in: query
       name: first_seen.gte
@@ -615,11 +630,12 @@ components:
         Filters events that were first seen in our system on or after the specified date.
 
         Expected format: `YYYY-MM-DD` or `YYYY-MM-DDThh:mm:ss`.
+
+        Example: `2025-01-01`
       required: false
       schema:
         type: string
         format: date-time
-      example: "2025-01-01"
     FirstSeenGtParam:
       in: query
       name: first_seen.gt
@@ -638,11 +654,12 @@ components:
         Filters events that were first seen in our system on or before the specified date.
 
         Expected format: `YYYY-MM-DD` or `YYYY-MM-DDThh:mm:ss`.
+
+        Example: `2025-02-01`
       required: false
       schema:
         type: string
         format: date-time
-      example: "2025-02-01"
     FirstSeenLtParam:
       in: query
       name: first_seen.lt
@@ -661,23 +678,24 @@ components:
         Specifies the timezone for the `first_seen.*` date parameters.
         
         Timezone must be in the [TZ Database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) format (e.g. `America/Los_Angeles`).
+
+        Default: `UTC`
       required: false
       schema:
         type: string
-        default: UTC
     IdParam:
       in: query
       name: id
       description: |-
         A comma-separated list of Event identifiers.
+
+        Example: `z13B3870YOgv`
       required: false
       schema:
         type: array
         items:
           type: string
       style: simple
-      example:
-        - "z13B3870YOgv"
     ImpactGteParam:
       in: query
       name: impact.gte
@@ -691,11 +709,12 @@ components:
         You must also specify the industry (see `impact.industry`).
 
         Expected format: `YYYY-MM-DD` or `YYYY-MM-DDThh:mm:ss`.
+
+        Example: `2025-01-01`
       required: false
       schema:
         type: string
         format: date-time
-      example: "2025-01-01"
     ImpactGtParam:
       in: query
       name: impact.gt
@@ -714,11 +733,12 @@ components:
         Filters events that are predicted to have an impact on or before the specified date.
 
         Expected format: `YYYY-MM-DD` or `YYYY-MM-DDThh:mm:ss`.
+
+        Example: `2025-02-01`
       required: false
       schema:
         type: string
         format: date-time
-      example: "2025-02-01"
     ImpactLtParam:
       in: query
       name: impact.lt
@@ -737,10 +757,11 @@ components:
         Specifies the timezone for the `impact.*` date parameters.
         
         Timezone must be in the [TZ Database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) format (e.g. `America/Los_Angeles`).
+
+        Default: `UTC`
       required: false
       schema:
         type: string
-        default: UTC
     ImpactIndustryParam:
       in: query
       name: impact.industry
@@ -748,18 +769,20 @@ components:
         Selected industry for the Predicted Impact Patterns.
 
         If no industry is selected, `impact.*` will function effectively the same as `active.*`.
+
+        Example: `accommodation`
       required: false
       schema:
         type: string
         enum:
-          - "accomodation"
+          - "accommodation"
           - "cpg"
           - "tourism"
           - "marketing"
+          - "parking"
           - "restaurants"
           - "retail"
           - "transportation"
-      example: "accommodation"
     LabelParam:
       in: query
       name: label
@@ -769,14 +792,13 @@ components:
         Please note that all event labels are lowercase and that the search is case sensitive.
 
         The `label` param has been deprecated. Please update your integrations to use `phq_label` instead.
+
+        Example: `holiday,observance`
       required: false
       deprecated: true
       schema:
         $ref: '#/components/schemas/LegacyLabels'
       style: simple
-      example:
-        - holiday
-        - observance
     LocalRankGteParam:
       in: query
       name: local_rank.gte
@@ -784,12 +806,13 @@ components:
         Filters events with a Local Rank greater than or equal to the specified value.
         
         Events without a Local Rank will not be returned.
+
+        Example: `80`
       required: false
       schema:
         type: integer
         minimum: 0
         maximum: 100
-      example: 80
     LocalRankGtParam:
       in: query
       name: local_rank.gt
@@ -809,12 +832,13 @@ components:
         Filters events with a Local Rank less than or equal to the specified value.
         
         Events without a Local Rank will not be returned.
+
+        Example: `90`
       required: false
       schema:
         type: integer
         minimum: 0
         maximum: 100
-      example: 90
     LocalRankLtParam:
       in: query
       name: local_rank.lt
@@ -840,6 +864,8 @@ components:
         - 3 - Important (rank between 41 and 60).
         - 4 - Significant (rank between 61 and 80).
         - 5 - Major (rank between 81 and 100).
+
+        Example: `4,5`
       required: false
       schema:
         type: array
@@ -852,9 +878,6 @@ components:
             - 4
             - 5
       style: simple
-      example:
-        - 4
-        - 5
     LocationAroundOriginParam:
       in: query
       name: location_around.origin
@@ -862,12 +885,13 @@ components:
         Fuzzy location search around event location. When using `location_around.*` params, `origin` is required.
 
         Please note this affects the `relevance` value and does not restrict search results to the specified latitude/longitude and offset. Read more in the [Relevance guide](https://docs.predicthq.com/getting-started/guides/events-api-guides/understanding-relevance-field-in-event-results) and combine with the `within` parameter to restrict results to a specified latitude/longitude and radius.
+
+        Example: `40.730610,-73.935242`
       required: false
       deprecated: true
       schema:
         type: string
         pattern: '^-?\d+(\.\d+)?,-?\d+(\.\d+)?$'
-      example: "40.730610,-73.935242"
     LocationAroundOffsetParam:
       in: query
       name: location_around.offset
@@ -875,13 +899,15 @@ components:
         The distance before decay is applied (optional).
         
         Distance unit can be one of `m`, `km`, `ft`, `mi`.
+
+        Example: `2mi`
+
+        Default: `0km`
       required: false
       deprecated: true
       schema:
         type: string
         pattern: '^\d+(m|km|ft|mi)$'
-        default: 0km
-      example: 2mi
     LocationAroundScaleParam:
       in: query
       name: location_around.scale
@@ -889,18 +915,24 @@ components:
         Distance from origin + offset at which the score will equal decay value (optional).
         
         Distance unit can be one of `m`, `km`, `ft`, `mi`.
+
+        Example: `4mi`
+
+        Default: `2km`
       required: false
       deprecated: true
       schema:
         type: string
         pattern: '^\d+(m|km|ft|mi)$'
-        default: 2km
-      example: 4mi
     LocationAroundDecayParam:
       in: query
       name: location_around.decay
       description: |-
         Score value at the `scale` distance (optional).
+
+        Example: `0.9`
+
+        Default: `0.5`
       required: false
       deprecated: true
       schema:
@@ -908,8 +940,6 @@ components:
         format: double
         minimum: 0.0
         maximum: 1.0
-        default: 0.5
-      example: 0.9
     LocationConfidenceScoreGteParam:
       in: query
       name: location_confidence_score.gte
@@ -960,6 +990,8 @@ components:
         Parent events are all the other events, whether they have children or not.
 
         See the documentation on [umbrella events](https://docs.predicthq.com/getting-started/guides/date-and-time-guides/working-with-multi-day-and-umbrella-events#umbrella-events-beta) for more information on parent and child events.
+
+        Default: `true`
       required: false
       schema:
         type: string
@@ -967,17 +999,17 @@ components:
           - "true"
           - "false"
           - "only"
-        default: "true"
     PHQAttendanceGteParam:
       in: query
       name: phq_attendance.gte
       description: |-
         Filters events with a Predicted Attendance greater than or equal to the specified value.
+
+        Example: `2000`
       required: false
       schema:
         type: integer
         minimum: 0
-      example: 2000
     PHQAttendanceGtParam:
       in: query
       name: phq_attendance.gt
@@ -992,11 +1024,12 @@ components:
       name: phq_attendance.lte
       description: |-
         Filters events with a Predicted Attendance less than or equal to the specified value.
+
+        Example: `10000`
       required: false
       schema:
         type: integer
         minimum: 0
-      example: 10000
     PHQAttendanceLtParam:
       in: query
       name: phq_attendance.lt
@@ -1017,27 +1050,27 @@ components:
         Please note that all event labels are lowercase and that the search is case sensitive.
 
         Take a look at [PHQ Label Values](https://docs.predicthq.com/getting-started/predicthq-data/labels#phq-label-values) to get a list of possible values.
+
+        Example: `agriculture-forestry-and-fisheries,food-and-beverage`
       required: false
       schema:
         type: array
         items:
           type: string
       style: simple
-      example:
-        - agriculture-forestry-and-fisheries
-        - food-and-beverage
     PHQLabelOpParam:
       in: query
       name: phq_label.op
       description: |-
         Whether to find events with `any` or `all` the specified labels.
+
+        Default: `any`
       required: false
       schema:
         type: string
         enum:
           - "all"
           - "any"
-        default: "any"
     PHQLabelExcludeParam:
       in: query
       name: phq_label.exclude
@@ -1045,26 +1078,27 @@ components:
         A comma-separated list of PHQ labels to exclude. This will filter for events that do not have the specified labels.
 
         Please note that all event labels are lowercase and that the search is case sensitive.
+
+        Example: `lifestyle`
       required: false
       schema:
         type: array
         items:
           type: string
       style: simple
-      example:
-        - lifestyle
     PHQLabelExcludeOpParam:
       in: query
       name: phq_label.exclude.op
       description: |-
         Whether to exclude events with `any` or `all` the specified labels.
+
+        Default: `any`
       required: false
       schema:
         type: string
         enum:
           - "all"
           - "any"
-        default: "any"
     PlaceScopeParam:
       in: query
       name: place.scope
@@ -1074,15 +1108,14 @@ components:
         A CSV file of all supported airport codes and their respective Place IDs is available to download.
 
         Results will contain events that apply to the parent and children places of the specified place. E.g. National, regional and local school holidays that apply to a region.
+
+        Example: `5128638,SFO`
       required: false
       schema:
         type: array
         items:
           type: string
       style: simple
-      example:
-        - "5128638"
-        - SFO
     PlaceExactParam:
       in: query
       name: place.exact
@@ -1117,15 +1150,14 @@ components:
 
 
         Note that Placekey applies to our attended event categories. Some events do not contain a Placekey.
+
+        Example: `225@63j-rqb-j7q,@627-s8j-z2k`
       required: false
       schema:
         type: array
         items:
           type: string
       style: simple
-      example:
-        - "225@63j-rqb-j7q"
-        - "@627-s8j-z2k"
     PostponedGteParam:
       in: query
       name: postponed.gte
@@ -1135,11 +1167,12 @@ components:
         Note when filtering on postponed, events that are not postponed will not be returned.
 
         Expected format: `YYYY-MM-DD` or `YYYY-MM-DDThh:mm:ss`.
+
+        Example: `2025-01-01`
       required: false
       schema:
         type: string
         format: date-time
-      example: "2025-01-01"
     PostponedGtParam:
       in: query
       name: postponed.gt
@@ -1158,11 +1191,12 @@ components:
         Filters events that were marked as postponed on or before the specified date.
 
         Expected format: `YYYY-MM-DD` or `YYYY-MM-DDThh:mm:ss`.
+
+        Example: `2025-02-01`
       required: false
       schema:
         type: string
         format: date-time
-      example: "2025-02-01"
     PostponedLtParam:
       in: query
       name: postponed.lt
@@ -1181,10 +1215,11 @@ components:
         Specifies the timezone for the `postponed.*` date parameters.
         
         Timezone must be in the [TZ Database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) format (e.g. `America/Los_Angeles`).
+
+        Default: `UTC`
       required: false
       schema:
         type: string
-        default: UTC
     PredictedEndGteParam:
       in: query
       name: predicted_end.gte
@@ -1194,11 +1229,12 @@ components:
         Note when filtering on postponed, events that are not postponed will not be returned.
 
         Expected format: `YYYY-MM-DD` or `YYYY-MM-DDThh:mm:ss`.
+
+        Example: `2025-01-01`
       required: false
       schema:
         type: string
         format: date-time
-      example: "2025-01-01"
     PredictedEndGtParam:
       in: query
       name: predicted_end.gt
@@ -1217,11 +1253,12 @@ components:
         Filters events that are predicted to end on or before the specified date.
 
         Expected format: `YYYY-MM-DD` or `YYYY-MM-DDThh:mm:ss`.
+
+        Example: `2025-02-01`
       required: false
       schema:
         type: string
         format: date-time
-      example: "2025-02-01"
     PredictedEndLtParam:
       in: query
       name: predicted_end.lt
@@ -1240,10 +1277,11 @@ components:
         Specifies the timezone for the `predicted_end.*` date parameters.
         
         Timezone must be in the [TZ Database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) format (e.g. `America/Los_Angeles`).
+
+        Default: `UTC`
       required: false
       schema:
         type: string
-        default: UTC
     PredictedEventSpendGteParam:
       in: query
       name: predicted_event_spend.gte
@@ -1251,11 +1289,12 @@ components:
         Filters events with a Predicted Event Spend (USD) greater or equal to the specified value.
 
         Note: When using this filter events that do not have a  predicted_event_spend  will not be returned.
+
+        Example: `80000`
       required: false
       schema:
         type: integer
         minimum: 0
-      example: 80000
     PredictedEventSpendGtParam:
       in: query
       name: predicted_event_spend.gt
@@ -1270,11 +1309,12 @@ components:
       name: predicted_event_spend.lte
       description: |-
         Filters events with a Predicted Event Spend less than or equal to the specified value.
+
+        Example: `200000`
       required: false
       schema:
         type: integer
         minimum: 0
-      example: 200000
     PredictedEventSpendLtParam:
       in: query
       name: predicted_event_spend.lt
@@ -1312,20 +1352,22 @@ components:
         A full-text search query.
 
         Can influence `relevance`.
+
+        Example: `katy perry`
       schema:
         type: string
-      example: "katy perry"
     RankGteParam:
       in: query
       name: rank.gte
       description: |-
         Filters events with a PHQ Rank greater than or equal to the specified value.
+
+        Example: `80`
       required: false
       schema:
         type: integer
         minimum: 0
         maximum: 100
-      example: 80
     RankGtParam:
       in: query
       name: rank.gt
@@ -1341,12 +1383,13 @@ components:
       name: rank.lte
       description: |-
         Filters events with a PHQ Rank less than or equal to the specified value.
+
+        Example: `90`
       required: false
       schema:
         type: integer
         minimum: 0
         maximum: 100
-      example: 90
     RankLtParam:
       in: query
       name: rank.lt
@@ -1370,6 +1413,8 @@ components:
         - 3 - Important (rank between 41 and 60).
         - 4 - Significant (rank between 61 and 80).
         - 5 - Major (rank between 81 and 100).
+
+        Example: `4,5`
       required: false
       schema:
         type: array
@@ -1382,9 +1427,6 @@ components:
             - 4
             - 5
       style: simple
-      example:
-        - 4
-        - 5
     RelevanceParam:
       in: query
       name: relevance
@@ -1404,6 +1446,8 @@ components:
 
         - rank
         - local_rank
+
+        Example: `q,rank,location_around`
       required: false
       deprecated: true
       schema:
@@ -1418,23 +1462,19 @@ components:
             - rank
             - local_rank
       style: simple
-      example:
-        - q
-        - rank
-        - location_around
     SavedLocationLocationIdParam:
       in: query
       name: saved_location.location_id
       description: |-
         A comma-separated list of saved location identifiers. Up to a maximum of 20 identifiers. This filters the events returned to events within the locations specified. Refer to the Saved Locations API for more details on managing locations.
+
+        Example: `sFlb8HlsLa1j-S4UDEMEkQ`
       required: false
       schema:
         type: array
         items:
           type: string
       style: simple
-      example:
-        - sFlb8HlsLa1j-S4UDEMEkQ
     SortParam:
       in: query
       name: sort
@@ -1446,6 +1486,8 @@ components:
         Note when sorting on `predicted_end` or `local_rank` (regardless of sort order), events that do not have a `predicted_end`, `local_rank` will be placed last.
 
         When sorting by `relevance` the most relevant results are sorted first, regardless of sort order.
+
+        Example: `country,-start`
       required: false
       schema:
         type: array
@@ -1472,9 +1514,6 @@ components:
             - predicted_event_spend_industry.hospitality
             - predicted_event_spend_industry.transportation
       style: simple
-      example:
-        - country
-        - "-start"
     StartGteParam:
       in: query
       name: start.gte
@@ -1482,11 +1521,12 @@ components:
         Filters events that start on or after the specified date.
 
         Expected format: `YYYY-MM-DD` or `YYYY-MM-DDThh:mm:ss`.
+
+        Example: `2025-01-01`
       required: false
       schema:
         type: string
         format: date-time
-      example: "2025-01-01"
     StartGtParam:
       in: query
       name: start.gt
@@ -1505,11 +1545,12 @@ components:
         Filters events that start on or before the specified date.
 
         Expected format: `YYYY-MM-DD` or `YYYY-MM-DDThh:mm:ss`.
+
+        Example: `2025-02-01`
       required: false
       schema:
         type: string
         format: date-time
-      example: "2025-02-01"
     StartLtParam:
       in: query
       name: start.lt
@@ -1528,10 +1569,11 @@ components:
         Specifies the timezone for the `start.*` date parameters.
         
         Timezone must be in the [TZ Database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) format (e.g. `America/Los_Angeles`).
+
+        Default: `UTC`
       required: false
       schema:
         type: string
-        default: UTC
     StartAroundOriginParam:
       in: query
       name: start_around.origin
@@ -1539,41 +1581,50 @@ components:
         Fuzzy date search around event start datetime. When using `start_around.*` params, `origin` is required.
 
         Can influence `relevance`.
+
+        Example: `2025-02-01`
       required: false
       deprecated: true
       schema:
         type: string
         format: date
-      example: "2025-02-01"
     StartAroundOffsetParam:
       in: query
       name: start_around.offset
       description: |-
         The number of days from the origin before the score starts to decay (optional).
+
+        Example: `5d`
+
+        Default: `0d`
       required: false
       deprecated: true
       schema:
         type: string
         pattern: '^\d{1,3}d$'
-        default: "0d"
-      example: "5d"
     StartAroundScaleParam:
       in: query
       name: start_around.scale
       description: |-
         Distance from origin +/- offset at which the score will equal the decay value (optional).
+
+        Example: `10d`
+
+        Default: `3d`
       required: false
       deprecated: true
       schema:
         type: string
         pattern: '^\d{1,3}d$'
-        default: "3d"
-      example: "10d"
     StartAroundDecayParam:
       in: query
       name: start_around.decay
       description: |-
         Score value at the scale distance (optional).
+
+        Example: `0.9`
+
+        Default: `0.5`
       required: false
       deprecated: true
       schema:
@@ -1581,8 +1632,6 @@ components:
         format: double
         minimum: 0.0
         maximum: 1.0
-        default: 0.5
-      example: 0.9
     StartDateConfidenceScoreGteParam:
       in: query
       name: start_date_confidence_score.gte
@@ -1630,6 +1679,10 @@ components:
         A comma-separated list of states for the events.
 
         This parameter is useful in conjunction with `updated` when you cache events and are interested in retrieving a list of all events that have changed since a specific date and time.
+
+        Example: `active,deleted`
+
+        Default: `active`
       required: false
       schema:
         type: array
@@ -1639,12 +1692,7 @@ components:
             - "active"
             - "deleted"
             - "predicted"
-        default:
-          - "active"
       style: simple
-      example:
-        - "active"
-        - "deleted"
     UpdatedGteParam:
       in: query
       name: updated.gte
@@ -1652,11 +1700,12 @@ components:
         Filters events that were last modified on or after the specified date.
 
         Expected format: `YYYY-MM-DD` or `YYYY-MM-DDThh:mm:ss`.
+
+        Example: `2025-01-01`
       required: false
       schema:
         type: string
         format: date-time
-      example: "2025-01-01"
     UpdatedGtParam:
       in: query
       name: updated.gt
@@ -1675,11 +1724,12 @@ components:
         Filters events that were last modified on or before the specified date.
 
         Expected format: `YYYY-MM-DD` or `YYYY-MM-DDThh:mm:ss`.
+
+        Example: `2025-02-01`
       required: false
       schema:
         type: string
         format: date-time
-      example: "2025-02-01"
     UpdatedLtParam:
       in: query
       name: updated.lt
@@ -1698,10 +1748,11 @@ components:
         Specifies the timezone for the `updated.*` date parameters.
         
         Timezone must be in the [TZ Database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) format (e.g. `America/Los_Angeles`).
+
+        Default: `UTC`
       required: false
       schema:
         type: string
-        default: UTC
     WithinParam:
       in: query
       name: within
@@ -1714,11 +1765,12 @@ components:
         Note that results may contain events that apply to a parent scope of the specified area.
 
         Note we always recommend using our Suggested Radius API to determine the relevant impact zone around your location.
+
+        Example: `2.5mi@-36.844480,174.768368`
       required: false
       schema:
         type: string
         pattern: ^(?:(?:[1-9]\d*(?:\.\d+)?(km|mi))|(?:[1-9]\d*(m|ft)))@-?\d+(?:\.\d+)?,\-?\d+(?:\.\d+)?$
-      example: "2.5mi@-36.844480,174.768368"
     LimitParam:
       name: limit
       in: query
