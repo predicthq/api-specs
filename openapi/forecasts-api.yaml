@@ -238,7 +238,7 @@ paths:
     post:
       tags:
         - Demand Data
-      summary: Update Demand Data
+      summary: Upload Demand Data
       operationId: create_model_demand_models__model_id__demand_post
       parameters:
         - name: model_id
@@ -428,7 +428,7 @@ paths:
     get:
       tags:
         - Algorithms
-      summary: Get Algorithims
+      summary: Get Algorithms
       operationId: get_algos_algos_get
       responses:
         '200':
