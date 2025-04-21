@@ -1,0 +1,1202 @@
+openapi: 3.1.0
+info:
+  title: PredictHQ Forecasts API (Public Preview)
+  version: 1.0.0
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: https://www.predicthq.com/legal/terms
+servers:
+  - url: https://api.predicthq.com
+externalDocs: 
+  url: https://docs.predicthq.com
+  description: PredictHQ Tech Docs
+x-hideTryItPanel: true
+security:
+  - BearerAuth: []
+tags:
+  - name: Models
+    externalDocs: 
+      url: https://docs.predicthq.com/api/forecasts/models
+      description: Models Docs
+  - name: Demand Data
+    externalDocs: 
+      url: https://docs.predicthq.com/api/forecasts/demand-data
+      description: Demand Data Docs
+  - name: Forecasts
+    externalDocs: 
+      url: https://docs.predicthq.com/api/forecasts/forecasts
+      description: Forecasts Docs
+  - name: Algorithms
+    externalDocs: 
+      url: https://docs.predicthq.com/api/forecasts/algos
+      description: Algorithms Docs
+paths:
+  /v1/forecasts/models:
+    post:
+      tags:
+        - Models
+      summary: Create Model
+      operationId: create_model_models_post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateModelRequest'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateModelResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+        - Models
+      summary: Search Models
+      operationId: search_models_models_get
+      parameters:
+        - name: q
+          in: query
+          description: |-
+            Fulltext search across `name`, `label` and `external_id`.
+          required: false
+          schema:
+            type: string
+        - name: location.saved_location_id
+          in: query
+          description: |-
+            A coma-separated list of Saved Location IDs to filter on.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - name: status
+          in: query
+          description: |-
+            A comma-separated list of forecast status.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - created
+                - failed
+                - forecasting
+                - preparing
+                - ready
+                - stale
+                - training
+        - $ref: "#/components/parameters/LimitParam"
+        - $ref: "#/components/parameters/OffsetParam"
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchModelResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v1/forecasts/models/{model_id}:
+    get:
+      tags:
+        - Models
+      summary: Get Model
+      operationId: get_model_models__model_id__get
+      parameters:
+        - name: model_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Model Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetModelResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    put:
+      tags:
+        - Models
+      summary: Replace Model
+      operationId: replace_model_models__model_id__put
+      parameters:
+        - name: model_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Model Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReplaceModelRequest'
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    patch:
+      tags:
+        - Models
+      summary: Update Model
+      operationId: update_model_models__model_id__patch
+      parameters:
+        - name: model_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Model Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateModelRequest'
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+        - Models
+      summary: Delete Model
+      operationId: delete_model_models__model_id__delete
+      parameters:
+        - name: model_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Model Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v1/forecasts/models/{model_id}/train:
+    post:
+      tags:
+        - Models
+      summary: Train Model
+      operationId: train_model_models__model_id__train_post
+      parameters:
+        - name: model_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Model Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v1/forecasts/models/{model_id}/demand:
+    post:
+      tags:
+        - Demand Data
+      summary: Update Demand Data
+      operationId: create_model_demand_models__model_id__demand_post
+      parameters:
+        - name: model_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Model Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateModelDemandRequest'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+        - Demand Data
+      summary: Get Demand Data
+      operationId: search_model_demand_models__model_id__demand_get
+      parameters:
+        - name: model_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Model Id
+        - name: date.gt
+          in: query
+          description: |-
+            Filters demand after the specified date (exclusive).
+
+            Expected format: `YYYY-MM-DD`
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: date.gte
+          in: query
+          description: |-
+            Filters demand on or after the specified date.
+
+            Expected format: `YYYY-MM-DD`.
+
+            Example: `2025-01-01`
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: date.lt
+          in: query
+          description: |-
+            Filters demand before the specified date (exclusive).
+
+            Expected format: `YYYY-MM-DD`.
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: date.lte
+          in: query
+          description: |-
+            Filters demand on or before the specified date.
+
+            Expected format: `YYYY-MM-DD`.
+
+            Example: `2025-01-07`
+          required: false
+          schema:
+            type: string
+            format: date
+        - $ref: "#/components/parameters/LimitParam"
+        - $ref: "#/components/parameters/OffsetParam"
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchDemandResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v1/forecasts/models/{model_id}/forecast:
+    get:
+      tags:
+        - Forecasts
+      summary: Get Forecast
+      operationId: get_forecasts_models__model_id__forecast_get
+      parameters:
+        - name: model_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Model Id
+        - name: date.gt
+          in: query
+          description: |-
+            Filters forecast results after the specified date (exclusive).
+
+            Expected format: `YYYY-MM-DD`
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: date.gte
+          in: query
+          description: |-
+            Filters forecast results on or after the specified date.
+
+            Expected format: `YYYY-MM-DD`.
+
+            Example: `2025-01-01`
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: date.lt
+          in: query
+          description: |-
+            Filters forecast results before the specified date (exclusive).
+
+            Expected format: `YYYY-MM-DD`.
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: date.lte
+          in: query
+          description: |-
+            Filters forecast results on or before the specified date.
+
+            Expected format: `YYYY-MM-DD`.
+
+            Example: `2025-01-07`
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: include
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: array
+                items:
+                  type: string
+                  enum:
+                    - phq_features
+                    - phq_explainability
+                description: A comma separated list of items.
+              - type: 'null'
+            description: A comma-separated list of fields to be included in the response.
+            title: Include
+          description: A comma-separated list of fields to be included in the response.
+        - $ref: "#/components/parameters/LimitParam"
+        - $ref: "#/components/parameters/OffsetParam"
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchModelForecastResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v1/forecasts/algos:
+    get:
+      tags:
+        - Algorithms
+      summary: Get Algorithims
+      operationId: get_algos_algos_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAlgoResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  parameters:
+    LimitParam:
+      name: limit
+      in: query
+      description: Limit the number of results.
+      required: false
+      schema:
+        type: integer
+        default: 10
+    OffsetParam:
+      name: offset
+      in: query
+      description: Offset the results.
+      required: false
+      schema:
+        type: integer
+        default: 0
+  schemas:
+    Accuracy:
+      description: |-
+        Forecast accuracy metrics calculated by comparing predicted values against actual historical values. These metrics help assess how well the model is performing.
+      properties:
+        mape:
+          type: number
+          description: |-
+            Mean Absolute Percentage Error (MAPE). Represents the average absolute percentage difference between forecasted and actual values. Lower values indicate more accurate predictions.
+        mae:
+          type: number
+          description: |-
+            Mean Absolute Error (MAE). The average of the absolute differences between forecasted and actual values. Useful for understanding the average magnitude of errors in the forecast.
+        rmse:
+          type: number
+          description: |-
+            Root Mean Squared Error (RMSE). Measures the square root of the average squared differences between forecasted and actual values. It penalizes larger errors more heavily than MAE.
+      type: object
+      required:
+        - mape
+        - mae
+        - rmse
+    Algo:
+      properties:
+        algo:
+          $ref: '#/components/schemas/AlgoType'
+        description:
+          type: string
+          minLength: 1
+        status:
+          $ref: '#/components/schemas/AlgoStatus'
+          minLength: 1
+          default: current
+      type: object
+      required:
+        - algo
+    AlgoStatus:
+      type: string
+      enum:
+        - beta
+        - current
+        - deprecated
+    AlgoType:
+      type: string
+      enum:
+        - phq-xgboost
+    CreateModelDemandRequest:
+      properties:
+        demand:
+          items:
+            $ref: '#/components/schemas/DemandInput'
+          type: array
+          minItems: 1
+          title: Demand
+      additionalProperties: false
+      type: object
+      required:
+        - demand
+    CreateModelRequest:
+      properties:
+        name:
+          description: |-
+            Name for the forecast model.
+          type: string
+          minLength: 1
+        external_id:
+          description: |-
+            External identifier for the forecast model. If you have an ID for the location/store/property/product-group in your other platforms, use the same ID here to easily connect this specific forecast model.
+          type: string
+          minLength: 1
+        forecast_window:
+          description: |-
+            Number of days into the future to forecast.
+          $ref: '#/components/schemas/ForecastWindowDay'
+        label:
+          description: |-
+            Set of labels you can use to better identify or group your forecast models.
+          items:
+            type: string
+            minLength: 1
+          type: array
+          minItems: 1
+        location:
+          description: |-
+            Location of your business so we can identify relevant events around the location impacting the demand.
+
+            Please create a Saved Location first, that can be reused across multiple forecast models if needed.
+          $ref: '#/components/schemas/Location'
+        algo:
+          description: |-
+            Currently we offer one algorithm based on XGBoost. In the future we may offer additional algos.
+          $ref: '#/components/schemas/AlgoType'
+          default: phq-xgboost
+        demand_type:
+          $ref: '#/components/schemas/InputDemandType'
+      additionalProperties: false
+      type: object
+      required:
+        - name
+        - location
+      title: CreateModelRequest
+    CreateModelResponse:
+      properties:
+        errors:
+          items:
+            type: string
+          type: array
+          title: Errors
+          default: []
+        warnings:
+          items:
+            type: string
+          type: array
+          title: Warnings
+          default: []
+        model_id:
+          type: string
+          minLength: 1
+          title: Model Id
+      type: object
+      required:
+        - model_id
+      title: CreateModelResponse
+    DateRange:
+      properties:
+        start:
+          type: string
+          format: date
+          title: Start
+        end:
+          type: string
+          format: date
+          title: End
+      type: object
+      required:
+        - start
+        - end
+      title: DateRange
+    DemandDataMetrics:
+      properties:
+        date_range:
+          $ref: '#/components/schemas/DateRange'
+      type: object
+      required:
+        - date_range
+      title: DemandDataMetrics
+    DemandInput:
+      properties:
+        date:
+          description: |-
+            Expected format: `2025-02-21`
+          type: string
+          format: date
+        demand:
+          description: |-
+            Number value (float or integer, must be a positive number).
+
+            For example, it could be units sold, room bookings, or number of staff rostered on per day or any other unit.
+          type: number
+          minimum: 0
+      additionalProperties: false
+      type: object
+      required:
+        - date
+        - demand
+    Event:
+      properties:
+        id:
+          type: string
+          minLength: 1
+          title: Id
+        title:
+          type: string
+          minLength: 1
+          title: Title
+        category:
+          type: string
+          minLength: 1
+          title: Title
+        start_local:
+          type: string
+          format: date-time
+          title: Start
+        end_local:
+          type: string
+          format: date-time
+          title: End
+        phq_rank:
+          type: integer
+          maximum: 100
+          minimum: 0
+          title: PHQ Rank
+        local_rank:
+          anyOf:
+            - type: integer
+              maximum: 100
+              minimum: 0
+            - type: 'null'
+          title: Local Rank
+      type: object
+      required:
+        - id
+        - title
+        - category
+        - start
+        - end
+      title: Event
+    Feature:
+      properties:
+        name:
+          type: string
+          minLength: 1
+          title: Name
+        value:
+          type: number
+          title: Value
+      type: object
+      required:
+        - name
+        - value
+      title: Feature
+    ForecastWindowDay:
+      type: string
+      enum:
+        - 1d
+        - 7d
+        - 14d
+        - 28d
+        - 30d
+        - 60d
+        - 90d
+      title: ForecastWindowDay
+    GetAlgoResponse:
+      properties:
+        errors:
+          items:
+            type: string
+          type: array
+          title: Errors
+          default: []
+        warnings:
+          items:
+            type: string
+          type: array
+          title: Warnings
+          default: []
+        results:
+          items:
+            $ref: '#/components/schemas/Algo'
+          type: array
+          title: Results
+      type: object
+      title: GetAlgoResponse
+    GetModelResponse:
+      properties:
+        errors:
+          items:
+            type: string
+          type: array
+          title: Errors
+          default: []
+        warnings:
+          items:
+            type: string
+          type: array
+          title: Warnings
+          default: []
+        model:
+          $ref: '#/components/schemas/PublicForecastModel'
+      type: object
+      required:
+        - model
+      title: GetModelResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    Industry:
+      description: |-
+        Choosing the right industry is important as this will determine the type of features used in the training and forecasting and will impact the accuracy of the results. We will use the applicable Predicted Impact Patterns for the specified industry.
+      type: string
+      enum:
+        - accommodation
+        - cpg
+        - tourism
+        - marketing
+        - parking
+        - restaurants
+        - retail
+        - transportation
+        - other
+      title: Industry
+    InputDemandType:
+      properties:
+        interval:
+          $ref: '#/components/schemas/InputInterval'
+        industry:
+          $ref: '#/components/schemas/Industry'
+      type: object
+      title: InputDemandType
+    InputInterval:
+      type: string
+      enum:
+        - day
+      title: InputInterval
+    Location:
+      properties:
+        saved_location_id:
+          type: string
+          minLength: 1
+          title: Saved Location ID
+      type: object
+      required:
+        - saved_location_id
+      title: Location
+    PhqExplainability:
+      description: |-
+        List of the top events impacting demand on each date. Use this to help understand the context of how and why events are impacting your demand.
+      properties:
+        events:
+          items:
+            $ref: '#/components/schemas/Event'
+          type: array
+          minItems: 0
+      type: object
+    PublicDemand:
+      properties:
+        date:
+          type: string
+          format: date
+          title: Date
+        demand:
+          type: number
+          minimum: 0
+          title: Demand
+      type: object
+      required:
+        - date
+        - demand
+      title: PublicDemand
+    PublicDemandType:
+      properties:
+        interval:
+          anyOf:
+            - $ref: '#/components/schemas/PublicInterval'
+            - type: 'null'
+        industry:
+          anyOf:
+            - $ref: '#/components/schemas/Industry'
+            - type: 'null'
+      type: object
+      title: PublicDemandType
+    PublicForecast:
+      properties:
+        date:
+          type: string
+          format: date
+          title: Date
+        forecast:
+          type: number
+          title: Forecast
+        phq_explainability:
+          $ref: '#/components/schemas/PhqExplainability'
+        phq_features:
+          description: |-
+            List of the features (from our Features API) that were shown to have an impact on the demand. These features were used in training the model and for forecasting.
+          items:
+            $ref: '#/components/schemas/Feature'
+          type: array
+          minItems: 1
+          title: Phq Features
+      type: object
+      required:
+        - date
+        - forecast
+      title: PublicForecast
+    PublicForecastModel:
+      properties:
+        algo:
+          $ref: '#/components/schemas/AlgoType'
+        create_dt:
+          type: string
+          format: date-time
+          title: Create Dt
+        demand_type:
+          anyOf:
+            - $ref: '#/components/schemas/PublicDemandType'
+            - type: 'null'
+        external_id:
+          anyOf:
+            - type: string
+              minLength: 1
+            - type: 'null'
+          title: External Id
+        forecast_window:
+          $ref: '#/components/schemas/ForecastWindowDay'
+        label:
+          anyOf:
+            - items:
+                type: string
+                minLength: 1
+              type: array
+              minItems: 1
+            - type: 'null'
+          title: Label
+        location:
+          $ref: '#/components/schemas/Location'
+        metrics:
+          anyOf:
+            - $ref: '#/components/schemas/PublicMetrics'
+            - type: 'null'
+        model_id:
+          type: string
+          minLength: 1
+          title: Model Id
+        name:
+          type: string
+          minLength: 1
+          title: Name
+        readiness:
+          $ref: '#/components/schemas/Readiness'
+        train_dt:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+          title: Train Dt
+        update_dt:
+          type: string
+          format: date-time
+          title: Update Dt
+      type: object
+      required:
+        - algo
+        - create_dt
+        - forecast_window
+        - location
+        - model_id
+        - name
+        - readiness
+        - update_dt
+      title: PublicForecastModel
+    PublicInterval:
+      type: string
+      enum:
+        - day
+      title: PublicInterval
+    PublicMetrics:
+      properties:
+        accuracy:
+          anyOf:
+            - $ref: '#/components/schemas/Accuracy'
+            - type: 'null'
+        demand_data:
+          $ref: '#/components/schemas/DemandDataMetrics'
+        training_data:
+          anyOf:
+            - $ref: '#/components/schemas/TrainingDataMetrics'
+            - type: 'null'
+      type: object
+      required:
+        - demand_data
+      title: PublicMetrics
+    Readiness:
+      properties:
+        status:
+          $ref: '#/components/schemas/ReadinessStatus'
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Code
+        error_message:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Error Message
+      type: object
+      required:
+        - status
+      title: Readiness
+    ReadinessStatus:
+      type: string
+      enum:
+        - created
+        - failed
+        - forecasting
+        - preparing
+        - ready
+        - stale
+        - training
+      title: ReadinessStatus
+    ReplaceModelRequest:
+      properties:
+        name:
+          type: string
+          minLength: 1
+          title: Name
+        external_id:
+          anyOf:
+            - type: string
+              minLength: 1
+            - type: 'null'
+          title: External Id
+        forecast_window:
+          anyOf:
+            - $ref: '#/components/schemas/ForecastWindowDay'
+            - type: 'null'
+        label:
+          anyOf:
+            - items:
+                type: string
+                minLength: 1
+              type: array
+              minItems: 1
+            - type: 'null'
+          title: Label
+        location:
+          $ref: '#/components/schemas/Location'
+        algo:
+          $ref: '#/components/schemas/AlgoType'
+          default: phq-xgboost
+        demand_type:
+          anyOf:
+            - $ref: '#/components/schemas/InputDemandType'
+            - type: 'null'
+      additionalProperties: false
+      type: object
+      required:
+        - name
+        - location
+      title: ReplaceModelRequest
+    SearchDemandResponse:
+      properties:
+        errors:
+          items:
+            type: string
+          type: array
+          title: Errors
+          default: []
+        warnings:
+          items:
+            type: string
+          type: array
+          title: Warnings
+          default: []
+        count:
+          type: integer
+          title: Count
+        next:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Next
+        previous:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Previous
+        results:
+          items:
+            $ref: '#/components/schemas/PublicDemand'
+          type: array
+          title: Results
+      type: object
+      required:
+        - count
+      title: SearchDemandResponse
+    SearchModelForecastResponse:
+      properties:
+        errors:
+          items:
+            type: string
+          type: array
+          title: Errors
+          default: []
+        warnings:
+          items:
+            type: string
+          type: array
+          title: Warnings
+          default: []
+        count:
+          type: integer
+          title: Count
+        next:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Next
+        previous:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Previous
+        results:
+          items:
+            $ref: '#/components/schemas/PublicForecast'
+          type: array
+          title: Results
+      type: object
+      required:
+        - count
+      title: SearchModelForecastResponse
+    SearchModelResponse:
+      properties:
+        errors:
+          items:
+            type: string
+          type: array
+          title: Errors
+          default: []
+        warnings:
+          items:
+            type: string
+          type: array
+          title: Warnings
+          default: []
+        count:
+          type: integer
+          title: Count
+        next:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Next
+        previous:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Previous
+        results:
+          items:
+            $ref: '#/components/schemas/PublicForecastModel'
+          type: array
+          title: Results
+      type: object
+      required:
+        - count
+      title: SearchModelResponse
+    TrainingDataMetrics:
+      properties:
+        date_range:
+          $ref: '#/components/schemas/DateRange'
+        missing_pct:
+          type: number
+          maximum: 100
+          minimum: 0
+          title: Missing Pct
+          default: 0
+        missing_dates:
+          anyOf:
+            - items:
+                type: string
+                format: date
+              type: array
+            - type: 'null'
+          title: Missing Dates
+      type: object
+      required:
+        - date_range
+      title: TrainingDataMetrics
+    UpdateModelRequest:
+      properties:
+        name:
+          anyOf:
+            - type: string
+              minLength: 1
+            - type: 'null'
+          title: Name
+        external_id:
+          anyOf:
+            - type: string
+              minLength: 1
+            - type: 'null'
+          title: External Id
+        forecast_window:
+          anyOf:
+            - $ref: '#/components/schemas/ForecastWindowDay'
+            - type: 'null'
+        generate_baseline:
+          type: boolean
+          title: Generate Baseline
+          default: false
+        label:
+          anyOf:
+            - items:
+                type: string
+                minLength: 1
+              type: array
+              minItems: 1
+            - type: 'null'
+          title: Label
+        location:
+          anyOf:
+            - $ref: '#/components/schemas/Location'
+            - type: 'null'
+        algo:
+          anyOf:
+            - $ref: '#/components/schemas/AlgoType'
+            - type: 'null'
+        demand_type:
+          anyOf:
+            - $ref: '#/components/schemas/InputDemandType'
+            - type: 'null'
+      additionalProperties: false
+      type: object
+      title: UpdateModelRequest
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+              - type: string
+              - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+        - loc
+        - msg
+        - type
+      title: ValidationError
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: "$API_KEY"
