@@ -8,7 +8,7 @@ info:
   termsOfService: https://www.predicthq.com/legal/terms
 servers:
   - url: https://api.predicthq.com
-externalDocs: 
+externalDocs:
   url: https://docs.predicthq.com
   description: PredictHQ Tech Docs
 x-hideTryItPanel: true
@@ -16,7 +16,7 @@ security:
   - BearerAuth: []
 tags:
   - name: Events API
-    externalDocs: 
+    externalDocs:
       url: https://docs.predicthq.com/api/events
       description: Events API Docs
 paths:
@@ -269,7 +269,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EventsCountResponse'  
+                $ref: '#/components/schemas/EventsCountResponse'
 components:
   parameters:
     ActiveGteParam:
@@ -325,7 +325,7 @@ components:
       name: active.tz
       description: |-
         Specifies the timezone for the `active.*` date parameters.
-        
+
         Timezone must be in the [TZ Database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) format (e.g. `America/Los_Angeles`).
 
         Default: `UTC`
@@ -420,7 +420,7 @@ components:
       name: cancelled.tz
       description: |-
         Specifies the timezone for the `cancelled.*` date parameters.
-        
+
         Timezone must be in the [TZ Database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) format (e.g. `America/Los_Angeles`).
 
         Default: `UTC`
@@ -545,7 +545,7 @@ components:
       name: end.tz
       description: |-
         Specifies the timezone for the `end.*` date parameters.
-        
+
         Timezone must be in the [TZ Database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) format (e.g. `America/Los_Angeles`).
 
         Default: `UTC`
@@ -676,7 +676,7 @@ components:
       name: first_seen.tz
       description: |-
         Specifies the timezone for the `first_seen.*` date parameters.
-        
+
         Timezone must be in the [TZ Database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) format (e.g. `America/Los_Angeles`).
 
         Default: `UTC`
@@ -755,7 +755,7 @@ components:
       name: impact.tz
       description: |-
         Specifies the timezone for the `impact.*` date parameters.
-        
+
         Timezone must be in the [TZ Database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) format (e.g. `America/Los_Angeles`).
 
         Default: `UTC`
@@ -804,7 +804,7 @@ components:
       name: local_rank.gte
       description: |-
         Filters events with a Local Rank greater than or equal to the specified value.
-        
+
         Events without a Local Rank will not be returned.
 
         Example: `80`
@@ -818,7 +818,7 @@ components:
       name: local_rank.gt
       description: |-
         Filters events with a Local Rank greater than the specified value.
-        
+
         Events without a Local Rank will not be returned.
       required: false
       schema:
@@ -830,7 +830,7 @@ components:
       name: local_rank.lte
       description: |-
         Filters events with a Local Rank less than or equal to the specified value.
-        
+
         Events without a Local Rank will not be returned.
 
         Example: `90`
@@ -844,7 +844,7 @@ components:
       name: local_rank.lt
       description: |-
         Filters events with a Local Rank less than the specified value.
-        
+
         Events without a Local Rank will not be returned.
       required: false
       schema:
@@ -897,7 +897,7 @@ components:
       name: location_around.offset
       description: |-
         The distance before decay is applied (optional).
-        
+
         Distance unit can be one of `m`, `km`, `ft`, `mi`.
 
         Example: `2mi`
@@ -913,7 +913,7 @@ components:
       name: location_around.scale
       description: |-
         Distance from origin + offset at which the score will equal decay value (optional).
-        
+
         Distance unit can be one of `m`, `km`, `ft`, `mi`.
 
         Example: `4mi`
@@ -1213,7 +1213,7 @@ components:
       name: postponed.tz
       description: |-
         Specifies the timezone for the `postponed.*` date parameters.
-        
+
         Timezone must be in the [TZ Database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) format (e.g. `America/Los_Angeles`).
 
         Default: `UTC`
@@ -1275,7 +1275,7 @@ components:
       name: predicted_end.tz
       description: |-
         Specifies the timezone for the `predicted_end.*` date parameters.
-        
+
         Timezone must be in the [TZ Database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) format (e.g. `America/Los_Angeles`).
 
         Default: `UTC`
@@ -1480,7 +1480,7 @@ components:
       name: sort
       description: |-
         A comma-separated list of fields to sort results by. The default is `relevance,-start`.
-        
+
         Prefix the field name with `-` for reverse order.
 
         Note when sorting on `predicted_end` or `local_rank` (regardless of sort order), events that do not have a `predicted_end`, `local_rank` will be placed last.
@@ -1567,7 +1567,7 @@ components:
       name: start.tz
       description: |-
         Specifies the timezone for the `start.*` date parameters.
-        
+
         Timezone must be in the [TZ Database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) format (e.g. `America/Los_Angeles`).
 
         Default: `UTC`
@@ -1746,7 +1746,7 @@ components:
       name: updated.tz
       description: |-
         Specifies the timezone for the `updated.*` date parameters.
-        
+
         Timezone must be in the [TZ Database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) format (e.g. `America/Los_Angeles`).
 
         Default: `UTC`
@@ -1758,7 +1758,7 @@ components:
       name: within
       description: |-
         A geo center and radius in the form `{radius}{unit}@{latitude},{longitude}`, where the radius unit can be one of: `m`, `km`, `ft`, `mi`.
-        
+
         When using the units of `km` and `mi` you can enter whole numbers or floats e.g. `5mi`, `1.5km` or `1.2mi`.
         When using the units `ft` or `m` you must enter whole numbers (you cannot enter a fraction of a meter or foot).
 
@@ -1946,6 +1946,8 @@ components:
           description: |-
             This field shows the Predicted Impact Patterns for leading days (days before the event), lagging days (days after an event), and the days the event occurs. See [Predicted Impact Patterns](https://docs.predicthq.com/getting-started/predicthq-data/impact-patterns) for more details.
 
+            This field will only be present if you have access to it in your subscription and you will only get the industry verticals that you are subscribed to.
+
             impact_patterns is an array of impact pattern objects. The same event can have different impact patterns for different industry verticals. It contains the following fields:
           type: object
           required:
@@ -2113,6 +2115,8 @@ components:
             An array of objects which contains the PHQ Labels associated to an event as well as the weight that they contribute to the event. Weights from all labels should sum up to 1.0
 
             PHQ Labels leverage AI and classifier models. Currently available for conferences, expos, festivals, community and performing-arts categories. Legacy labels are available in a separate field to preserve backwards compatibility.
+
+            This field will only be present if you have access to it in your subscription.
 
             Take a look at [PHQ Label Values](https://docs.predicthq.com/getting-started/predicthq-data/labels#phq-label-values) to see a list of possible values that could be in phq_labels.label.
           type: array
@@ -2497,6 +2501,8 @@ components:
       title: Legacy Labels
       description: |-
             Legacy labels to further categorise the event.
+
+            This field will only be present if you have access to it in your subscription.
       deprecated: true
       type: array
       items:
