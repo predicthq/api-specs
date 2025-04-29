@@ -2116,8 +2116,6 @@ components:
 
             PHQ Labels leverage AI and classifier models. Currently available for conferences, expos, festivals, community and performing-arts categories. Legacy labels are available in a separate field to preserve backwards compatibility.
 
-            This field will only be present if you have access to it in your subscription.
-
             Take a look at [PHQ Label Values](https://docs.predicthq.com/getting-started/predicthq-data/labels#phq-label-values) to see a list of possible values that could be in phq_labels.label.
           type: array
           items:
@@ -2502,7 +2500,7 @@ components:
       description: |-
             Legacy labels to further categorise the event.
 
-            This field will only be present if you have access to it in your subscription.
+            New accounts from April 2025 will not have access to the legacy labels field.
       deprecated: true
       type: array
       items:
