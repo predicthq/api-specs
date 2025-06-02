@@ -1887,10 +1887,10 @@ components:
               type:
                 type: string
                 enum:
-                  - airport
                   - event-group
                   - person
                   - venue
+                  - organisation
               labels:
                 type: array
                 items:
