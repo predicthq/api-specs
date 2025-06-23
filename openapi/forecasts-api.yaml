@@ -397,18 +397,14 @@ paths:
           in: query
           required: false
           schema:
-            anyOf:
-              - type: array
-                items:
-                  type: string
-                  enum:
-                    - phq_features
-                    - phq_explainability
-                description: A comma separated list of items.
-              - type: 'null'
-            description: A comma-separated list of fields to be included in the response.
+            type: array
+            items:
+              type: string
+              enum:
+                - phq_features
+                - phq_explainability
             title: Include
-          description: A comma-separated list of fields to be included in the response.
+          description: A comma-separated list of fields to be included in the response. By default `phq_features` and `phq_explainability` are not included.
         - $ref: "#/components/parameters/LimitParam"
         - $ref: "#/components/parameters/OffsetParam"
       responses:
