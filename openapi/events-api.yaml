@@ -805,8 +805,6 @@ components:
       description: |-
         Filters events with a Local Rank greater than or equal to the specified value.
 
-        Events without a Local Rank will not be returned.
-
         Example: `80`
       required: false
       schema:
@@ -818,8 +816,6 @@ components:
       name: local_rank.gt
       description: |-
         Filters events with a Local Rank greater than the specified value.
-
-        Events without a Local Rank will not be returned.
       required: false
       schema:
         type: integer
@@ -830,8 +826,6 @@ components:
       name: local_rank.lte
       description: |-
         Filters events with a Local Rank less than or equal to the specified value.
-
-        Events without a Local Rank will not be returned.
 
         Example: `90`
       required: false
@@ -844,8 +838,6 @@ components:
       name: local_rank.lt
       description: |-
         Filters events with a Local Rank less than the specified value.
-
-        Events without a Local Rank will not be returned.
       required: false
       schema:
         type: integer
