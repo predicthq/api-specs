@@ -2493,6 +2493,8 @@ components:
             Legacy labels to further categorise the event.
 
             New accounts from April 2025 will not have access to the legacy labels field.
+            
+            `phq_labels` should be used instead. See [PHQ Labels](https://docs.predicthq.com/getting-started/predicthq-data/labels#phq-labels) for more information.
       deprecated: true
       type: array
       items:
