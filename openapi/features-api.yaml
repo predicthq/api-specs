@@ -1,46 +1,58 @@
 openapi: 3.1.0
 info:
-  title: PredictHQ Features API (Public Preview)
+  title: PredictHQ Features API
   version: 1.0.0
   license:
     name: MIT
-    url: https://opensource.org/licenses/MIT
-  termsOfService: https://www.predicthq.com/legal/terms
-  description: Access prebuilt Machine Learning features that will take your forecast models and results to the next level, fast. Gain access to over 100 ML-ready features that are guaranteed to improve your forecasting accuracy.
+    url: 'https://opensource.org/licenses/MIT'
+  termsOfService: 'https://www.predicthq.com/legal/terms'
+  description: 'Access prebuilt Machine Learning features that will take your forecast models and results to the next level, fast. Gain access to over 100 ML-ready features that are guaranteed to improve your forecasting accuracy.'
+security:
+  - BearerAuth: []
+tags:
+  - externalDocs:
+      description: Features API
+      url: 'https://docs.predicthq.com/api/features/get-features'
+    name: Features API
 servers:
-  - url: https://api.predicthq.com
+  - url: 'https://api.predicthq.com'
+externalDocs:
+  url: 'https://docs.predicthq.com'
+  description: PredictHQ Tech Docs
+x-hideTryItPanel: true
 paths:
   /v1/features/:
     post:
-      tags:
-        - Features API
-      summary: Obtain requested features based on specified criteria and categories
       operationId: obtain_features_given_criteria_features__post
+      summary: Obtain requested features based on specified criteria and categories
       parameters:
-        - name: offset
-          in: query
-          required: false
-          schema:
-            default: 0
-            type: integer
-            minimum: 0
-        - name: limit
-          in: query
-          required: false
-          schema:
-            default: 100
-            type: integer
-            maximum: 100
-            minimum: 1
+        - $ref: '#/components/parameters/OffsetParam'
+        - $ref: '#/components/parameters/LimitParam'
         - name: accept
           in: header
+          description: |-
+            Receive results in JSON or CSV by specifying the appropriate Accept header.
+                        Supported values:
+
+                        - application/json
+
+                        - text/csv
+
+                        
           required: false
           schema:
+            description: |-
+              Receive results in JSON or CSV by specifying the appropriate Accept header.
+                          Supported values:
+
+                          - application/json
+
+                          - text/csv
+
+                          
             type: string
             pattern: ^(application\/json|text\/csv|\*\/\*)$
-            description: "Receive results in JSON or CSV by specifying the appropriate Accept header.\n            Supported values:\n\n            - application/json\n\n            - text/csv\n\n            "
             title: Accept
-          description: "Receive results in JSON or CSV by specifying the appropriate Accept header.\n            Supported values:\n\n            - application/json\n\n            - text/csv\n\n            "
       requestBody:
         required: true
         content:
@@ -60,9 +72,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+        - Features API
 components:
+  parameters:
+    LimitParam:
+      name: limit
+      in: query
+      description: Limit the number of results.
+      required: false
+      schema:
+        type: integer
+        default: 10
+    OffsetParam:
+      name: offset
+      in: query
+      description: Offset the results.
+      required: false
+      schema:
+        type: integer
+        default: 0
   schemas:
     ActiveDateRange:
+      type: object
       properties:
         gt:
           type: string
@@ -83,25 +115,25 @@ components:
         tz:
           type: string
           title: Tz
-      type: object
       title: ActiveDateRange
     Beam:
+      type: object
       properties:
         analysis_id:
+          description: Beam analysis ID
           type: string
           minLength: 1
           title: Analysis Id
-          description: Beam analysis ID
         group_id:
+          description: Beam analysis group ID
           type: string
           minLength: 1
           title: Group Id
-          description: Beam analysis group ID
-      type: object
       required:
         - analysis_id
       title: Beam
     FeatureStats:
+      type: object
       properties:
         count:
           type: integer
@@ -124,12 +156,11 @@ components:
         std_dev:
           type: integer
           title: Std Dev
-      type: object
       title: FeatureStats
     FeaturesRequestModel:
+      type: object
       properties:
         active:
-          $ref: '#/components/schemas/ActiveDateRange'
           description: |
             The date range to calculate features for. This is named `active` because it includes events that are active within the date range. A multi-day event might start or end outside the specified date range - the days the event is active within the specified range will be included in the calculations.
 
@@ -151,8 +182,8 @@ components:
                 "lte": "2019-11-29"
               }
             }
+          $ref: '#/components/schemas/ActiveDateRange'
         beam:
-          $ref: '#/components/schemas/Beam'
           description: |-
             An optional beam analysis object which if provided will calculate the `location`, `interval`, `week_start_day`, `phq_*` features and `stats`, and `phq_rank` from the Beam analysis (and optionally its group).
 
@@ -185,8 +216,8 @@ components:
               }
             }
             ```
+          $ref: '#/components/schemas/Beam'
         hour_of_day_start:
-          $ref: '#/components/schemas/HourOfDayRange'
           description: |
             Time range (per day) to calculate features for.
 
@@ -214,8 +245,8 @@ components:
               }
             }
             ```
+          $ref: '#/components/schemas/HourOfDayRange'
         location:
-          $ref: '#/components/schemas/Location'
           description: |
             Location to calculate features for. You can specify the location as a latitude/longitude (with radius), Place ID(s) or Saved Location ID(s).
 
@@ -265,8 +296,8 @@ components:
                   }
                 }
             ```
+          $ref: '#/components/schemas/Location'
         interval:
-          $ref: '#/components/schemas/Interval'
           description: |
             Aggregation interval.
 
@@ -274,8 +305,8 @@ components:
                 **Fields:**
             - `day` (default) for daily aggregation
             - `week` for weekly aggregation
+          $ref: '#/components/schemas/Interval'
         week_start_day:
-          $ref: '#/components/schemas/Weekday'
           description: |
             The weekday to be treated as the start of the week.
 
@@ -290,8 +321,8 @@ components:
             - `sunday`
 
             Only applicable when interval is set to week.
+          $ref: '#/components/schemas/Weekday'
         predicted_events:
-          $ref: '#/components/schemas/PredictedEvents'
           description: |
             Include or Exclude predicted events.
 
@@ -308,472 +339,490 @@ components:
               }
             }
             ```
+          $ref: '#/components/schemas/PredictedEvents'
         phq_attendance_academic_graduation:
-          $ref: '#/components/schemas/StatsField'
           description: Academic - Graduation
+          $ref: '#/components/schemas/StatsField'
         phq_attendance_academic_social:
-          $ref: '#/components/schemas/StatsField'
           description: Academic - Social
+          $ref: '#/components/schemas/StatsField'
         phq_attendance_community:
-          $ref: '#/components/schemas/StatsField'
           description: Community
+          $ref: '#/components/schemas/StatsField'
         phq_attendance_concerts:
-          $ref: '#/components/schemas/StatsField'
           description: Concerts
+          $ref: '#/components/schemas/StatsField'
         phq_attendance_conferences:
-          $ref: '#/components/schemas/StatsField'
           description: Conferences
+          $ref: '#/components/schemas/StatsField'
         phq_attendance_expos:
-          $ref: '#/components/schemas/StatsField'
           description: Expos
+          $ref: '#/components/schemas/StatsField'
         phq_attendance_festivals:
-          $ref: '#/components/schemas/StatsField'
           description: Festivals
+          $ref: '#/components/schemas/StatsField'
         phq_attendance_performing_arts:
-          $ref: '#/components/schemas/StatsField'
           description: Performing Arts
+          $ref: '#/components/schemas/StatsField'
         phq_attendance_sports:
-          $ref: '#/components/schemas/StatsField'
           description: Sports
+          $ref: '#/components/schemas/StatsField'
         phq_attendance_school_holidays:
-          $ref: '#/components/schemas/StatsField'
           description: School Holidays
+          $ref: '#/components/schemas/StatsField'
         phq_attendance_community_accommodation:
-          $ref: '#/components/schemas/StatsField'
           description: Community accommodation impact
+          $ref: '#/components/schemas/StatsField'
         phq_attendance_concerts_accommodation:
-          $ref: '#/components/schemas/StatsField'
           description: Concerts accommodation impact
+          $ref: '#/components/schemas/StatsField'
         phq_attendance_conferences_accommodation:
-          $ref: '#/components/schemas/StatsField'
           description: Conferences accommodation impact
+          $ref: '#/components/schemas/StatsField'
         phq_attendance_expos_accommodation:
-          $ref: '#/components/schemas/StatsField'
           description: Expos accommodation impact
+          $ref: '#/components/schemas/StatsField'
         phq_attendance_festivals_accommodation:
-          $ref: '#/components/schemas/StatsField'
           description: Festivals accommodation impact
+          $ref: '#/components/schemas/StatsField'
         phq_attendance_performing_arts_accommodation:
-          $ref: '#/components/schemas/StatsField'
           description: Performing Arts accommodation impact
+          $ref: '#/components/schemas/StatsField'
         phq_attendance_sports_accommodation:
-          $ref: '#/components/schemas/StatsField'
           description: Sports accommodation impact
+          $ref: '#/components/schemas/StatsField'
         phq_attendance_community_hospitality:
-          $ref: '#/components/schemas/StatsField'
           description: Community hospitality impact
+          $ref: '#/components/schemas/StatsField'
         phq_attendance_concerts_hospitality:
-          $ref: '#/components/schemas/StatsField'
           description: Concerts hospitality impact
+          $ref: '#/components/schemas/StatsField'
         phq_attendance_conferences_hospitality:
-          $ref: '#/components/schemas/StatsField'
           description: Conferences hospitality impact
+          $ref: '#/components/schemas/StatsField'
         phq_attendance_expos_hospitality:
-          $ref: '#/components/schemas/StatsField'
           description: Expos hospitality impact
+          $ref: '#/components/schemas/StatsField'
         phq_attendance_festivals_hospitality:
-          $ref: '#/components/schemas/StatsField'
           description: Festivals hospitality impact
+          $ref: '#/components/schemas/StatsField'
         phq_attendance_performing_arts_hospitality:
-          $ref: '#/components/schemas/StatsField'
           description: Performing Arts hospitality impact
+          $ref: '#/components/schemas/StatsField'
         phq_attendance_sports_hospitality:
-          $ref: '#/components/schemas/StatsField'
           description: Sports hospitality impact
+          $ref: '#/components/schemas/StatsField'
         phq_attendance_community_retail:
-          $ref: '#/components/schemas/StatsField'
           description: Community Retail impact
+          $ref: '#/components/schemas/StatsField'
         phq_attendance_concerts_retail:
-          $ref: '#/components/schemas/StatsField'
           description: Concerts Retail impact
+          $ref: '#/components/schemas/StatsField'
         phq_attendance_conferences_retail:
-          $ref: '#/components/schemas/StatsField'
           description: Conferences Retail impact
+          $ref: '#/components/schemas/StatsField'
         phq_attendance_expos_retail:
-          $ref: '#/components/schemas/StatsField'
           description: Expos Retail impact
+          $ref: '#/components/schemas/StatsField'
         phq_attendance_festivals_retail:
-          $ref: '#/components/schemas/StatsField'
           description: Festivals Retail impact
+          $ref: '#/components/schemas/StatsField'
         phq_attendance_performing_arts_retail:
-          $ref: '#/components/schemas/StatsField'
           description: Performing Arts Retail impact
-        phq_attendance_sports_retail:
           $ref: '#/components/schemas/StatsField'
+        phq_attendance_sports_retail:
           description: Sports Retail impact
+          $ref: '#/components/schemas/StatsField'
         phq_rank_daylight_savings:
+          description: |-
+            Daylight Savings  
+            _Default: False_
           type: boolean
           title: Phq Rank Daylight Savings
-          description: "Daylight Savings  \n_Default: False_"
         phq_rank_health_warnings:
+          description: |-
+            Health Warnings  
+            _Default: False_
           type: boolean
           title: Phq Rank Health Warnings
-          description: "Health Warnings  \n_Default: False_"
         phq_rank_observances:
+          description: |-
+            Observances  
+            _Default: False_
           type: boolean
           title: Phq Rank Observances
-          description: "Observances  \n_Default: False_"
         phq_rank_public_holidays:
+          description: |-
+            Public Holidays  
+            _Default: False_
           type: boolean
           title: Phq Rank Public Holidays
-          description: "Public Holidays  \n_Default: False_"
         phq_rank_school_holidays:
+          description: |-
+            School Holidays  
+            _Default: False_
           type: boolean
           title: Phq Rank School Holidays
-          description: "School Holidays  \n_Default: False_"
         phq_rank_politics:
+          description: |-
+            Politics  
+            _Default: False_
           type: boolean
           title: Phq Rank Politics
-          description: "Politics  \n_Default: False_"
         phq_rank_academic_session:
+          description: |-
+            Academic - Session  
+            _Default: False_
           type: boolean
           title: Phq Rank Academic Session
-          description: "Academic - Session  \n_Default: False_"
         phq_rank_academic_exam:
+          description: |-
+            Academic - Exam  
+            _Default: False_
           type: boolean
           title: Phq Rank Academic Exam
-          description: "Academic - Exam  \n_Default: False_"
         phq_rank_academic_holiday:
+          description: |-
+            Academic - Holiday  
+            _Default: False_
           type: boolean
           title: Phq Rank Academic Holiday
-          description: "Academic - Holiday  \n_Default: False_"
         phq_impact_observances:
-          $ref: '#/components/schemas/StatsField'
           description: Observances
+          $ref: '#/components/schemas/StatsField'
         phq_impact_public_holidays:
-          $ref: '#/components/schemas/StatsField'
           description: Public Holidays
+          $ref: '#/components/schemas/StatsField'
         phq_impact_school_holidays:
-          $ref: '#/components/schemas/StatsField'
           description: School Holidays
+          $ref: '#/components/schemas/StatsField'
         phq_impact_academic_exam:
-          $ref: '#/components/schemas/StatsField'
           description: Academic
+          $ref: '#/components/schemas/StatsField'
         phq_impact_academic_holiday:
-          $ref: '#/components/schemas/StatsField'
           description: Academic
+          $ref: '#/components/schemas/StatsField'
         phq_impact_academic_session:
-          $ref: '#/components/schemas/StatsField'
           description: Academic
+          $ref: '#/components/schemas/StatsField'
         phq_impact_observances_accommodation:
-          $ref: '#/components/schemas/StatsField'
           description: 'Observances (Industry: Accommodation)'
+          $ref: '#/components/schemas/StatsField'
         phq_impact_observances_hospitality:
-          $ref: '#/components/schemas/StatsField'
           description: 'Observances (Industry: Hospitality/Food & Beverage)'
+          $ref: '#/components/schemas/StatsField'
         phq_impact_observances_retail:
-          $ref: '#/components/schemas/StatsField'
           description: 'Observances (Industry: Retail)'
+          $ref: '#/components/schemas/StatsField'
         phq_impact_public_holidays_accommodation:
-          $ref: '#/components/schemas/StatsField'
           description: 'Public Holidays (Industry: Accommodation)'
+          $ref: '#/components/schemas/StatsField'
         phq_impact_public_holidays_hospitality:
-          $ref: '#/components/schemas/StatsField'
           description: 'Public Holidays (Industry: Hospitality/Food & Beverage*)'
+          $ref: '#/components/schemas/StatsField'
         phq_impact_public_holidays_retail:
-          $ref: '#/components/schemas/StatsField'
           description: 'Public Holidays (Industry: Retail)'
+          $ref: '#/components/schemas/StatsField'
         phq_impact_severe_weather_air_quality_retail:
-          $ref: '#/components/schemas/StatsField'
           description: 'Severe Weather - Air Quality (Industry: Retail)'
+          $ref: '#/components/schemas/StatsField'
         phq_impact_severe_weather_blizzard_retail:
-          $ref: '#/components/schemas/StatsField'
           description: 'Severe Weather - Blizzard (Industry: Retail)'
+          $ref: '#/components/schemas/StatsField'
         phq_impact_severe_weather_cold_wave_retail:
-          $ref: '#/components/schemas/StatsField'
           description: 'Severe Weather - Cold Wave - (All) (Industry: Retail)'
+          $ref: '#/components/schemas/StatsField'
         phq_impact_severe_weather_cold_wave_snow_retail:
-          $ref: '#/components/schemas/StatsField'
           description: 'Severe Weather - Cold Wave - Snow (Industry: Retail)'
+          $ref: '#/components/schemas/StatsField'
         phq_impact_severe_weather_cold_wave_storm_retail:
-          $ref: '#/components/schemas/StatsField'
           description: 'Severe Weather - Cold Wave - Storm (Industry: Retail)'
+          $ref: '#/components/schemas/StatsField'
         phq_impact_severe_weather_dust_retail:
-          $ref: '#/components/schemas/StatsField'
           description: 'Severe Weather - Dust - (All) (Industry: Retail)'
+          $ref: '#/components/schemas/StatsField'
         phq_impact_severe_weather_dust_storm_retail:
-          $ref: '#/components/schemas/StatsField'
           description: 'Severe Weather - Dust - Storm (Industry: Retail)'
+          $ref: '#/components/schemas/StatsField'
         phq_impact_severe_weather_flood_retail:
-          $ref: '#/components/schemas/StatsField'
           description: 'Severe Weather - Flood (Industry: Retail)'
+          $ref: '#/components/schemas/StatsField'
         phq_impact_severe_weather_heat_wave_retail:
-          $ref: '#/components/schemas/StatsField'
           description: 'Severe Weather - Heat Wave (Industry: Retail)'
+          $ref: '#/components/schemas/StatsField'
         phq_impact_severe_weather_hurricane_retail:
-          $ref: '#/components/schemas/StatsField'
           description: 'Severe Weather - Hurricane (Industry: Retail)'
+          $ref: '#/components/schemas/StatsField'
         phq_impact_severe_weather_thunderstorm_retail:
-          $ref: '#/components/schemas/StatsField'
           description: 'Severe Weather - Thunderstorm (Industry: Retail)'
+          $ref: '#/components/schemas/StatsField'
         phq_impact_severe_weather_tornado_retail:
-          $ref: '#/components/schemas/StatsField'
           description: 'Severe Weather - Tornado (Industry: Severe Weather - Tornado) (Industry: Retail)'
+          $ref: '#/components/schemas/StatsField'
         phq_impact_severe_weather_tropical_storm_retail:
-          $ref: '#/components/schemas/StatsField'
           description: 'Severe Weather - Tropical Storm (Industry: Retail)'
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports:
-          $ref: '#/components/schemas/StatsField'
           description: Sports - (All)
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_american_football:
-          $ref: '#/components/schemas/StatsField'
           description: American Football - (All)
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_american_football_ncaa_men:
-          $ref: '#/components/schemas/StatsField'
           description: American Football - NCAA Men's
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_american_football_nfl:
-          $ref: '#/components/schemas/StatsField'
           description: American Football - NFL
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_auto_racing:
-          $ref: '#/components/schemas/StatsField'
           description: Automotive Racing - All
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_auto_racing_indy_car:
-          $ref: '#/components/schemas/StatsField'
           description: Automotive Racing - Indy Car
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_auto_racing_nascar:
-          $ref: '#/components/schemas/StatsField'
           description: Automotive Racing - NASCAR
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_baseball:
-          $ref: '#/components/schemas/StatsField'
           description: Baseball - (All)
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_baseball_mlb:
-          $ref: '#/components/schemas/StatsField'
           description: Baseball - MLB
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_baseball_ncaa_men:
-          $ref: '#/components/schemas/StatsField'
           description: Baseball - NCAA Men's
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_basketball:
-          $ref: '#/components/schemas/StatsField'
           description: Basketball - (All)
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_basketball_nba:
-          $ref: '#/components/schemas/StatsField'
           description: Basketball - NBA
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_basketball_ncaa_men:
-          $ref: '#/components/schemas/StatsField'
           description: Basketball - NCAA Men's
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_basketball_ncaa_women:
-          $ref: '#/components/schemas/StatsField'
           description: Basketball - NCAA Women's
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_boxing:
-          $ref: '#/components/schemas/StatsField'
           description: Boxing - (All)
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_golf:
-          $ref: '#/components/schemas/StatsField'
           description: Golf - (All)
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_golf_masters:
-          $ref: '#/components/schemas/StatsField'
           description: Golf - Masters
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_golf_pga_championship:
-          $ref: '#/components/schemas/StatsField'
           description: Golf - PGA Championships
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_golf_pga_tour:
-          $ref: '#/components/schemas/StatsField'
           description: Golf - PGA Tours
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_golf_us_open:
-          $ref: '#/components/schemas/StatsField'
           description: Golf - US Open
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_horse_racing:
-          $ref: '#/components/schemas/StatsField'
           description: Horse Racing - (All)
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_horse_racing_belmont_stakes:
-          $ref: '#/components/schemas/StatsField'
           description: Horse Racing - Belmont Stakes
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_horse_racing_kentucky_derby:
-          $ref: '#/components/schemas/StatsField'
           description: Horse Racing - Kentucky Derby
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_horse_racing_preakness_stakes:
-          $ref: '#/components/schemas/StatsField'
           description: Horse Racing - Preakness Stakes
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_ice_hockey:
-          $ref: '#/components/schemas/StatsField'
           description: Ice Hockey - (All)
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_ice_hockey_nhl:
-          $ref: '#/components/schemas/StatsField'
           description: Ice Hockey - NHL
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_mma:
-          $ref: '#/components/schemas/StatsField'
           description: Mixed Martial Arts - (All)
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_mma_ufc:
-          $ref: '#/components/schemas/StatsField'
           description: Mixed Martial Arts - UFC
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_soccer:
-          $ref: '#/components/schemas/StatsField'
           description: Soccer - (All)
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_soccer_concacaf_champions_league:
-          $ref: '#/components/schemas/StatsField'
           description: Soccer - CONCACAF Champions League
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_soccer_concacaf_gold_cup:
-          $ref: '#/components/schemas/StatsField'
           description: Soccer - CONCACAF Gold Cup
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_soccer_copa_america_men:
-          $ref: '#/components/schemas/StatsField'
           description: Soccer - COPA America Men's
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_soccer_fifa_world_cup_women:
-          $ref: '#/components/schemas/StatsField'
           description: Soccer - FIFA World Cup Women's
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_soccer_fifa_world_cup_men:
-          $ref: '#/components/schemas/StatsField'
           description: Soccer - FIFA World Cup Men's
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_soccer_mls:
-          $ref: '#/components/schemas/StatsField'
           description: Soccer - MLS
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_soccer_uefa_champions_league_men:
-          $ref: '#/components/schemas/StatsField'
           description: Soccer - UEFA Champions League Men's
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_softball:
-          $ref: '#/components/schemas/StatsField'
           description: Softball - (All)
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_softball_ncaa_women:
-          $ref: '#/components/schemas/StatsField'
           description: Softball - NCAA Women's
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_tennis:
-          $ref: '#/components/schemas/StatsField'
           description: Tennis - (All)
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_tennis_us_open:
-          $ref: '#/components/schemas/StatsField'
           description: Tennis - US Open
+          $ref: '#/components/schemas/StatsField'
         phq_viewership_sports_tennis_wimbledon:
-          $ref: '#/components/schemas/StatsField'
           description: Tennis - Wimbledon
+          $ref: '#/components/schemas/StatsField'
         phq_spend_conferences:
-          $ref: '#/components/schemas/StatsField'
           description: Conferences
+          $ref: '#/components/schemas/StatsField'
         phq_spend_expos:
-          $ref: '#/components/schemas/StatsField'
           description: Expos
+          $ref: '#/components/schemas/StatsField'
         phq_spend_sports:
-          $ref: '#/components/schemas/StatsField'
           description: Sports
+          $ref: '#/components/schemas/StatsField'
         phq_spend_community:
-          $ref: '#/components/schemas/StatsField'
           description: Community
+          $ref: '#/components/schemas/StatsField'
         phq_spend_concerts:
-          $ref: '#/components/schemas/StatsField'
           description: Concerts
+          $ref: '#/components/schemas/StatsField'
         phq_spend_festivals:
-          $ref: '#/components/schemas/StatsField'
           description: Festivals
+          $ref: '#/components/schemas/StatsField'
         phq_spend_performing_arts:
-          $ref: '#/components/schemas/StatsField'
           description: Performing Arts
+          $ref: '#/components/schemas/StatsField'
         phq_spend_conferences_accommodation:
-          $ref: '#/components/schemas/StatsField'
           description: Conferences - Accommodation
+          $ref: '#/components/schemas/StatsField'
         phq_spend_expos_accommodation:
-          $ref: '#/components/schemas/StatsField'
           description: Expos - Accommodation
+          $ref: '#/components/schemas/StatsField'
         phq_spend_sports_accommodation:
-          $ref: '#/components/schemas/StatsField'
           description: Sports - Accommodation
+          $ref: '#/components/schemas/StatsField'
         phq_spend_community_accommodation:
-          $ref: '#/components/schemas/StatsField'
           description: Community - Accommodation
+          $ref: '#/components/schemas/StatsField'
         phq_spend_concerts_accommodation:
-          $ref: '#/components/schemas/StatsField'
           description: Concerts - Accommodation
+          $ref: '#/components/schemas/StatsField'
         phq_spend_festivals_accommodation:
-          $ref: '#/components/schemas/StatsField'
           description: Festivals - Accommodation
+          $ref: '#/components/schemas/StatsField'
         phq_spend_performing_arts_accommodation:
-          $ref: '#/components/schemas/StatsField'
           description: Performing Arts - Accommodation
+          $ref: '#/components/schemas/StatsField'
         phq_spend_conferences_hospitality:
-          $ref: '#/components/schemas/StatsField'
           description: Conferences - Hospitality
+          $ref: '#/components/schemas/StatsField'
         phq_spend_expos_hospitality:
-          $ref: '#/components/schemas/StatsField'
           description: Expos - Hospitality
+          $ref: '#/components/schemas/StatsField'
         phq_spend_sports_hospitality:
-          $ref: '#/components/schemas/StatsField'
           description: Sports - Hospitality
+          $ref: '#/components/schemas/StatsField'
         phq_spend_community_hospitality:
-          $ref: '#/components/schemas/StatsField'
           description: Community - Hospitality
+          $ref: '#/components/schemas/StatsField'
         phq_spend_concerts_hospitality:
-          $ref: '#/components/schemas/StatsField'
           description: Concerts - Hospitality
+          $ref: '#/components/schemas/StatsField'
         phq_spend_festivals_hospitality:
-          $ref: '#/components/schemas/StatsField'
           description: Festivals - Hospitality
+          $ref: '#/components/schemas/StatsField'
         phq_spend_performing_arts_hospitality:
-          $ref: '#/components/schemas/StatsField'
           description: Performing Arts - Hospitality
+          $ref: '#/components/schemas/StatsField'
         phq_spend_conferences_transportation:
-          $ref: '#/components/schemas/StatsField'
           description: Conferences - Transportation
+          $ref: '#/components/schemas/StatsField'
         phq_spend_expos_transportation:
-          $ref: '#/components/schemas/StatsField'
           description: Expos - Transportation
+          $ref: '#/components/schemas/StatsField'
         phq_spend_sports_transportation:
-          $ref: '#/components/schemas/StatsField'
           description: Sports - Transportation
+          $ref: '#/components/schemas/StatsField'
         phq_spend_community_transportation:
-          $ref: '#/components/schemas/StatsField'
           description: Community - Transportation
+          $ref: '#/components/schemas/StatsField'
         phq_spend_concerts_transportation:
-          $ref: '#/components/schemas/StatsField'
           description: Concerts - Transportation
+          $ref: '#/components/schemas/StatsField'
         phq_spend_festivals_transportation:
-          $ref: '#/components/schemas/StatsField'
           description: Festivals - Transportation
-        phq_spend_performing_arts_transportation:
           $ref: '#/components/schemas/StatsField'
+        phq_spend_performing_arts_transportation:
           description: Performing Arts - Transportation
-      type: object
+          $ref: '#/components/schemas/StatsField'
       required:
         - active
       title: FeaturesRequestModel
     GeoDistancePoint:
+      type: object
       properties:
         lon:
+          description: Longitude float value for geo-point
           type: number
           title: Lon
-          description: Longitude float value for geo-point
         lat:
+          description: Latitude float value for geo-point
           type: number
           title: Lat
-          description: Latitude float value for geo-point
         radius:
+          description: Radius value for defining the bounds from geo-point
           type: string
           title: Radius
-          description: Radius value for defining the bounds from geo-point
-      type: object
       required:
         - lon
         - lat
       title: GeoDistancePoint
     HTTPValidationError:
+      type: object
       properties:
         detail:
+          type: array
           items:
             $ref: '#/components/schemas/ValidationError'
-          type: array
           title: Detail
-      type: object
       title: HTTPValidationError
     HourOfDayRange:
+      type: object
       properties:
         gt:
           type: integer
-          exclusiveMaximum: 23.0
-          minimum: 0.0
+          exclusiveMaximum: 23
+          minimum: 0
           title: Gt
         gte:
           type: integer
-          maximum: 23.0
-          minimum: 0.0
+          maximum: 23
+          minimum: 0
           title: Gte
         lt:
           type: integer
-          maximum: 23.0
-          exclusiveMinimum: 0.0
+          exclusiveMinimum: 0
+          maximum: 23
           title: Lt
         lte:
           type: integer
-          maximum: 23.0
-          minimum: 0.0
+          maximum: 23
+          minimum: 0
           title: Lte
-      type: object
       title: HourOfDayRange
     Interval:
       type: string
@@ -782,42 +831,43 @@ components:
         - week
       title: Interval
     Location:
+      type: object
       properties:
         place_id:
+          description: PlaceIDs to aggregate across
+          type: array
           items:
             type: integer
-          type: array
           title: Place Id
-          description: PlaceIDs to aggregate across
         geo:
           $ref: '#/components/schemas/GeoDistancePoint'
         saved_location_id:
+          description: Saved location IDs to aggregate across
+          type: array
           items:
             type: string
-          type: array
           title: Saved Location Id
-          description: Saved location IDs to aggregate across
-      type: object
       title: Location
     PhqAttendanceFeature:
+      type: object
       properties:
         stats:
           $ref: '#/components/schemas/FeatureStats'
-      type: object
       required:
         - stats
       title: PhqAttendanceFeature
     PhqFeatureSet:
+      type: object
       properties:
         date:
-          type: string
-          format: date
-          title: Date
           description: |-
             Date in local time.
 
 
             E.g. `2023-10-01`
+          type: string
+          format: date
+          title: Date
         phq_attendance_academic_graduation:
           $ref: '#/components/schemas/PhqAttendanceFeature'
         phq_attendance_academic_social:
@@ -936,32 +986,34 @@ components:
           $ref: '#/components/schemas/PhqViewershipFeature'
         phq_viewership_sports_tennis_us_open:
           $ref: '#/components/schemas/PhqViewershipFeature'
-      type: object
       required:
         - date
       title: PhqFeatureSet
     PhqFeaturesResponse:
+      type: object
       properties:
         results:
+          type: array
           items:
             $ref: '#/components/schemas/PhqFeatureSet'
-          type: array
           title: Results
-      type: object
       required:
         - results
       title: PhqFeaturesResponse
     PhqRankFeature:
+      type: object
       properties:
         rank_levels:
           $ref: '#/components/schemas/RankStats'
-      type: object
       required:
         - rank_levels
       title: PhqRankFeature
     PhqStatisticsFeatureCriteria:
+      type: object
       properties:
         stats:
+          description: Selection of statistics to process
+          type: array
           items:
             type: string
             enum:
@@ -973,153 +1025,114 @@ components:
               - sum
               - std_dev
             title: StatsFieldTypes
-          type: array
-          maxItems: 7
-          title: Stats
-          description: Selection of statistics to process
           default:
             - sum
             - count
+          maxItems: 7
+          title: Stats
         phq_rank:
-          properties:
-            gt:
-              type: integer
-              exclusiveMaximum: 100.0
-              minimum: 0.0
-              title: Gt
-            gte:
-              type: integer
-              maximum: 100.0
-              minimum: 0.0
-              title: Gte
-            lt:
-              type: integer
-              maximum: 100.0
-              exclusiveMinimum: 0.0
-              title: Lt
-            lte:
-              type: integer
-              maximum: 100.0
-              minimum: 0.0
-              title: Lte
-          type: object
-          title: RankRange
           description: Definition af phq rank range filter criteria
-          default: {}
-        local_rank:
+          type: object
           properties:
             gt:
               type: integer
-              exclusiveMaximum: 100.0
-              minimum: 0.0
+              exclusiveMaximum: 100
+              minimum: 0
               title: Gt
             gte:
               type: integer
-              maximum: 100.0
-              minimum: 0.0
+              maximum: 100
+              minimum: 0
               title: Gte
             lt:
               type: integer
-              maximum: 100.0
-              exclusiveMinimum: 0.0
+              exclusiveMinimum: 0
+              maximum: 100
               title: Lt
             lte:
               type: integer
-              maximum: 100.0
-              minimum: 0.0
+              maximum: 100
+              minimum: 0
               title: Lte
-          type: object
           title: RankRange
+        local_rank:
           description: Definition af local rank range filter criteria
-          default: {}
-      type: object
+          type: object
+          properties:
+            gt:
+              type: integer
+              exclusiveMaximum: 100
+              minimum: 0
+              title: Gt
+            gte:
+              type: integer
+              maximum: 100
+              minimum: 0
+              title: Gte
+            lt:
+              type: integer
+              exclusiveMinimum: 0
+              maximum: 100
+              title: Lt
+            lte:
+              type: integer
+              maximum: 100
+              minimum: 0
+              title: Lte
+          title: RankRange
       title: PhqStatisticsFeatureCriteria
     PhqViewershipFeature:
+      type: object
       properties:
         stats:
           $ref: '#/components/schemas/FeatureStats'
-      type: object
       required:
         - stats
       title: PhqViewershipFeature
     PredictedEvents:
+      type: object
       properties:
         exclude:
-          type: boolean
-          title: Exclude
           description: Exclude predicted events
+          type: boolean
           default: false
-      type: object
+          title: Exclude
       title: PredictedEvents
-    RankRange:
-      properties:
-        gt:
-          type: integer
-          exclusiveMaximum: 100.0
-          minimum: 0.0
-          title: Gt
-        gte:
-          type: integer
-          maximum: 100.0
-          minimum: 0.0
-          title: Gte
-        lt:
-          type: integer
-          maximum: 100.0
-          exclusiveMinimum: 0.0
-          title: Lt
-        lte:
-          type: integer
-          maximum: 100.0
-          minimum: 0.0
-          title: Lte
-      type: object
-      title: RankRange
     RankStats:
+      type: object
       properties:
         '1':
           type: integer
-          title: '1'
           default: 0
+          title: '1'
         '2':
           type: integer
-          title: '2'
           default: 0
+          title: '2'
         '3':
           type: integer
-          title: '3'
           default: 0
+          title: '3'
         '4':
           type: integer
-          title: '4'
           default: 0
+          title: '4'
         '5':
           type: integer
-          title: '5'
           default: 0
-      type: object
+          title: '5'
       title: RankStats
     StatsField:
       $ref: '#/components/schemas/PhqStatisticsFeatureCriteria'
-    StatsFieldTypes:
-      type: string
-      enum:
-        - avg
-        - count
-        - max
-        - median
-        - min
-        - sum
-        - std_dev
-      title: StatsFieldTypes
     ValidationError:
+      type: object
       properties:
         loc:
+          type: array
           items:
             anyOf:
               - type: string
               - type: integer
-          type: array
           title: Location
         msg:
           type: string
@@ -1127,7 +1140,6 @@ components:
         type:
           type: string
           title: Error Type
-      type: object
       required:
         - loc
         - msg
@@ -1151,31 +1163,4 @@ components:
       bearerFormat: $API_KEY
       description: |
         Use 'Authorization: Bearer <YOUR_API_KEY>' as documented at https://docs.predicthq.com/authentication
-  parameters:
-    LimitParam:
-      name: limit
-      in: query
-      description: Limit the number of results.
-      required: false
-      schema:
-        type: integer
-        default: 10
-    OffsetParam:
-      name: offset
-      in: query
-      description: Offset the results.
-      required: false
-      schema:
-        type: integer
-        default: 0
-security:
-  - BearerAuth: []
-x-hideTryItPanel: true
-externalDocs:
-  url: https://docs.predicthq.com
-  description: PredictHQ Tech Docs
-tags:
-  - externalDocs:
-      description: Features API
-      url: https://docs.predicthq.com/api/features/get-features
-    name: Features API
+
