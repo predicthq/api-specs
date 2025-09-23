@@ -48,7 +48,7 @@ paths:
         - name: country
           in: query
           description: |-
-            An ISO 3166-1 alpha-2 country code.
+            An [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code.
 
 
             E.g. `?country=US`
@@ -75,19 +75,17 @@ paths:
         - name: location.origin
           in: query
           description: |-
-            A list of place_id in the form {place_id1},{place_id2},....
+            A coordinate in the form `{latitude},{longitude}`.
 
 
-            Please note that you must specify either location.origin or location.place_id in your request.
+            Please note that you must specify either `location.origin` or `location.place_id` in your request.
 
 
-            E.g. `?location.place_id=5809844,6252001`
+            E.g. `?location.origin=47.615337,-122.203981 `
           required: false
           schema:
             type: string
             title: Location.Origin
-        - $ref: '#/components/parameters/OffsetParam'
-        - $ref: '#/components/parameters/LimitParam'
       responses:
         '200':
           description: Successful Response
@@ -108,8 +106,6 @@ paths:
       operationId: search_geonames_places_get
       summary: Search for places by q/country/location/place_id
       parameters:
-        - $ref: '#/components/parameters/OffsetParam'
-        - $ref: '#/components/parameters/LimitParam'
         - name: id
           in: query
           description: |-
@@ -165,7 +161,7 @@ paths:
             A comma-separated list of place types..
 
 
-            ?type=country"
+            E.g. '?type=country'
           required: false
           schema:
             type: array
@@ -184,23 +180,6 @@ paths:
                 - metro
                 - local
             title: Type
-        - name: sort
-          in: query
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-              enum:
-                - name
-                - '-name'
-                - population
-                - '-population'
-                - distance
-                - '-distance'
-                - admin_level
-                - '-admin_level'
-            title: Sort
       responses:
         '200':
           description: Successful Response
@@ -216,50 +195,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       tags:
         - Places API
-  '/v1/places/{place_id}':
-    get:
-      operationId: get_place_by_id_places__place_id__get
-      summary: Get place by place_id
-      parameters:
-        - name: place_id
-          in: path
-          required: true
-          schema:
-            type: string
-            title: Place Id
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PublicGeonamesPlaceResponse'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-      tags:
-        - Places API
 components:
-  parameters:
-    LimitParam:
-      name: limit
-      in: query
-      description: Limit the number of results.
-      required: false
-      schema:
-        type: integer
-        default: 10
-    OffsetParam:
-      name: offset
-      in: query
-      description: Offset the results.
-      required: false
-      schema:
-        type: integer
-        default: 0
   schemas:
     BaseLevel:
       type: string
