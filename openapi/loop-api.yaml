@@ -1,0 +1,1825 @@
+openapi: 3.1.0
+info:
+  title: PredictHQ Public Loop API
+  description: PredictHQ Public Loop API
+  version: 1.0.0
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: https://www.predicthq.com/legal/terms
+paths:
+  /v1/loop/events:
+    get:
+      summary: Search submissions
+      operationId: search_submission_events_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    description: Total number of results found.
+                  events:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        event_id:
+                          type: string
+                          description: |-
+                            The unique identifier of the event.
+
+                            E.g. `z13B3870YOgv`
+                        link_id:
+                          type: string
+                          description: |-
+                            Loop Link ID that was used to submit this event.
+
+
+                            Will only be available on submissions that were made with a Loop Link.
+                        create_dt:
+                          type: string
+                          description: |-
+                            The creation date time for the record in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format format.
+
+
+                            E.g. `2022-04-26T11:46:24+00:00`
+                        update_dt:
+                          type: string
+                          description: |-
+                            The last update time for the record in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format format.
+
+
+                            E.g. `2022-04-26T11:46:24+00:00`
+                        version:
+                          type: number
+                          description: |-
+                            Version number of the record.
+
+
+                            This number increments automatically every time the record is updated.
+                        phq_review:
+                          type: string
+                          enum:
+                          - pending
+                          - approved
+                          - rejected
+                          description: Current review status. All submissions go through
+                            a moderation process. This field refers to the PredictHQ
+                            moderators.
+                        org_review:
+                          type: string
+                          enum:
+                          - pending
+                          - approved
+                          - rejected
+                          description: Current review status for customer-initiated
+                            reviews. Some organizations are able to review submissions
+                            before they're moderated by PredictHQ staff.
+                        phq_auto_approved:
+                          type: boolean
+                          description: |-
+                            Indicates whether or not the record was automatically approved.
+
+                            Some organizations are able to have their submissions enter our automatic review process after a period of time with consistent high quality level of submissions.
+                        event:
+                          type: object
+                          properties:
+                            title:
+                              type: string
+                              description: |-
+                                The title of the event.
+
+                                E.g. `Katy Perry`
+                            description:
+                              type: string
+                              description: |-
+                                A description of the event.
+
+
+                                E.g. `See Katy Perry in concert [...]`
+                            category:
+                              type: array
+                              items:
+                                type: string
+                                enum:
+                                - academic
+                                - school-holidays
+                                - public-holidays
+                                - observances
+                                - politics
+                                - conferences
+                                - expos
+                                - concerts
+                                - festivals
+                                - performing-arts
+                                - sports
+                                - community
+                                - daylight-savings
+                                - airport-delays
+                                - severe-weather
+                                - disasters
+                                - terror
+                                - health-warnings
+                              description: |-
+                                The category of the event.
+
+
+                                Please see [Search Events](https://docs.predicthq.com/api/events/search-events#response-fields) for a list of possible categories.
+
+                                E.g. `concerts`
+                            state:
+                              type: array
+                              items:
+                                type: string
+                                enum:
+                                - active
+                                - deleted
+                                - predicted
+                              description: |-
+                                The publication state of the event.
+
+
+                                Please see [Search Events](https://docs.predicthq.com/api/events/search-events#response-fields) for a list of possible states.
+                            metadata:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  maximum_attendance:
+                                    type: number
+                                  attendance:
+                                    type: number
+                                additionalProperties: false
+                              description: |-
+                                List of metadata associated with the event.
+
+
+                                **E.g.**
+                                  ```json
+                                  {
+                                    "metadata": [
+                                      {
+                                        "maximum_attendance": 5000
+                                      },
+                                      {
+                                        "attendance": 3215
+                                      }
+                                    ]
+                                  }
+                                  ```
+                            dates:
+                              type: object
+                              properties:
+                                fixed_date:
+                                  type: object
+                                  properties:
+                                    start_date:
+                                      type: string
+                                      format: date
+                                    end_date:
+                                      type: string
+                                      format: date
+                                  required:
+                                  - start_date
+                                  - end_date
+                              required:
+                              - fixed_date
+                              description: |-
+                                Event dates.
+
+
+                                **E.g.**
+                                  ```json
+                                  {
+                                    "dates": {
+                                      "fixed_date": {
+                                        "start_date": "2023-06-02",
+                                        "end_date": "2023-06-04"
+                                      }
+                                    }
+                                  }
+                                  ```
+                            labels:
+                              type: array
+                              items:
+                                type: string
+                              description: |-
+                                List of labels for the event.
+
+
+                                **E.g.**
+                                  ```json
+                                  {
+                                    "labels": [
+                                      "festival",
+                                      "food",
+                                      "music"
+                                    ]
+                                  }
+                                  ```
+                            lat:
+                              type: number
+                              example: 38.901544
+                              description: |-
+                                Latitude for the event.
+
+
+                                E.g. `38.901544`
+                            lon:
+                              type: number
+                              example: -119.7030036
+                              description: |-
+                                Longitude for the event.
+
+
+                                E.g. `-119.7030036`
+                            address:
+                              type: string
+                              description: |-
+                                Address for the event.
+
+
+                                E.g. `859 U.S. Highway 395 North`
+                            formatted_address:
+                              type: string
+                              description: |-
+                                Full formatted address for the event.
+
+
+                                E.g.
+                                ```
+                                859 U.S. Highway 395 North
+                                Gardnerville, Nevada 89410
+                                United States of America
+                                ```
+                            city:
+                              type: string
+                              description: City of the event.
+                            region:
+                              type: string
+                              description: Region of the event.
+                            postcode:
+                              type: string
+                              description: Postcode of the event.
+                            country:
+                              type: string
+                              description: |-
+                                Geographic location of the event. Represented in [GeoJSON](https://geojson.org/) format.
+
+
+                                **E.g.**
+                                  ```json
+                                  {
+                                    "geometry": {
+                                      "type": "Point",
+                                      "coordinates": [
+                                        -119.703022,
+                                        38.9012446
+                                      ]
+                                    }
+                                  }
+                                  ```
+                            geometry:
+                              $ref: '#/components/schemas/Geometry'
+                              description: |-
+                                Geographic location of the event. Represented in GeoJSON format.
+
+
+                                 **E.g.**
+                                ```json
+                                {
+                                  "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [
+                                      -119.703022,
+                                      38.9012446
+                                    ]
+                                  }
+                                }
+                                ```
+                      required:
+                      - event_id
+                      - link_id
+                      - create_dt
+                      - update_dt
+                      - version
+                      - phq_review
+                      - org_review
+                      - phq_auto_approved
+                      - event
+                    description: |-
+                      List of results where each item is a Submitted Event.
+
+
+                      Please refer to the Submitted Event Response Fields section below for the structure of each record.
+                required:
+                - count
+                - events
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      parameters:
+      - name: q
+        in: query
+        required: false
+        schema:
+          type: string
+        description: "Full-text search of event information. \n\n\nE.g. `?q=hotel+a`"
+      - name: link_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: "Comma-separated list of link ids. Allows you to filter for events\
+          \ submitted via a specific Loop Link ID. \n\n\nE.g. `?link_id=m4Dk4g4DRA8Yqbp2PC54`"
+      - name: event_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: |-
+          Comma-separated list of event IDs. Allows you to retrieve specific events.
+
+
+
+          E.g. `?event_id=5uRg7CqGu7DTtu4Rfk`
+      - name: user_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: "Comma-separated list of user IDs that submitted the event. \n\
+          \n\nE.g. `?user_id=hw8Dsmv4Djg`"
+      - name: state
+        in: query
+        required: false
+        schema:
+          type: string
+        description: "Comma separated list of event states. \nPossible values: \n\
+          - active\n- predicted\n- cancelled\n- postponed\n- archived"
+      - name: category
+        in: query
+        required: false
+        schema:
+          type: string
+        description: "Comma separated list of event categories. \n\n\nE.g. `?category=expos,festivals`"
+      - name: label
+        in: query
+        required: false
+        schema:
+          type: string
+        description: |-
+          Comma separated list of event labels.
+
+
+          E.g. `?label=community,food,music`
+      - name: country
+        in: query
+        required: false
+        schema:
+          type: string
+        description: |-
+          Comma separated list of country codes.
+
+
+          E.g. `?country=NZ,US`
+      - name: start.lt
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+        description: |-
+          The date to the event start: less than.
+
+
+          E.g. `?start.lt=2023-03-04`
+      - name: start.lte
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+        description: "The date to the event start: less than or equal to.\n\n\nE.g.\
+          \ `?start.lte=2023-03-04`     "
+      - name: start.gt
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+        description: |-
+          The date from the event start: greater than.
+
+
+          E.g. `?start.gt=2023-03-04`
+      - name: start.gte
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+        description: |-
+          The date from the event start: greater than or equal to.
+
+
+          E.g. `?start.gte=2023-03-04`
+      - name: end.lt
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+        description: |-
+          The date to the event end: less than.
+
+
+          E.g. `?start.lt=2023-03-04`
+      - name: end.lte
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+        description: "The date to the event end: less than or equal to.\n\n\nE.g.\
+          \ `?end.lte=2023-03-04` "
+      - name: end.gt
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+        description: |-
+          The date from the event end: greater than.
+
+
+          E.g. `?end.gt=2023-03-04`
+      - name: end.gte
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+        description: |-
+          The date from the event end: greater than or equal to.
+
+
+          E.g. `?end.gte=2023-03-04`
+      - name: active.lt
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+        description: |-
+          The date to the event is active: less than.
+
+
+          E.g. `?active.lt=2023-03-04`
+      - name: active.lte
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+        description: "The date to the event is active: less than or equal to.\n\n\n\
+          E.g. `?active.lte=2023-03-04` "
+      - name: active.gt
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+        description: |-
+          The date from the event is active: greater than.
+
+
+          E.g. `?active.gt=2023-03-04`
+      - name: active.gte
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+        description: |-
+          The date from the event is active: greater than or equal to.
+
+
+          E.g. `?active.gte=2023-03-04`
+      - name: created.lt
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+        description: |-
+          The date to the event has been created: less than.
+
+
+          E.g. `?created.lt=2023-03-04`
+      - name: created.lte
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+        description: "The date to the event has been created: less than or equal to.\n\
+          \n\nE.g. `?created.lte=2023-03-04` "
+      - name: created.gt
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+        description: |-
+          The date from the event has been created: greater than.
+
+
+          E.g. `?created.gt=2023-03-04`
+      - name: created.gte
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+        description: |-
+          The date from the event has been created: greater than or equal to.
+
+
+          E.g. `?created.gte=2023-03-04`
+      - name: updated.lt
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+        description: |-
+          The date to the event was last updated: less than.
+
+
+          E.g. `?updated.lt=2023-03-04`
+      - name: updated.lte
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+        description: "The date to the event was last updated: less than or equal to.\n\
+          \n\nE.g. `?updated.lte=2023-03-04` "
+      - name: updated.gt
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+        description: |-
+          The date from which the event was last updated: greater than.
+
+
+          E.g. `?updated.gt=2023-03-04`
+      - name: updated.gte
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+        description: |-
+          The date from which the event was last updated: greater than or equal to.
+
+
+          E.g. `?updated.gte=2023-03-04`
+      - name: private.include
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+          - only
+          default: 'false'
+        description: |-
+          Whether or not to include private events. Rejected & pending events will always be private.
+          Possible values:
+          - true: private and public events
+          - false only public events
+          - only: only private events
+
+
+          E.g `?private.include=only`
+      - name: org_review
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - pending
+          - approved
+          - rejected
+        description: "Filter for submitted events approved, rejected or yet to be\
+          \ reviewed by the your Org.\nPossible values: \n- pending \n- approved \n\
+          - rejected\n\n\nE.g `?org_review=approved`"
+      - name: phq_review
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - pending
+          - approved
+          - rejected
+        description: "Filter for submitted events approved, rejected or yet to be\
+          \ reviewed by PredictHQ.\nPossible values: \n- pending \n- approved \n-\
+          \ rejected\n\n\nE.g `?phq_review=approved`"
+      - name: sort
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - created
+            - updated
+            - version
+            - relevance
+            - -created
+            - -updated
+            - -version
+            - -relevance
+          default:
+          - relevance
+          - -updated
+        description: |-
+          Comma-separated list of sort options. Prefix the field name with - for reverse order (e.g., `-created`).
+          Possible values**:**
+          - created
+          - updated
+          - version
+          - relevance
+
+
+          E.g. `?sort=-updated`
+      - $ref: '#/components/parameters/LimitParam'
+      - $ref: '#/components/parameters/OffsetParam'
+      tags:
+      - Loop Submissions
+  /v1/loop/feedback/conversations:
+    get:
+      summary: Search feedback conversations
+      operationId: search_feedback_conversations_feedback_conversations_get
+      responses:
+        '200':
+          description: A list of feedback conversations with count.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    description: Total number of results found.
+                  conversations:
+                    type: array
+                    description: |-
+                      List of results where each item is a Conversation.
+
+
+                      Please refer to the Conversation Response Fields section below for the structure of each record.
+                    items:
+                      type: object
+                      properties:
+                        conversation_id:
+                          type: string
+                          description: |-
+                            The unique identifier of the conversation.
+
+
+                            E.g. `Eeh4ahnohghah0deeshahda`
+                        create_dt:
+                          type: string
+                          format: date-time
+                          description: |-
+                            The creation date time for the record in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601).
+
+
+                            E.g. `2022-04-26T11:46:24+00:00`
+                        update_dt:
+                          type: string
+                          format: date-time
+                          description: |-
+                            The last update date time for the record in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601).
+
+
+                            E.g. `2022-04-26T11:46:24+00:00`
+                        record_id:
+                          type: string
+                          description: |-
+                            Record ID this feedback is in reference to.
+
+
+                            This could be either an Event ID (record type event-public) or a Loop Submission (record type event-loop). The record_type value defines what type of Record ID this is.
+
+
+                            E.g. `5uRg7CqGu7DTtu4Rfk`
+                        link_id:
+                          type: string
+                          description: |-
+                            Loop Link ID that was used to submit this feedback.
+
+
+                            Will only be available on feedback created with a Loop Link.
+
+
+                            E.g. `m4Dk4g4DRA8Yqbp2PC54`
+                        record_type:
+                          type: string
+                          enum:
+                          - event-public
+                          - event-loop
+                          description: |-
+                            Record type this feedback is in reference to.
+
+
+                            E.g. `event-public`
+                        feedback:
+                          type: string
+                          enum:
+                          - attendance_or_rank
+                          - category
+                          - dates
+                          - duplicate
+                          - general
+                          - polygon
+                          - submitted
+                          - venue
+                          description: |-
+                            Feedback can be provided for different fields.
+
+
+                            **E.g.**
+                              ```json
+                              {
+                                "feedback": {
+                                  "type": "submitted"
+                                }
+                              }
+                        log:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              action:
+                                type: object
+                                properties:
+                                  type:
+                                    type: string
+                                    description: Type of action, e.g. comment.
+                                required:
+                                - type
+                              timestamp:
+                                type: string
+                                format: date-time
+                                description: Timestamp of the log entry in ISO 8601
+                                  format.
+                              creator:
+                                type: object
+                                properties:
+                                  type:
+                                    type: string
+                                    description: Type of creator, e.g. user.
+                                  user_id:
+                                    type: string
+                                    description: User ID of the creator.
+                                required:
+                                - type
+                                - user_id
+                              note:
+                                type: string
+                                description: Additional note or comment.
+                            required:
+                            - action
+                            - timestamp
+                            - creator
+                            - note
+                          description: |-
+                            Log of actions taken with the feedback.
+
+
+                            **E.g.**
+                              ```json
+                              {
+                                "log": [
+                                  {
+                                    "action": {
+                                      "type": "comment"
+                                    },
+                                    "timestamp": "2023-05-30T02:59:11+00:00",
+                                    "creator": {
+                                      "type": "user",
+                                      "user_id": "hw8Dsmv4Djg"
+                                    },
+                                    "note": "Thank you for your feedback. Someone from PredictHQ will pick this up."
+                                  }
+                                ]
+                              }
+                              ```
+                        status:
+                          type: string
+                          enum:
+                          - open
+                          - closed
+                          description: |-
+                            Status of the feedback.
+
+
+                            E.g. `open`
+                      required:
+                      - conversation_id
+                      - record_id
+                      - link_id
+                      - record_type
+                      - feedback
+                      - create_dt
+                      - update_dt
+                      - log
+                      - status
+                required:
+                - count
+                - conversations
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      parameters:
+      - name: conversation_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: |-
+          Comma separated list of conversation IDs.
+
+
+          E.g `?conversation_id=Eeh4ahnohghah0deeshahda`
+      - name: q
+        in: query
+        required: false
+        schema:
+          type: string
+        description: |-
+          Full-text search over conversations.
+
+
+          E.g. `?q=event+a+cancelled`
+      - name: link_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: |-
+          Comma separated list of Loop Link IDs through which conversations were created.
+
+
+          E.g `?link_id=m4Dk4g4DRA8Yqbp2PC54`
+      - name: user_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: |-
+          Comma separated list of User IDs.
+
+
+          E.g. `?user_id=hw8Dsmv4Djg`
+      - name: record_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: |-
+          Comma separated list of Record IDs.
+
+
+          Record IDs can refer to either an Event ID (record type event-public) or a Loop Submission (record type event-loop).
+
+
+          E.g `?record_id=5uRg7CqGu7DTtu4Rfk`
+      - name: record_type
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - event-public
+          - event-loop
+        description: |-
+          Comma separated list of record types for which to filter on.
+
+
+          E.g `?record_type=event-public`
+      - name: feedback_type
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - attendance_or_rank
+          - category
+          - dates
+          - general
+          - polygon
+          - venue
+        description: |-
+          Comma separated list of feedback types.
+
+
+          E.g `?feedback_type=general`
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - open
+          - closed
+        description: |-
+          Comma separated list of feedback status.
+
+
+          E.g. `?status=open`
+      - name: created.gt
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+        description: |-
+          The date from which the feedback has been created: greater than.
+
+
+          E.g. `?created.gt=2023-03`
+      - name: created.gte
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+        description: |-
+          The date from which the feedback has been created: greater than or equal.
+
+
+          E.g. `?created.gte=2023-03`
+      - name: created.lt
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+        description: |-
+          The date to the feedback that has been created: less than.
+
+
+          E.g. `?created.lt=2023-03`
+      - name: created.lte
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+        description: |-
+          The date to the feedback that has been created: less than or equal.
+
+
+          E.g. `?created.lte=2023-03`
+      - name: updated.gt
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+        description: |-
+          The date from which the feedback has been updated: greater than.
+
+
+          E.g. `?created.gt=2023-03`
+      - name: updated.gte
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+        description: |-
+          The date from which the feedback has been updated: greater than or equal.
+
+
+          E.g. `?created.gte=2023-03`
+      - name: updated.lt
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+        description: |-
+          The date to the feedback that has been updated: less than.
+
+
+          E.g. `?created.lt=2023-03`
+      - name: updated.lte
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+        description: |-
+          The date to the feedback that has been updated: less than or equal.
+
+
+          E.g. `?created.lte=2023-03`
+      - name: sort
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - created
+            - -created
+            - updated
+            - -updated
+            - relevance
+            - -relevance
+          default:
+          - relevance
+          - created
+        description: |-
+          Comma-separated list of sort options.
+
+
+          Prefixed with - for achieves reverse order.
+
+
+          E.g. `?sort=-updated`
+      - $ref: '#/components/parameters/LimitParam'
+      - $ref: '#/components/parameters/OffsetParam'
+      tags:
+      - Loop Feedback
+  /v1/loop/links:
+    get:
+      summary: Search Links
+      operationId: search_links_links_get
+      parameters:
+      - $ref: '#/components/parameters/OffsetParam'
+      - $ref: '#/components/parameters/LimitParam'
+      - name: q
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 1
+          maxLength: 120
+          pattern: ^[a-zA-Z0-9 _-]+$
+          title: Q
+        description: |-
+          Full-text search.
+
+
+          E.g. `?q=hotel+a`
+      - name: link_id
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            example: value1,value2
+          description: A comma-separated list of link ids
+          title: Link Id
+        description: |-
+          Comma-separated list of link_id.
+
+
+          E.g. `?link_id=m4Dk4g4DRA8Yqbp2PC54`
+      - name: user_id
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            example: value1,value2
+          description: A comma-separated list of user ids
+          title: User Id
+        description: |-
+          Comma-separated list of user_id.
+
+
+          E.g. `?user_id=hw8Dsmv4Djg`
+      - name: sort
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - created
+            - -created
+            - expires
+            - -expires
+            - name
+            - -name
+            - updated
+            - -updated
+          description: A comma-separated list of sort params
+          title: Sort
+        description: |-
+          Comma-separated list of sort options.
+
+
+          E.g. `?sort=name`
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicSearchLinkResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+      - Loop Links
+    post:
+      summary: Create Link
+      operationId: create_link_links_post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublicLinkBody'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicLink'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+      - Loop Links
+  /v1/loop/links/{link_id}:
+    get:
+      summary: Get Link By ID
+      operationId: get_link_by_id_links__link_id__get
+      parameters:
+      - name: link_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Link Id
+        description: An existing Loop Link ID.
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicLink'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+      - Loop Links
+    put:
+      summary: Update Link
+      operationId: update_link_links__link_id__put
+      parameters:
+      - name: link_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Link Id
+        description: An existing Loop Link ID.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublicLinkBody'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+      - Loop Links
+    delete:
+      summary: Delete Link By ID
+      operationId: delete_link_links__link_id__delete
+      parameters:
+      - name: link_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Link Id
+        description: An existing Loop Link ID.
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+      - Loop Links
+  /v1/loop/settings:
+    get:
+      summary: Get Setting
+      operationId: get_setting_settings_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicSettingResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+      - Loop Settings
+    put:
+      summary: Create Or Update Setting
+      operationId: create_or_update_setting_settings_put
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SettingBody'
+        required: true
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+      - Loop Settings
+components:
+  schemas:
+    Address:
+      properties:
+        address_id:
+          type: string
+          title: Address Id
+        name:
+          type: string
+          title: Name
+        formatted_address:
+          type: string
+          title: Formatted Address
+        address_components:
+          items:
+            $ref: '#/components/schemas/AddressComponent'
+          type: array
+          title: Address Components
+        website:
+          type: string
+          title: Website
+        geometry:
+          $ref: '#/components/schemas/AddressGeometry'
+      type: object
+      required:
+      - address_id
+      title: Address
+    AddressComponent:
+      properties:
+        long_name:
+          type: string
+          title: Long Name
+        short_name:
+          type: string
+          title: Short Name
+        types:
+          items:
+            type: string
+          type: array
+          title: Types
+      type: object
+      required:
+      - long_name
+      - short_name
+      - types
+      title: AddressComponent
+    AddressGeometry:
+      properties:
+        location:
+          $ref: '#/components/schemas/AddressLocation'
+      type: object
+      title: AddressGeometry
+    AddressLocation:
+      properties:
+        lat:
+          type: number
+          title: Lat
+        lng:
+          type: number
+          title: Lng
+      type: object
+      required:
+      - lat
+      - lng
+      title: AddressLocation
+    AutocompleteAddressResponse:
+      properties:
+        addresses:
+          items:
+            $ref: '#/components/schemas/PartialAddress'
+          type: array
+          title: Addresses
+      type: object
+      required:
+      - addresses
+      title: AutocompleteAddressResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    LinkStatus:
+      type: string
+      enum:
+      - active
+      title: LinkStatus
+    PartialAddress:
+      properties:
+        address_id:
+          type: string
+          title: Address Id
+        structured_formatting:
+          $ref: '#/components/schemas/PartialAddressStructuredFormatting'
+      type: object
+      required:
+      - address_id
+      - structured_formatting
+      title: PartialAddress
+    PartialAddressStructuredFormatting:
+      properties:
+        main_text:
+          type: string
+          title: Main Text
+        secondary_text:
+          type: string
+          title: Secondary Text
+      type: object
+      required:
+      - main_text
+      title: PartialAddressStructuredFormatting
+    PublicLink:
+      properties:
+        link_id:
+          type: string
+          title: Link Id
+          description: |-
+            Loop Link Identifier.
+
+
+            E.g. `ber7ntO0ZHuFVCfrSNsN`
+        expire_dt:
+          type: string
+          format: date-time
+          title: Expire Dt
+          description: |-
+            Date/time the Loop Link is set to expire in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+
+
+            All dates are in UTC.
+
+
+            E.g. `2023-05-08T00:29:45.859Z`
+        metadata:
+          additionalProperties: true
+          type: object
+          title: Metadata
+          description: |-
+            Metadata can be used to further identify Loop Links in a way that makes sense for your system.
+
+
+            The field is a key/value field that accepts string-based keys and string or numeric values.
+
+
+            This can be useful for storing additional data such as a end-user identifier or store ID etc.
+        name:
+          type: string
+          maxLength: 120
+          minLength: 1
+          pattern: ^[a-zA-Z0-9 _-]+$
+          title: Name
+          description: |-
+            Name of the Loop Link. This is for your own use as a way to differentiate your Loop Links.
+
+
+            E.g. `Hotel ABC`
+        status:
+          $ref: '#/components/schemas/LinkStatus'
+          description: Status of the loop link.
+        create_dt:
+          type: string
+          format: date-time
+          title: Create Dt
+          description: |-
+            Date/time the Loop Link was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+
+
+            All dates are in UTC.
+
+
+            E.g. `2023-05-08T00:29:45.859Z`
+        update_dt:
+          type: string
+          format: date-time
+          title: Update Dt
+          description: |-
+            Date/time the Loop Link was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+
+
+            All dates are in UTC.
+
+
+            E.g. `2023-05-08T00:29:45.859Z`
+        links:
+          additionalProperties:
+            type: string
+            maxLength: 2083
+            minLength: 1
+            format: uri
+          type: object
+          title: Links
+          description: "These are the links your end-users need to open to access\
+            \ the Loop UI for submitting missing events or feedback about existing\
+            \ events.\n\nThe different link types are: \n- event: This URL will present\
+            \ a page for submitting missing events.   \n- event_feedback: This URL\
+            \ will present a page for providing feedback about an existing event.\n\
+            \n\nWhen using the event link you can optionally provide the following\
+            \ query string parameters:\n- email: Email address of the end-user who\
+            \ is providing the feedback. This will be stored against the submission\
+            \ so the user can receive email notifications about their submission.\n\
+            \nWhen using the event_feedback link you can optionally provide the following\
+            \ query string parameters:\n- event_id: Event ID to provide the feedback\
+            \ for (if this is not provided, the user will be asked to enter an Event\
+            \ ID).\n- email: Email address of the end-user who is providing the feedback.\
+            \ This will be stored against the submission so the user can receive email\
+            \ notifications about their submission."
+      type: object
+      required:
+      - link_id
+      - name
+      - status
+      - create_dt
+      - links
+      title: PublicLink
+    PublicLinkBody:
+      properties:
+        expire_dt:
+          type: string
+          format: date-time
+          title: Expire Dt
+          description: |-
+            Date/time the Loop Link is set to expire in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+
+
+            All dates are in UTC.
+
+
+            This is an optional field - omit if not needed.
+
+
+            E.g. `2023-05-08T00:29:45.859Z`
+        metadata:
+          additionalProperties: true
+          type: object
+          title: Metadata
+          description: |-
+            Metadata can be used to further identify Loop Links in a way that makes sense for your system.
+
+
+            The field is a key/value field that accepts string-based keys and string or numeric values.
+
+
+            This can be useful for storing additional data such as a end-user identifier or store ID etc.
+
+
+            This is an optional field - omit if not needed.
+
+
+            **E.g.**
+              ```json
+              {
+                "hotel_id": "123456789"
+              }
+              ```
+        name:
+          type: string
+          maxLength: 120
+          minLength: 1
+          pattern: ^[a-zA-Z0-9 _-]+$
+          title: Name
+          description: |-
+            Name of the Loop Link. This is for your own use as a way to differentiate your Loop Links.
+
+
+            E.g. `Hotel ABC`
+      type: object
+      title: PublicLinkBody
+    PublicSearchLinkResponse:
+      properties:
+        count:
+          type: integer
+          title: Count
+        next:
+          type: string
+          minLength: 1
+          format: uri
+          title: Next
+        previous:
+          type: string
+          minLength: 1
+          format: uri
+          title: Previous
+        links:
+          items:
+            $ref: '#/components/schemas/PublicLink'
+          type: array
+          title: Links
+      type: object
+      required:
+      - count
+      - links
+      title: PublicSearchLinkResponse
+    PublicSettingResponse:
+      properties:
+        org_name:
+          type: string
+          minLength: 1
+          title: Org Name
+          description: |-
+            Name to display at the top of the Loop UI for end-users.
+
+
+            This defaults to your Org name as per your PredictHQ account, however you can customize it here to make it different.
+
+
+            E.g. `My Org Name`
+      type: object
+      required:
+      - org_name
+      title: PublicSettingResponse
+    SettingBody:
+      properties:
+        org_name:
+          type: string
+          minLength: 1
+          title: Org Name
+          description: |-
+            Name to display at the top of the Loop UI for end-users.
+
+
+            This defaults to your Org name as per your PredictHQ account, however you can customize it here to make it different.
+
+
+            E.g. `My Org Name`
+      type: object
+      required:
+      - org_name
+      title: SettingBody
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    Geometry:
+      oneOf:
+      - title: GeoJSON Point
+        type: object
+        required:
+        - type
+        - coordinates
+        properties:
+          type:
+            type: string
+            const: Point
+          coordinates:
+            type: array
+            items:
+              type: number
+            examples:
+            - - 174.776792
+              - -36.847319
+            minItems: 2
+      - title: GeoJSON MultiPoint
+        type: object
+        required:
+        - type
+        - coordinates
+        properties:
+          type:
+            type: string
+            const: MultiPoint
+          coordinates:
+            type: array
+            items:
+              type: array
+              minItems: 2
+              items:
+                type: number
+      - title: GeoJSON LineString
+        type: object
+        required:
+        - type
+        - coordinates
+        properties:
+          type:
+            type: string
+            const: LineString
+          coordinates:
+            type: array
+            items:
+              type: array
+              minItems: 2
+              items:
+                type: number
+            minItems: 2
+      - title: GeoJSON MultiLineString
+        type: object
+        required:
+        - type
+        - coordinates
+        properties:
+          type:
+            type: string
+            const: MultiLineString
+          coordinates:
+            type: array
+            items:
+              type: array
+              minItems: 2
+              items:
+                type: array
+                minItems: 2
+                items:
+                  type: number
+      - title: GeoJSON Polygon
+        type: object
+        required:
+        - type
+        - coordinates
+        properties:
+          type:
+            type: string
+            const: Polygon
+          coordinates:
+            type: array
+            items:
+              type: array
+              minItems: 4
+              items:
+                type: array
+                minItems: 2
+                items:
+                  type: number
+      - title: GeoJSON MultiPolygon
+        type: object
+        required:
+        - type
+        - coordinates
+        properties:
+          type:
+            type: string
+            const: MultiPolygon
+          coordinates:
+            type: array
+            items:
+              type: array
+              items:
+                type: array
+                minItems: 4
+                items:
+                  type: array
+                  minItems: 2
+                  items:
+                    type: number
+      title: GeoJSON Geometry
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: $API_KEY
+      description: |
+        Use 'Authorization: Bearer <YOUR_API_KEY>' as documented at https://docs.predicthq.com/authentication
+  parameters:
+    LimitParam:
+      name: limit
+      in: query
+      description: Limit the number of results.
+      required: false
+      schema:
+        type: integer
+        default: 10
+    OffsetParam:
+      name: offset
+      in: query
+      description: Offset the results.
+      required: false
+      schema:
+        type: integer
+        default: 0
+servers:
+- url: https://api.predicthq.com
+security:
+- BearerAuth: []
+x-hideTryItPanel: true
+externalDocs:
+  url: https://docs.predicthq.com
+  description: PredictHQ Tech Docs
+tags:
+- name: Loop Links
+  externalDocs:
+    url: https://docs.predicthq.com/api/loop/loop-links
+    description: Loop Links API
+- name: Loop Submissions
+  externalDocs:
+    url: https://docs.predicthq.com/api/loop/loop-submissions
+    description: Loop Submissions API
+- name: Loop Feedback
+  externalDocs:
+    url: https://docs.predicthq.com/api/loop/loop-feedback/search-feedback
+    description: Loop Feedback API
+- name: Loop Settings
+  externalDocs:
+    url: https://docs.predicthq.com/api/loop/loop-feedback
+    description: Loop Feedback API
