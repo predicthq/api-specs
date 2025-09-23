@@ -1,28 +1,37 @@
 openapi: 3.1.0
 info:
-  title: PredictHQ Public Places API (Public Preview)
-  description: PredictHQ Public Places API (Public Preview)
+  title: PredictHQ Public Places API
+  description: PredictHQ Public Places API
   version: 1.0.0
   license:
     name: MIT
-    url: https://opensource.org/licenses/MIT
-  termsOfService: https://www.predicthq.com/legal/terms
+    url: 'https://opensource.org/licenses/MIT'
+  termsOfService: 'https://www.predicthq.com/legal/terms'
+security:
+  - BearerAuth: []
+tags:
+  - name: Places API
+    externalDocs:
+      url: 'https://docs.predicthq.com/api/places/search-places'
+      description: Places Public API
+  - name: Places Hierarchies API
+    externalDocs:
+      url: 'https://docs.predicthq.com/api/places/get-place-hierarchies'
+      description: Places Hierarchies Public API
 servers:
-  - url: https://api.predicthq.com
+  - url: 'https://api.predicthq.com'
+externalDocs:
+  url: 'https://docs.predicthq.com'
+  description: PredictHQ Tech Docs
+x-hideTryItPanel: true
 paths:
   /v1/places/hierarchies:
     get:
-      summary: Search hierarchies given cooridinate or place_ids
       operationId: get_hierarchies_places_hierarchies_get
+      summary: Search hierarchies given cooridinate or place_ids
       parameters:
         - name: location.place_id
           in: query
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-            title: Location.Place Id
           description: |-
             A list of place_id in the form {place_id1},{place_id2},....
 
@@ -30,25 +39,27 @@ paths:
 
 
             E.g. `?location.place_id=5809844,6252001`
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            title: Location.Place Id
         - name: country
           in: query
+          description: |-
+            An ISO 3166-1 alpha-2 country code.
+
+
+            E.g. `?country=US`
           required: false
           schema:
             type: array
             items:
               type: string
             title: Country
-          description: |-
-            An ISO 3166-1 alpha-2 country code.
-
-
-            E.g. `?country=US`
         - name: level
           in: query
-          required: false
-          schema:
-            $ref: '#/components/schemas/BaseLevel'
-            title: Level
           description: |-
             A place level.
 
@@ -57,12 +68,12 @@ paths:
 
 
             E.g. `?level=county`
-        - name: location.origin
-          in: query
           required: false
           schema:
-            type: string
-            title: Location.Origin
+            $ref: '#/components/schemas/BaseLevel'
+            title: Level
+        - name: location.origin
+          in: query
           description: |-
             A list of place_id in the form {place_id1},{place_id2},....
 
@@ -71,20 +82,12 @@ paths:
 
 
             E.g. `?location.place_id=5809844,6252001`
-        - name: offset
-          in: query
           required: false
           schema:
-            type: integer
-            minimum: 0
-            title: Offset
-        - name: limit
-          in: query
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            title: Limit
+            type: string
+            title: Location.Origin
+        - $ref: '#/components/parameters/OffsetParam'
+        - $ref: '#/components/parameters/LimitParam'
       responses:
         '200':
           description: Successful Response
@@ -102,74 +105,67 @@ paths:
         - Places Hierarchies API
   /v1/places:
     get:
-      summary: Search for places by q/country/location/place_id
       operationId: search_geonames_places_get
+      summary: Search for places by q/country/location/place_id
       parameters:
-        - name: offset
-          in: query
-          required: false
-          schema:
-            type: integer
-            minimum: 0
-            title: Offset
-        - name: limit
-          in: query
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            title: Limit
+        - $ref: '#/components/parameters/OffsetParam'
+        - $ref: '#/components/parameters/LimitParam'
         - name: id
           in: query
+          description: |-
+            A comma-separated list of place identifiers.
+
+
+            E.g. `?id=5115985`
           required: false
           schema:
             type: array
             items:
               type: string
             title: Id
-          description: |-
-            A comma-separated list of place identifiers.
-
-
-            E.g. `?id=5115985`
         - name: country
           in: query
+          description: |-
+            A comma-separated list of ISO 3166-1 alpha-2 country code.
+
+
+            E.g. `?country=US`
           required: false
           schema:
             type: array
             items:
               type: string
             title: Country
-          description: |-
-            A comma-separated list of ISO 3166-1 alpha-2 country code.
-
-
-            E.g. `?country=US`
         - name: location
           in: query
-          required: false
-          schema:
-            type: string
-            description: lat,lon
-            title: Location
           description: |-
             A coordinate in the form @{latitude},{longitude}.
 
 
             E.g. `?location=@40.66677,-73.88236`
-        - name: q
-          in: query
           required: false
           schema:
+            description: 'lat,lon'
             type: string
-            title: Q
+            title: Location
+        - name: q
+          in: query
           description: |-
             A full-text search query.
 
 
             E.g. `?q=New+York`
+          required: false
+          schema:
+            type: string
+            title: Q
         - name: type
           in: query
+          description: |-
+            A comma-separated list of place types..
+
+
+            ?type=country"
           required: false
           schema:
             type: array
@@ -188,11 +184,6 @@ paths:
                 - metro
                 - local
             title: Type
-          description: |-
-            A comma-separated list of place types..
-
-
-            ?type=country"
         - name: sort
           in: query
           required: false
@@ -202,13 +193,13 @@ paths:
               type: string
               enum:
                 - name
-                - -name
+                - '-name'
                 - population
-                - -population
+                - '-population'
                 - distance
-                - -distance
+                - '-distance'
                 - admin_level
-                - -admin_level
+                - '-admin_level'
             title: Sort
       responses:
         '200':
@@ -225,10 +216,10 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       tags:
         - Places API
-  /v1/places/{place_id}:
+  '/v1/places/{place_id}':
     get:
-      summary: Get place by place_id
       operationId: get_place_by_id_places__place_id__get
+      summary: Get place by place_id
       parameters:
         - name: place_id
           in: path
@@ -252,6 +243,23 @@ paths:
       tags:
         - Places API
 components:
+  parameters:
+    LimitParam:
+      name: limit
+      in: query
+      description: Limit the number of results.
+      required: false
+      schema:
+        type: integer
+        default: 10
+    OffsetParam:
+      name: offset
+      in: query
+      description: Offset the results.
+      required: false
+      schema:
+        type: integer
+        default: 0
   schemas:
     BaseLevel:
       type: string
@@ -266,15 +274,16 @@ components:
         - neighbourhood
       title: BaseLevel
     HTTPValidationError:
+      type: object
       properties:
         detail:
+          type: array
           items:
             $ref: '#/components/schemas/ValidationError'
-          type: array
           title: Detail
-      type: object
       title: HTTPValidationError
     HierarchiesResponse:
+      type: object
       properties:
         count:
           type: integer
@@ -286,99 +295,95 @@ components:
           type: string
           title: Previous
         place_hierarchies:
+          type: array
           items:
             items:
               $ref: '#/components/schemas/HierarchyDetails'
             type: array
-          type: array
           title: Place Hierarchies
-      type: object
       required:
         - count
         - place_hierarchies
       title: HierarchiesResponse
     HierarchyDetails:
+      type: object
       properties:
         type:
           $ref: '#/components/schemas/BaseLevel'
         place_id:
           type: string
           title: Place Id
-      type: object
       required:
         - type
         - place_id
       title: HierarchyDetails
     PublicGeonamesPlaceResponse:
+      type: object
       properties:
         id:
-          type: string
-          title: Id
           description: |-
             The unique identifier of the place.
 
 
             E.g. `5115985`
+          type: string
+          title: Id
         type:
-          $ref: '#/components/schemas/BaseLevel'
           description: |-
             The administrative level of the place..
 
 
             E.g. `locailty`
+          $ref: '#/components/schemas/BaseLevel'
         name:
-          type: string
-          title: Name
           description: |-
             The name of the place.
 
 
             E.g. `East New York`
-        county:
           type: string
-          title: County
+          title: Name
+        county:
           description: |-
             The name of the place's administrative level 2 place, or null if it does not apply.
 
 
             E.g. `Kings County`
-        region:
           type: string
-          title: Region
+          title: County
+        region:
           description: |-
             The name of the place's administrative level 1 place, or null if it does not apply.
 
 
             E.g. `East New York`
-        country:
           type: string
-          title: Country
+          title: Region
+        country:
           description: |-
             The name of the place's administrative level 0 place, or null if it does not apply.
 
 
             E.g. `United States`
-        country_alpha2:
           type: string
-          title: Country Alpha2
+          title: Country
+        country_alpha2:
           description: |-
             The ISO 3166-1 alpha-2 country code, or null if there is no country.
 
 
             E.g. `US`
-        country_alpha3:
           type: string
-          title: Country Alpha3
+          title: Country Alpha2
+        country_alpha3:
           description: |-
             The ISO 3166-1 alpha-3 country code, or null if there is no country.
 
 
             E.g. `USA`
+          type: string
+          title: Country Alpha3
         location:
-          items:
-            type: number
-          type: array
-          title: Location
           description: |-
             A 2-tuple representing the centroid of the place.
 
@@ -386,7 +391,10 @@ components:
 
 
             E.g. `[-73.88236, 40.66677]`
-      type: object
+          type: array
+          items:
+            type: number
+          title: Location
       required:
         - id
         - type
@@ -394,6 +402,7 @@ components:
         - location
       title: PublicGeonamesPlaceResponse
     PublicGeonamesPlacesResponse:
+      type: object
       properties:
         count:
           type: integer
@@ -405,23 +414,23 @@ components:
           type: string
           title: Previous
         results:
+          type: array
           items:
             $ref: '#/components/schemas/PublicGeonamesPlaceResponse'
-          type: array
           title: Results
-      type: object
       required:
         - count
         - results
       title: PublicGeonamesPlacesResponse
     ValidationError:
+      type: object
       properties:
         loc:
+          type: array
           items:
             anyOf:
               - type: string
               - type: integer
-          type: array
           title: Location
         msg:
           type: string
@@ -429,7 +438,6 @@ components:
         type:
           type: string
           title: Error Type
-      type: object
       required:
         - loc
         - msg
@@ -442,18 +450,4 @@ components:
       bearerFormat: $API_KEY
       description: |
         Use 'Authorization: Bearer <YOUR_API_KEY>' as documented at https://docs.predicthq.com/authentication
-security:
-  - BearerAuth: []
-x-hideTryItPanel: true
-externalDocs:
-  url: https://docs.predicthq.com
-  description: PredictHQ Tech Docs
-tags:
-  - name: Places API
-    externalDocs:
-      url: https://docs.predicthq.com/api/places/search-places
-      description: Places Public API
-  - name: Places Hierarchies API
-    externalDocs:
-      url: https://docs.predicthq.com/api/places/get-place-hierarchies
-      description: Places Hierarchies Public API
+
