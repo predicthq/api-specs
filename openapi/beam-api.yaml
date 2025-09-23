@@ -1,21 +1,31 @@
 openapi: 3.1.0
 info:
-  title: PredictHQ Beam API (Public Preview)
+  title: PredictHQ Beam API
   version: 1.0.0
   license:
     name: MIT
-    url: https://opensource.org/licenses/MIT
-  termsOfService: https://www.predicthq.com/legal/terms
-  description: PredictHQ's Beam helps you identify what events have impacted your demand in the past, to help you make better decisions in the future. Beam is our relevancy engine.
+    url: 'https://opensource.org/licenses/MIT'
+  termsOfService: 'https://www.predicthq.com/legal/terms'
+  description: 'PredictHQ''s Beam helps you identify what events have impacted your demand in the past, to help you make better decisions in the future. Beam is our relevancy engine.'
+security:
+  - BearerAuth: []
+tags:
+  - name: Beam API
+    externalDocs:
+      url: 'https://docs.predicthq.com/api/beam'
+      description: Beam API Docs
 servers:
-  - url: https://api.predicthq.com
+  - url: 'https://api.predicthq.com'
+externalDocs:
+  url: 'https://docs.predicthq.com'
+  description: PredictHQ Tech Docs
+x-hideTryItPanel: true
 paths:
   /v1/analyses:
     post:
-      tags:
-        - Analyses
-      summary: Create an Analysis
       operationId: create_analysis_public_analyses_post
+      summary: Create an Analysis
+      description: Creating an Analysis is the first step in understanding which types of events impact your demand.
       parameters:
         - name: wait_for
           in: query
@@ -47,60 +57,60 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      description: Creating an Analysis is the first step in understanding which types of events impact your demand.
       externalDocs:
-        url: https://docs.predicthq.com/api/beam/analyses/create-an-analysis
+        url: 'https://docs.predicthq.com/api/beam/analyses/create-an-analysis'
         description: Create an Analysis docs
-    get:
       tags:
         - Analyses
-      summary: Search Analyses
+    get:
       operationId: search_analyses_public_analyses_get
+      summary: Search Analyses
+      description: Search for an existing Analysis.
       parameters:
         - name: updated.gt
           in: query
-          required: false
-          schema:
-            type: string
-            format: date
           description: |-
             Filters analyses updated after the specified date (exclusive).
 
             Expected format: `YYYY-MM-DD`.
-        - name: updated.gte
-          in: query
           required: false
           schema:
             type: string
             format: date
+        - name: updated.gte
+          in: query
           description: |-
             Filters analyses updated on or after the specified date.
 
             Expected format: `YYYY-MM-DD`.
 
             Example: `2025-01-01`
-        - name: updated.lt
-          in: query
           required: false
           schema:
             type: string
             format: date
+        - name: updated.lt
+          in: query
           description: |-
             Filters analyses updated before the specified date (exclusive).
 
             Expected format: `YYYY-MM-DD`.
-        - name: updated.lte
-          in: query
           required: false
           schema:
             type: string
             format: date
+        - name: updated.lte
+          in: query
           description: |-
             Filters analyses updated on or before the specified date.
 
             Expected format: `YYYY-MM-DD`.
 
             Example: `2025-01-07`
+          required: false
+          schema:
+            type: string
+            format: date
         - name: q
           in: query
           required: false
@@ -162,21 +172,9 @@ paths:
             items:
               $ref: '#/components/schemas/AnalysisSortField'
             default:
-              - -updated
-        - name: offset
-          in: query
-          required: false
-          schema:
-            type: integer
-            minimum: 0
-            default: 0
-        - name: limit
-          in: query
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            default: 10
+              - '-updated'
+        - $ref: '#/components/parameters/OffsetParam'
+        - $ref: '#/components/parameters/LimitParam'
         - name: external_id
           in: query
           required: false
@@ -223,16 +221,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      description: Search for an existing Analysis.
       externalDocs:
-        url: https://docs.predicthq.com/api/beam/analyses/search-analyses
+        url: 'https://docs.predicthq.com/api/beam/analyses/search-analyses'
         description: Search Analyses docs
-  /v1/analyses/{analysis_id}:
-    get:
       tags:
         - Analyses
-      summary: Get an Analysis
+  '/v1/analyses/{analysis_id}':
+    get:
       operationId: get_analysis_public_analyses__analysis_id__get
+      summary: Get an Analysis
+      description: Get an existing Analysis.
       parameters:
         - name: analysis_id
           in: path
@@ -257,15 +255,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      description: Get an existing Analysis.
       externalDocs:
-        url: https://docs.predicthq.com/api/beam/analyses/get-an-analysis
+        url: 'https://docs.predicthq.com/api/beam/analyses/get-an-analysis'
         description: Get an Analysis docs
-    put:
       tags:
         - Analyses
-      summary: Update an Analysis
+    put:
       operationId: put_analysis_public_analyses__analysis_id__put
+      summary: Update an Analysis
+      description: Update (replace) an existing Analysis.
       parameters:
         - name: analysis_id
           in: path
@@ -298,15 +296,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      description: Update (replace) an existing Analysis.
       externalDocs:
-        url: https://docs.predicthq.com/api/beam/analyses/update-an-analysis
+        url: 'https://docs.predicthq.com/api/beam/analyses/update-an-analysis'
         description: Update an Analysis docs
-    patch:
       tags:
         - Analyses
-      summary: Partially Update an Analysis
+    patch:
       operationId: patch_analysis_public_analyses__analysis_id__patch
+      summary: Partially Update an Analysis
+      description: Partially update an existing Analysis.
       parameters:
         - name: analysis_id
           in: path
@@ -339,15 +337,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      description: Partially update an existing Analysis.
       externalDocs:
-        url: https://docs.predicthq.com/api/beam/analyses/partially-update-an-analysis
+        url: 'https://docs.predicthq.com/api/beam/analyses/partially-update-an-analysis'
         description: Partially Update an Analysis docs
-    delete:
       tags:
         - Analyses
-      summary: Delete Analysis
+    delete:
       operationId: delete_analysis_public_analyses__analysis_id__delete
+      summary: Delete Analysis
       parameters:
         - name: analysis_id
           in: path
@@ -368,21 +365,19 @@ paths:
       responses:
         '202':
           description: Successful Response
-          content:
-            application/json:
-              schema: {}
         '422':
           description: Validation Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-  /v1/analyses/{analysis_id}/feature-importance:
-    get:
       tags:
         - Analyses
-      summary: Get Feature Importance
+  '/v1/analyses/{analysis_id}/feature-importance':
+    get:
       operationId: feature_importance_public_analyses__analysis_id__feature_importance_get
+      summary: Get Feature Importance
+      description: Get relevant ML features based on a Beam Analysis.
       parameters:
         - name: analysis_id
           in: path
@@ -407,16 +402,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      description: Get relevant ML features based on a Beam Analysis.
       externalDocs:
-        url: https://docs.predicthq.com/api/beam/analyses/get-feature-importance
+        url: 'https://docs.predicthq.com/api/beam/analyses/get-feature-importance'
         description: Get Feature Importance docs
-  /v1/analyses/{analysis_id}/value-quant:
-    get:
       tags:
         - Analyses
-      summary: Get Value Quant
+  '/v1/analyses/{analysis_id}/value-quant':
+    get:
       operationId: value_quant_public_analyses__analysis_id__value_quant_get
+      summary: Get Value Quant
+      description: Get Value Quant data for a Beam Analysis.
       parameters:
         - name: analysis_id
           in: path
@@ -441,13 +436,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      description: Get Value Quant data for a Beam Analysis.
-  /v1/analyses/{analysis_id}/sink:
-    post:
       tags:
         - Analyses
-      summary: Upload Demand Data
+  '/v1/analyses/{analysis_id}/sink':
+    post:
       operationId: upload_demand_public_analyses__analysis_id__sink_post
+      summary: Upload Demand Data
+      description: 'Upload your demand data as CSV, line-delimited JSON or JSON.'
       parameters:
         - name: analysis_id
           in: path
@@ -468,25 +463,22 @@ paths:
       responses:
         '202':
           description: Successful Response
-          content:
-            application/json:
-              schema: {}
         '422':
           description: Validation Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      description: Upload your demand data as CSV, line-delimited JSON or JSON.
       externalDocs:
-        url: https://docs.predicthq.com/api/beam/analyses/upload-demand-data
+        url: 'https://docs.predicthq.com/api/beam/analyses/upload-demand-data'
         description: Upload Demand Data docs
-  /v1/analyses/{analysis_id}/refresh:
-    post:
       tags:
         - Analyses
-      summary: Refresh an Analysis
+  '/v1/analyses/{analysis_id}/refresh':
+    post:
       operationId: refresh_public_analyses__analysis_id__refresh_post
+      summary: Refresh an Analysis
+      description: Rerun the Beam correlation and analysis process.
       parameters:
         - name: analysis_id
           in: path
@@ -501,25 +493,22 @@ paths:
       responses:
         '202':
           description: Successful Response
-          content:
-            application/json:
-              schema: {}
         '422':
           description: Validation Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      description: Rerun the Beam correlation and analysis process.
       externalDocs:
-        url: https://docs.predicthq.com/api/beam/analyses/refresh-an-analysis
+        url: 'https://docs.predicthq.com/api/beam/analyses/refresh-an-analysis'
         description: Refresh an Analysis docs
-  /v1/analyses/{analysis_id}/correlate:
-    get:
       tags:
         - Analyses
-      summary: Get Correlation Results
+  '/v1/analyses/{analysis_id}/correlate':
+    get:
       operationId: correlate_public_analyses__analysis_id__correlate_get
+      summary: Get Correlation Results
+      description: Retrieve results of the correlation of our event data with your transactional demand data.
       parameters:
         - name: analysis_id
           in: path
@@ -528,62 +517,50 @@ paths:
             type: string
         - name: date.gt
           in: query
-          required: false
-          schema:
-            type: string
-            format: date
           description: |-
             Filters results after the specified date (exclusive).
 
             Expected format: `YYYY-MM-DD`.
-        - name: date.gte
-          in: query
           required: false
           schema:
             type: string
             format: date
+        - name: date.gte
+          in: query
           description: |-
             Filters results on or after the specified date.
 
             Expected format: `YYYY-MM-DD`.
 
             Example: `2025-01-01`
-        - name: date.lt
-          in: query
           required: false
           schema:
             type: string
             format: date
+        - name: date.lt
+          in: query
           description: |-
             Filters results before the specified date (exclusive).
 
             Expected format: `YYYY-MM-DD`.
-        - name: date.lte
-          in: query
           required: false
           schema:
             type: string
             format: date
+        - name: date.lte
+          in: query
           description: |-
             Filters results on or before the specified date.
 
             Expected format: `YYYY-MM-DD`.
 
             Example: `2025-01-07`
-        - name: offset
-          in: query
           required: false
           schema:
-            type: integer
-            minimum: 0
-            default: 0
-        - name: limit
-          in: query
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            default: 30
+            type: string
+            format: date
+        - $ref: '#/components/parameters/OffsetParam'
+        - $ref: '#/components/parameters/LimitParam'
         - name: include_features
           in: query
           required: false
@@ -609,61 +586,61 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      description: Retrieve results of the correlation of our event data with your transactional demand data.
       externalDocs:
-        url: https://docs.predicthq.com/api/beam/analyses/get-correlation
+        url: 'https://docs.predicthq.com/api/beam/analyses/get-correlation'
         description: Get Correlation Results docs
+      tags:
+        - Analyses
   /v1/analysis-groups:
     get:
-      tags:
-        - Analysis Groups
-      summary: Search Analysis Groups
       operationId: search_analysis_groups_public_analysis_groups_get
+      summary: Search Analysis Groups
+      description: Search for an existing Analysis Group.
       parameters:
         - name: updated.gt
           in: query
-          required: false
-          schema:
-            type: string
-            format: date
           description: |-
             Filters analysis groups updated after the specified date (exclusive).
 
             Expected format: `YYYY-MM-DD`.
-        - name: updated.gte
-          in: query
           required: false
           schema:
             type: string
             format: date
+        - name: updated.gte
+          in: query
           description: |-
             Filters analysis groups updated on or after the specified date.
 
             Expected format: `YYYY-MM-DD`.
 
             Example: `2025-01-01`
-        - name: updated.lt
-          in: query
           required: false
           schema:
             type: string
             format: date
+        - name: updated.lt
+          in: query
           description: |-
             Filters analysis groups updated before the specified date (exclusive).
 
             Expected format: `YYYY-MM-DD`.
-        - name: updated.lte
-          in: query
           required: false
           schema:
             type: string
             format: date
+        - name: updated.lte
+          in: query
           description: |-
             Filters analysis groups updated on or before the specified date.
 
             Expected format: `YYYY-MM-DD`.
 
             Example: `2025-01-07`
+          required: false
+          schema:
+            type: string
+            format: date
         - name: q
           in: query
           required: false
@@ -711,21 +688,9 @@ paths:
             items:
               $ref: '#/components/schemas/AnalysisGroupSortField'
             default:
-              - -updated
-        - name: offset
-          in: query
-          required: false
-          schema:
-            type: integer
-            minimum: 0
-            default: 0
-        - name: limit
-          in: query
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            default: 10
+              - '-updated'
+        - $ref: '#/components/parameters/OffsetParam'
+        - $ref: '#/components/parameters/LimitParam'
         - name: authorization
           in: header
           required: false
@@ -744,15 +709,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      description: Search for an existing Analysis Group.
       externalDocs:
-        url: https://docs.predicthq.com/api/beam/analysis-groups/search-analysis-groups
+        url: 'https://docs.predicthq.com/api/beam/analysis-groups/search-analysis-groups'
         description: Search Analysis Groups docs
-    post:
       tags:
         - Analysis Groups
-      summary: Create an Analysis Group
+    post:
       operationId: create_analysis_group_public_analysis_groups_post
+      summary: Create an Analysis Group
+      description: Creating an Analysis Group allows to aggregate Feature Importance for a number of Analyses
       parameters:
         - name: authorization
           in: header
@@ -778,16 +743,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      description: Creating an Analysis Group allows to aggregate Feature Importance for a number of Analyses
       externalDocs:
-        url: https://docs.predicthq.com/api/beam/analysis-groups/create-an-analysis-group
+        url: 'https://docs.predicthq.com/api/beam/analysis-groups/create-an-analysis-group'
         description: Create an Analysis Group docs
-  /v1/analysis-groups/{group_id}:
-    get:
       tags:
         - Analysis Groups
-      summary: Get an Analysis Group
+  '/v1/analysis-groups/{group_id}':
+    get:
       operationId: get_analysis_group_public_analysis_groups__group_id__get
+      summary: Get an Analysis Group
+      description: Get an existing Analysis Group.
       parameters:
         - name: group_id
           in: path
@@ -812,15 +777,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      description: Get an existing Analysis Group.
       externalDocs:
-        url: https://docs.predicthq.com/api/beam/analysis-groups/get-an-analysis-group
+        url: 'https://docs.predicthq.com/api/beam/analysis-groups/get-an-analysis-group'
         description: Get an Analysis Group docs
-    put:
       tags:
         - Analysis Groups
-      summary: Update an Analysis Group
+    put:
       operationId: update_analysis_group_public_analysis_groups__group_id__put
+      summary: Update an Analysis Group
+      description: Update (replace) an existing Analysis Group.
       parameters:
         - name: group_id
           in: path
@@ -841,24 +806,21 @@ paths:
       responses:
         '202':
           description: Successful Response
-          content:
-            application/json:
-              schema: {}
         '422':
           description: Validation Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      description: Update (replace) an existing Analysis Group.
       externalDocs:
-        url: https://docs.predicthq.com/api/beam/analysis-groups/update-an-analysis-group
+        url: 'https://docs.predicthq.com/api/beam/analysis-groups/update-an-analysis-group'
         description: Update an Analysis Group docs
-    patch:
       tags:
         - Analysis Groups
-      summary: Partially Update an Analysis Group
+    patch:
       operationId: patch_analysis_group_public_analysis_groups__group_id__patch
+      summary: Partially Update an Analysis Group
+      description: Partially update an existing Analysis Group.
       parameters:
         - name: group_id
           in: path
@@ -879,57 +841,21 @@ paths:
       responses:
         '202':
           description: Successful Response
-          content:
-            application/json:
-              schema: {}
         '422':
           description: Validation Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      description: Partially update an existing Analysis Group.
       externalDocs:
-        url: https://docs.predicthq.com/api/beam/analysis-groups/partially-update-an-analysis-group
+        url: 'https://docs.predicthq.com/api/beam/analysis-groups/partially-update-an-analysis-group'
         description: Partially Update an Analysis Group docs
+      tags:
+        - Analysis Groups
     delete:
-      tags:
-        - Analysis Groups
-      summary: Delete an Analysis Group
       operationId: delete_analysis_group_public_analysis_groups__group_id__delete
-      parameters:
-        - name: group_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: authorization
-          in: header
-          required: false
-          schema:
-            type: string
-      responses:
-        '202':
-          description: Successful Response
-          content:
-            application/json:
-              schema: {}
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+      summary: Delete an Analysis Group
       description: Delete an existing Analysis Group.
-      externalDocs:
-        url: https://docs.predicthq.com/api/beam/analysis-groups/delete-an-analysis-group
-        description: Delete an Analysis Group docs
-  /v1/analysis-groups/{group_id}/refresh:
-    post:
-      tags:
-        - Analysis Groups
-      summary: Refresh an Analysis Group
-      operationId: refresh_analysis_group_public_analysis_groups__group_id__refresh_post
       parameters:
         - name: group_id
           in: path
@@ -944,25 +870,52 @@ paths:
       responses:
         '202':
           description: Successful Response
-          content:
-            application/json:
-              schema: {}
         '422':
           description: Validation Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      description: Rerun the Beam Analysis Group aggregation process.
       externalDocs:
-        url: https://docs.predicthq.com/api/beam/analysis-groups/refresh-an-analysis-group
-        description: Refresh an Analysis Group docs
-  /v1/analysis-groups/{group_id}/feature-importance:
-    get:
+        url: 'https://docs.predicthq.com/api/beam/analysis-groups/delete-an-analysis-group'
+        description: Delete an Analysis Group docs
       tags:
         - Analysis Groups
-      summary: Get Feature Importance for an Analysis Group
+  '/v1/analysis-groups/{group_id}/refresh':
+    post:
+      operationId: refresh_analysis_group_public_analysis_groups__group_id__refresh_post
+      summary: Refresh an Analysis Group
+      description: Rerun the Beam Analysis Group aggregation process.
+      parameters:
+        - name: group_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: authorization
+          in: header
+          required: false
+          schema:
+            type: string
+      responses:
+        '202':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      externalDocs:
+        url: 'https://docs.predicthq.com/api/beam/analysis-groups/refresh-an-analysis-group'
+        description: Refresh an Analysis Group docs
+      tags:
+        - Analysis Groups
+  '/v1/analysis-groups/{group_id}/feature-importance':
+    get:
       operationId: feature_importance_for_analysis_group_public_analysis_groups__group_id__feature_importance_get
+      summary: Get Feature Importance for an Analysis Group
+      description: Get Feature Importance data for an Analysis Group.
       parameters:
         - name: group_id
           in: path
@@ -987,16 +940,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      description: Get Feature Importance data for an Analysis Group.
       externalDocs:
-        url: https://docs.predicthq.com/api/beam/analysis-groups/get-aggregated-feature-importance
+        url: 'https://docs.predicthq.com/api/beam/analysis-groups/get-aggregated-feature-importance'
         description: Analysis Group Feature Importance docs
-  /v1/analysis-groups/{group_id}/value-quant:
-    get:
       tags:
         - Analysis Groups
-      summary: Get Value Quant for an Analysis Group
+  '/v1/analysis-groups/{group_id}/value-quant':
+    get:
       operationId: value_quant_for_analysis_group_public_analysis_groups__group_id__value_quant_get
+      summary: Get Value Quant for an Analysis Group
+      description: Get Value Quant data for an Analysis Group.
       parameters:
         - name: group_id
           in: path
@@ -1021,13 +974,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      description: Get Value Quant data for an Analysis Group.
+      tags:
+        - Analysis Groups
   /v1/data/upload:
     post:
-      tags:
-        - Analysis Uploads
-      summary: Upload Data File
       operationId: upload_data_file_public_data_upload_post
+      summary: Upload Data File
       parameters:
         - name: authorization
           in: header
@@ -1053,7 +1005,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+        - Analysis Uploads
 components:
+  parameters:
+    LimitParam:
+      name: limit
+      in: query
+      description: Limit the number of results.
+      required: false
+      schema:
+        type: integer
+        default: 10
+    OffsetParam:
+      name: offset
+      in: query
+      description: Offset the results.
+      required: false
+      schema:
+        type: integer
+        default: 0
   schemas:
     AccessType:
       type: string
@@ -1061,26 +1032,8 @@ components:
         - full
         - limited
       title: AccessType
-    Address:
-      properties:
-        locality:
-          type: string
-          title: Locality
-        country_code:
-          type: string
-          title: Country Code
-        formatted_address:
-          type: string
-          title: Formatted Address
-        postcode:
-          type: string
-          title: Postcode
-        region:
-          type: string
-          title: Region
-      type: object
-      title: Address
     AnalysisDateRange:
+      type: object
       properties:
         start:
           type: string
@@ -1090,7 +1043,6 @@ components:
           type: string
           format: date
           title: End
-      type: object
       required:
         - start
         - end
@@ -1107,13 +1059,14 @@ components:
         - analysis_value_quant_incomplete
       title: AnalysisExcludedReason
     AnalysisGroupDemandTypeInput:
+      type: object
       properties:
         unit_descriptor:
           type: string
           title: Unit Descriptor
-      type: object
       title: AnalysisGroupDemandTypeInput
     AnalysisGroupDemandTypeResponse:
+      type: object
       properties:
         interval:
           $ref: '#/components/schemas/Interval'
@@ -1126,14 +1079,13 @@ components:
           title: Unit Descriptor
         currency_code:
           $ref: '#/components/schemas/CurrencyCode'
-      type: object
       title: AnalysisGroupDemandTypeResponse
     AnalysisGroupIdResponse:
+      type: object
       properties:
         group_id:
           type: string
           title: Group Id
-      type: object
       title: AnalysisGroupIdResponse
     AnalysisGroupReadinessStatus:
       type: string
@@ -1143,6 +1095,7 @@ components:
         - ready
       title: AnalysisGroupReadinessStatus
     AnalysisGroupResponse:
+      type: object
       properties:
         group_id:
           type: string
@@ -1152,9 +1105,9 @@ components:
           minLength: 1
           title: Name
         analysis_ids:
+          type: array
           items:
             type: string
-          type: array
           title: Analysis Ids
         user_id:
           type: string
@@ -1179,7 +1132,6 @@ components:
           type: string
           format: date-time
           title: Processed Dt
-      type: object
       required:
         - name
       title: AnalysisGroupResponse
@@ -1189,11 +1141,11 @@ components:
         - name
         - created
         - updated
-        - -name
-        - -created
-        - -updated
+        - '-name'
+        - '-created'
+        - '-updated'
         - value_quant
-        - -value_quant
+        - '-value_quant'
       title: AnalysisGroupSortField
     AnalysisGroupStatus:
       type: string
@@ -1202,11 +1154,11 @@ components:
         - deleted
       title: AnalysisGroupStatus
     AnalysisIdResponse:
+      type: object
       properties:
         analysis_id:
           type: string
           title: Analysis Id
-      type: object
       title: AnalysisIdResponse
     AnalysisOwnership:
       type: string
@@ -1215,6 +1167,7 @@ components:
         - user
       title: AnalysisOwnership
     AnalysisReadinessChecks:
+      type: object
       properties:
         date_range:
           $ref: '#/components/schemas/AnalysisDateRange'
@@ -1222,21 +1175,20 @@ components:
           type: string
           title: Error Code
         missing_dates:
+          type: array
           items:
             type: string
-          type: array
           title: Missing Dates
         validation_response:
-          additionalProperties: true
           type: object
+          additionalProperties: true
           title: Validation Response
         best_practice:
           type: boolean
-          title: Best Practice
           default: false
+          title: Best Practice
         best_practice_checks:
           $ref: '#/components/schemas/BestPracticeChecks'
-      type: object
       title: AnalysisReadinessChecks
     AnalysisReadinessStatus:
       type: string
@@ -1247,6 +1199,7 @@ components:
         - stale
       title: AnalysisReadinessStatus
     AnalysisResponse:
+      type: object
       properties:
         analysis_id:
           type: string
@@ -1275,9 +1228,9 @@ components:
         demand_type:
           $ref: '#/components/schemas/DemandType'
         group_ids:
+          type: array
           items:
             type: string
-          type: array
           title: Group Ids
         tz:
           type: string
@@ -1298,13 +1251,12 @@ components:
           type: string
           title: External Id
         label:
+          type: array
           items:
             type: string
-          type: array
           title: Label
         saved_location:
           $ref: '#/components/schemas/SavedLocationResponse'
-      type: object
       required:
         - name
       title: AnalysisResponse
@@ -1314,11 +1266,11 @@ components:
         - name
         - created
         - updated
-        - -name
-        - -created
-        - -updated
+        - '-name'
+        - '-created'
+        - '-updated'
         - value_quant
-        - -value_quant
+        - '-value_quant'
       title: AnalysisSortField
     AnalysisStatus:
       type: string
@@ -1328,43 +1280,31 @@ components:
         - deleted
       title: AnalysisStatus
     BestPracticeChecks:
+      type: object
       properties:
         industry:
           type: boolean
-          title: Industry
           default: false
+          title: Industry
         rank:
           type: boolean
-          title: Rank
           default: false
+          title: Rank
         radius:
           type: boolean
-          title: Radius
           default: false
-      type: object
+          title: Radius
       title: BestPracticeChecks
     Body_upload_data_file_public_data_upload_post:
+      type: object
       properties:
         file:
           type: string
           format: binary
           title: File
-      type: object
       required:
         - file
       title: Body_upload_data_file_public_data_upload_post
-    BulkDeleteRequest:
-      properties:
-        ids:
-          items:
-            type: string
-          type: array
-          minItems: 1
-          title: Ids
-      type: object
-      required:
-        - ids
-      title: BulkDeleteRequest
     CurrencyCode:
       type: string
       enum:
@@ -1542,15 +1482,8 @@ components:
         - ZMW
         - ZWL
       title: CurrencyCode
-    Dates:
-      properties:
-        fixed_time:
-          $ref: '#/components/schemas/FixedTime'
-      type: object
-      required:
-        - fixed_time
-      title: Dates
     DemandDerivativeResponse:
+      type: object
       properties:
         date:
           type: string
@@ -1577,8 +1510,8 @@ components:
           type: integer
           title: Impact Significance Score
         features:
-          additionalProperties: true
           type: object
+          additionalProperties: true
           title: Features
         phq_impact_sum:
           type: integer
@@ -1592,26 +1525,16 @@ components:
         phq_rank_count:
           type: integer
           title: Phq Rank Count
-      type: object
       required:
         - date
         - impact_significance
       title: DemandDerivativeResponse
-    DemandSortField:
-      type: string
-      enum:
-        - created
-        - updated
-        - -created
-        - -updated
-      title: DemandSortField
     DemandType:
+      type: object
       properties:
         interval:
+          default: day
           $ref: '#/components/schemas/Interval'
-          allOf:
-            - $ref: '#/components/schemas/Interval'
-            - default: day
         week_start_day:
           $ref: '#/components/schemas/Weekday'
         industry:
@@ -1621,17 +1544,15 @@ components:
           title: Unit Descriptor
         unit_currency_multiplier:
           type: number
+          default: 1
           exclusiveMinimum: 0
           title: Unit Currency Multiplier
-          default: 1
         currency_code:
+          default: USD
           $ref: '#/components/schemas/CurrencyCode'
-          allOf:
-            - $ref: '#/components/schemas/CurrencyCode'
-            - default: USD
-      type: object
       title: DemandType
     DemandTypeUpdate:
+      type: object
       properties:
         industry:
           $ref: '#/components/schemas/Industry'
@@ -1640,71 +1561,15 @@ components:
           title: Unit Descriptor
         unit_currency_multiplier:
           type: number
+          default: 1
           exclusiveMinimum: 0
           title: Unit Currency Multiplier
-          default: 1
         currency_code:
+          default: USD
           $ref: '#/components/schemas/CurrencyCode'
-          allOf:
-            - $ref: '#/components/schemas/CurrencyCode'
-            - default: USD
-      type: object
       title: DemandTypeUpdate
-    DerivativeSortField:
-      type: string
-      enum:
-        - created
-        - -created
-        - version
-        - -version
-      title: DerivativeSortField
-    EventResponse:
-      properties:
-        event_id:
-          type: string
-          title: Event Id
-        category:
-          type: string
-          title: Category
-        geo:
-          $ref: '#/components/schemas/Geo'
-        labels:
-          items: {}
-          type: array
-          title: Labels
-        title:
-          type: string
-          title: Title
-        timezone:
-          type: string
-          title: Timezone
-        phq_rank:
-          type: integer
-          title: Phq Rank
-        local_rank:
-          type: integer
-          title: Local Rank
-        aviation_rank:
-          type: integer
-          title: Aviation Rank
-        formatted_address:
-          type: string
-          title: Formatted Address
-        impact_patterns:
-          items: {}
-          type: array
-          title: Impact Patterns
-        dates:
-          $ref: '#/components/schemas/Dates'
-      type: object
-      required:
-        - event_id
-        - category
-        - labels
-        - title
-        - dates
-      title: EventResponse
     ExcludedAnalysis:
+      type: object
       properties:
         analysis_id:
           type: string
@@ -1712,11 +1577,10 @@ components:
         reason:
           $ref: '#/components/schemas/AnalysisExcludedReason'
         excluded_from:
+          type: array
           items:
             $ref: '#/components/schemas/ExcludedFromReason'
-          type: array
           title: Excluded From
-      type: object
       required:
         - analysis_id
         - reason
@@ -1728,14 +1592,15 @@ components:
         - value_quant
       title: ExcludedFromReason
     FeatureGroup:
+      type: object
       properties:
         feature_group:
           type: string
           title: Feature Group
         features:
+          type: array
           items:
             type: string
-          type: array
           title: Features
         p_value:
           type: number
@@ -1743,58 +1608,23 @@ components:
         important:
           type: boolean
           title: Important
-      type: object
       required:
         - feature_group
         - features
         - p_value
         - important
       title: FeatureGroup
-    FeatureImportance:
-      properties:
-        model:
-          type: string
-          title: Model
-        feature_importance:
-          items:
-            $ref: '#/components/schemas/FeatureGroup'
-          type: array
-          title: Feature Importance
-        update_dt:
-          type: string
-          format: date-time
-          title: Update Dt
-        error:
-          type: string
-          title: Error
-      type: object
-      title: FeatureImportance
     FeatureImportanceResponse:
+      type: object
       properties:
         feature_importance:
+          type: array
           items:
             $ref: '#/components/schemas/FeatureGroup'
-          type: array
           title: Feature Importance
-      type: object
       title: FeatureImportanceResponse
-    FixedTime:
-      properties:
-        start_local_datetime:
-          type: string
-          title: Start Local Datetime
-        end_local_datetime:
-          type: string
-          title: End Local Datetime
-      type: object
-      title: FixedTime
-    Geo:
-      properties:
-        address:
-          $ref: '#/components/schemas/Address'
-      type: object
-      title: Geo
     GeoJson:
+      type: object
       properties:
         type:
           type: string
@@ -1804,21 +1634,19 @@ components:
           $ref: '#/components/schemas/GeoJsonProperies'
         geometry:
           $ref: '#/components/schemas/GeoJsonGeometry'
-      type: object
       required:
         - type
         - geometry
       title: GeoJson
     GeoJsonGeometry:
+      type: object
       properties:
         type:
           $ref: '#/components/schemas/GeoJsonGeometryType'
         coordinates:
-          items: {}
           type: array
           minItems: 1
           title: Coordinates
-      type: object
       required:
         - type
         - coordinates
@@ -1833,6 +1661,7 @@ components:
         - MultiLineString
       title: GeoJsonGeometryType
     GeoJsonProperies:
+      type: object
       properties:
         radius:
           type: number
@@ -1840,51 +1669,51 @@ components:
           title: Radius
         radius_unit:
           $ref: '#/components/schemas/RadiusUnit'
-      type: object
       required:
         - radius
         - radius_unit
       title: GeoJsonProperies
     GeoPoint:
+      type: object
       properties:
         lat:
           type: string
-          pattern: ^[-+]?(90(\.0+)?|([1-8]\d|[1-9])(\.\d+)?|0+\.(\d+)?[1-9]+(\d+)?)$
+          pattern: '^[-+]?(90(\.0+)?|([1-8]\d|[1-9])(\.\d+)?|0+\.(\d+)?[1-9]+(\d+)?)$'
           title: Lat
         lon:
           type: string
-          pattern: ^[-+]?(180(\.0+)?|(1[0-7]\d|\d\d|[1-9])(\.\d+)?|0+\.(\d+)?[1-9]+(\d+)?)$
+          pattern: '^[-+]?(180(\.0+)?|(1[0-7]\d|\d\d|[1-9])(\.\d+)?|0+\.(\d+)?[1-9]+(\d+)?)$'
           title: Lon
-      type: object
       required:
         - lat
         - lon
       title: GeoPoint
     GeoPointResponse:
+      type: object
       properties:
         lat:
           type: string
-          pattern: ^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$
+          pattern: '^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$'
           title: Lat
         lon:
           type: string
-          pattern: ^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$
+          pattern: '^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$'
           title: Lon
-      type: object
       required:
         - lat
         - lon
       title: GeoPointResponse
     HTTPValidationError:
+      type: object
       properties:
         detail:
+          type: array
           items:
             $ref: '#/components/schemas/ValidationError'
-          type: array
           title: Detail
-      type: object
       title: HTTPValidationError
     Historical:
+      type: object
       properties:
         anomalous_demand_pct:
           type: number
@@ -1899,13 +1728,13 @@ components:
           $ref: '#/components/schemas/HistoricalInfo'
         decremental:
           $ref: '#/components/schemas/HistoricalInfo'
-      type: object
       required:
         - anomalous_demand_pct
         - event_contribution_pct
         - total_event_contribution_pct
       title: Historical
     HistoricalInfo:
+      type: object
       properties:
         anomalous_demand_pct:
           type: number
@@ -1916,13 +1745,13 @@ components:
         event_financial_impact_annual:
           type: number
           title: Event Financial Impact Annual
-      type: object
       required:
         - anomalous_demand_pct
         - event_contribution_pct
         - event_financial_impact_annual
       title: HistoricalInfo
     Incremental:
+      type: object
       properties:
         forecast_uplift_pct_relative:
           type: number
@@ -1936,7 +1765,6 @@ components:
         unit_uplift_annual:
           type: number
           title: Unit Uplift Annual
-      type: object
       required:
         - forecast_uplift_pct_relative
         - forecast_uplift_pct_absolute
@@ -1963,6 +1791,7 @@ components:
         - week
       title: Interval
     Location:
+      type: object
       properties:
         geopoint:
           $ref: '#/components/schemas/GeoPoint'
@@ -1982,17 +1811,17 @@ components:
           type: string
           title: Google Place Id
         geoscope_paths:
+          type: array
           items:
             type: string
-          type: array
           title: Geoscope Paths
         saved_location_id:
           type: string
           minLength: 1
           title: Saved Location Id
-      type: object
       title: Location
     LocationResponse:
+      type: object
       properties:
         geopoint:
           $ref: '#/components/schemas/GeoPointResponse'
@@ -2012,47 +1841,47 @@ components:
           type: string
           title: Google Place Id
         geoscope_paths:
+          type: array
           items:
             type: string
-          type: array
           title: Geoscope Paths
         saved_location_id:
           type: string
           minLength: 1
           title: Saved Location Id
-      type: object
       title: LocationResponse
     MultiAnalysisGroupResponse:
+      type: object
       properties:
         count:
           type: integer
           title: Count
         groups:
+          type: array
           items:
             $ref: '#/components/schemas/AnalysisGroupResponse'
-          type: array
           title: Groups
-      type: object
       required:
         - count
         - groups
       title: MultiAnalysisGroupResponse
     MultiAnalysisResponse:
+      type: object
       properties:
         count:
           type: integer
           title: Count
         analyses:
+          type: array
           items:
             $ref: '#/components/schemas/AnalysisResponse'
-          type: array
           title: Analyses
-      type: object
       required:
         - count
         - analyses
       title: MultiAnalysisResponse
     MultiDerivativeResponse:
+      type: object
       properties:
         model_version:
           type: string
@@ -2064,82 +1893,33 @@ components:
           type: integer
           title: Count
         dates:
+          type: array
           items:
             $ref: '#/components/schemas/DemandDerivativeResponse'
-          type: array
           title: Dates
-      type: object
       required:
         - model_version
         - version
         - count
         - dates
       title: MultiDerivativeResponse
-    MultiEventResponse:
-      properties:
-        count:
-          type: integer
-          title: Count
-        events:
-          items:
-            $ref: '#/components/schemas/EventResponse'
-          type: array
-          title: Events
-      type: object
-      required:
-        - count
-        - events
-      title: MultiEventResponse
-    PatchAnalysis:
-      properties:
-        name:
-          type: string
-          minLength: 1
-          title: Name
-        location:
-          $ref: '#/components/schemas/Location'
-        rank:
-          $ref: '#/components/schemas/Rank'
-        demand_type:
-          $ref: '#/components/schemas/DemandTypeUpdate'
-        tz:
-          type: string
-          title: Tz
-        external_id:
-          type: string
-          minLength: 1
-          title: External Id
-        label:
-          items:
-            type: string
-            minLength: 1
-          type: array
-          minItems: 1
-          title: Label
-        access_type:
-          $ref: '#/components/schemas/AccessType'
-      additionalProperties: false
-      type: object
-      title: PatchAnalysis
     PatchAnalysisGroupRequest:
+      type: object
       properties:
         name:
           type: string
           minLength: 1
           title: Name
         analysis_ids:
+          type: array
           items:
             type: string
-          type: array
           title: Analysis Ids
         demand_type:
           $ref: '#/components/schemas/AnalysisGroupDemandTypeInput'
-          allOf:
-            - $ref: '#/components/schemas/AnalysisGroupDemandTypeInput'
-            - default: {}
-      type: object
       title: PatchAnalysisGroupRequest
     PatchAnalysisRequest:
+      type: object
       properties:
         name:
           type: string
@@ -2159,16 +1939,16 @@ components:
           minLength: 1
           title: External Id
         label:
+          type: array
           items:
             type: string
             minLength: 1
-          type: array
           minItems: 1
           title: Label
       additionalProperties: false
-      type: object
       title: PatchAnalysisRequest
     Place:
+      type: object
       properties:
         place_id:
           type: integer
@@ -2190,7 +1970,6 @@ components:
           title: Country
         geojson:
           $ref: '#/components/schemas/GeoJson'
-      type: object
       required:
         - place_id
         - type
@@ -2198,72 +1977,33 @@ components:
         - geojson
       title: Place
     Prediction:
+      type: object
       properties:
         incremental:
           $ref: '#/components/schemas/Incremental'
-      type: object
       required:
         - incremental
       title: Prediction
-    PutAnalysis:
-      properties:
-        name:
-          type: string
-          minLength: 1
-          title: Name
-        location:
-          $ref: '#/components/schemas/Location'
-        rank:
-          $ref: '#/components/schemas/Rank'
-        demand_type:
-          $ref: '#/components/schemas/DemandTypeUpdate'
-        tz:
-          type: string
-          title: Tz
-        external_id:
-          type: string
-          minLength: 1
-          title: External Id
-        label:
-          items:
-            type: string
-            minLength: 1
-          type: array
-          minItems: 1
-          title: Label
-        org_id:
-          type: string
-          minLength: 1
-          title: Org Id
-      additionalProperties: false
-      type: object
-      required:
-        - name
-        - location
-        - org_id
-      title: PutAnalysis
     PutAnalysisGroupRequest:
+      type: object
       properties:
         name:
           type: string
           minLength: 1
           title: Name
         analysis_ids:
+          type: array
           items:
             type: string
-          type: array
           title: Analysis Ids
         demand_type:
           $ref: '#/components/schemas/AnalysisGroupDemandTypeInput'
-          allOf:
-            - $ref: '#/components/schemas/AnalysisGroupDemandTypeInput'
-            - default: {}
-      type: object
       required:
         - name
         - analysis_ids
       title: PutAnalysisGroupRequest
     PutAnalysisRequest:
+      type: object
       properties:
         name:
           type: string
@@ -2283,14 +2023,13 @@ components:
           minLength: 1
           title: External Id
         label:
+          type: array
           items:
             type: string
             minLength: 1
-          type: array
           minItems: 1
           title: Label
       additionalProperties: false
-      type: object
       required:
         - name
         - location
@@ -2304,16 +2043,17 @@ components:
         - ft
       title: RadiusUnit
     Rank:
+      type: object
       properties:
         type:
           $ref: '#/components/schemas/RankType'
         levels:
           $ref: '#/components/schemas/RankLevels'
-      type: object
       required:
         - type
       title: Rank
     RankLevel:
+      type: object
       properties:
         min:
           type: integer
@@ -2325,20 +2065,20 @@ components:
           maximum: 100
           minimum: 0
           title: Max
-      type: object
       required:
         - min
       title: RankLevel
     RankLevels:
+      type: object
       properties:
         phq:
           $ref: '#/components/schemas/RankLevel'
         local:
           $ref: '#/components/schemas/RankLevel'
       additionalProperties: false
-      type: object
       title: RankLevels
     RankLevelsResponse:
+      type: object
       properties:
         phq:
           $ref: '#/components/schemas/RankLevel'
@@ -2347,15 +2087,14 @@ components:
         aviation:
           $ref: '#/components/schemas/RankLevel'
       additionalProperties: false
-      type: object
       title: RankLevelsResponse
     RankResponse:
+      type: object
       properties:
         type:
           $ref: '#/components/schemas/RankTypeResponse'
         levels:
           $ref: '#/components/schemas/RankLevelsResponse'
-      type: object
       required:
         - type
       title: RankResponse
@@ -2373,6 +2112,7 @@ components:
         - local
       title: RankTypeResponse
     SavedLocationResponse:
+      type: object
       properties:
         name:
           type: string
@@ -2383,34 +2123,33 @@ components:
         geojson:
           $ref: '#/components/schemas/GeoJson'
         h3:
+          type: array
           items:
             type: string
-          type: array
           title: H3
         place_ids:
+          type: array
           items:
             type: integer
-          type: array
           title: Place Ids
         place_hierarchies:
+          type: array
           items:
             type: string
-          type: array
           title: Place Hierarchies
         places:
+          type: array
           items:
             $ref: '#/components/schemas/Place'
-          type: array
           title: Places
         subscription_valid_types:
+          type: array
           items:
             $ref: '#/components/schemas/SubscriptionValidType'
-          type: array
           title: Subscription Valid Types
         location_id:
           type: string
           title: Location Id
-      type: object
       required:
         - location_id
       title: SavedLocationResponse
@@ -2422,22 +2161,23 @@ components:
         - features_api
       title: SubscriptionValidType
     UploadResponse:
+      type: object
       properties:
         message:
           type: string
           title: Message
-      type: object
       required:
         - message
       title: UploadResponse
     ValidationError:
+      type: object
       properties:
         loc:
+          type: array
           items:
             anyOf:
               - type: string
               - type: integer
-          type: array
           title: Location
         msg:
           type: string
@@ -2445,20 +2185,19 @@ components:
         type:
           type: string
           title: Error Type
-      type: object
       required:
         - loc
         - msg
         - type
       title: ValidationError
     ValueQuantResponse:
+      type: object
       properties:
         prediction:
           $ref: '#/components/schemas/Prediction'
         historical:
           $ref: '#/components/schemas/Historical'
       additionalProperties: false
-      type: object
       required:
         - prediction
         - historical
@@ -2475,37 +2214,37 @@ components:
         - sunday
       title: Weekday
     beam_backend__models__analysis__ProcessingCompleted:
+      type: object
       properties:
         correlation:
           type: boolean
-          title: Correlation
           default: false
+          title: Correlation
         feature_importance:
           type: boolean
-          title: Feature Importance
           default: false
+          title: Feature Importance
         value_quant:
           type: boolean
-          title: Value Quant
           default: false
-      type: object
+          title: Value Quant
       title: ProcessingCompleted
     beam_backend__models__analysis_group__ProcessingCompleted:
+      type: object
       properties:
         feature_importance:
           type: boolean
-          title: Feature Importance
           default: false
+          title: Feature Importance
         value_quant:
           type: boolean
-          title: Value Quant
           default: false
+          title: Value Quant
         excluded_analyses:
+          type: array
           items:
             $ref: '#/components/schemas/ExcludedAnalysis'
-          type: array
           title: Excluded Analyses
-      type: object
       title: ProcessingCompleted
   securitySchemes:
     BearerAuth:
@@ -2514,14 +2253,4 @@ components:
       bearerFormat: $API_KEY
       description: |
         Use 'Authorization: Bearer <YOUR_API_KEY>' as documented at https://docs.predicthq.com/authentication
-security:
-  - BearerAuth: []
-externalDocs:
-  url: https://docs.predicthq.com
-  description: PredictHQ Tech Docs
-x-hideTryItPanel: true
-tags:
-  - name: Beam API
-    externalDocs:
-      url: https://docs.predicthq.com/api/beam
-      description: Beam API Docs
+
