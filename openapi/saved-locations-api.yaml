@@ -620,6 +620,17 @@ components:
         - coordinates
       title: LineString
     Location:
+      description: |-
+        A json object representing the geo location of the event.
+
+
+        E.g.:
+        ```json
+        {
+          "lat": 37.747767,
+          "lon": -122.455320
+        }
+        ```
       type: object
       properties:
         lat:
@@ -700,12 +711,15 @@ components:
       type: object
       properties:
         count:
+          description: Total number of results found.
           type: integer
           title: Count
         results:
           description: |-
-            Event objects are typically returned. 
-            See this [link](https://docs.predicthq.com/api/events/search-events#query-parameters) for more details on Event schema.
+            List of results where each item is an Event.
+
+
+            Please refer to the response fields section in [Search Events](https://docs.predicthq.com/api/events/search-events#response-fields) for the structure of each record.
           type: array
           items:
             additionalProperties: true
@@ -832,6 +846,7 @@ components:
           $ref: '#/components/schemas/RadiusUnit'
       title: Properties
     RadiusUnit:
+      description: The unit of the radius returned. This will be the unit specified in the radius_unit parameter in the call made.
       type: string
       enum:
         - m
@@ -958,16 +973,16 @@ components:
           title: Formatted Address
         create_dt:
           description: |-
-            A list of user defined labels for the location.
+            The creation date time for the location in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601).
 
 
-            E.g.: `["test", "retail"]`
+            E.g. `2022-04-26T11:46:24+00:00`
           type: string
           format: date-time
           title: Create Dt
         update_dt:
           description: |-
-            The last update date time for the location in ISO 8601 format format.
+            The last update date time for the location in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601).
 
 
             E.g. `2022-04-26T11:46:24+00:00`
@@ -976,7 +991,7 @@ components:
           title: Update Dt
         enrich_dt:
           description: |-
-            The date time the location was last enriched in ISO 8601 format format.
+            The date time the location was last enriched in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601).
 
 
             E.g. `2022-04-26T11:46:25+00:00`
@@ -985,7 +1000,7 @@ components:
           title: Enrich Dt
         insights_dt:
           description: |-
-            The date/time insights were last calculated for the location in ISO 8601 format format.
+            The date/time insights were last calculated for the location in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601).
 
 
             E.g. `2022-04-26T11:46:25+00:00`
@@ -1002,9 +1017,6 @@ components:
             E.g. `hjqkKozgS8mm`
           type: string
           title: User Id
-        org_id:
-          type: string
-          title: Org Id
         subscription_valid_types:
           description: |-
             The value is a list of different (subscription) types that this location is valid for. 
@@ -1066,11 +1078,6 @@ components:
           items:
             $ref: '#/components/schemas/SummaryInsights'
           title: Summary Insights
-        place_hierarchies:
-          type: array
-          items:
-            type: string
-          title: Place Hierarchies
         places:
           description: |
             This object contains the saved locations stats. 
@@ -1116,7 +1123,6 @@ components:
       required:
         - create_dt
         - update_dt
-        - org_id
         - status
         - location_id
       title: SavedLocationResponse
@@ -1131,9 +1137,11 @@ components:
       type: object
       properties:
         count:
+          description: Total number of results found.
           type: integer
           title: Count
         locations:
+          description: List of results where each item is a Saved Location.
           type: array
           items:
             $ref: '#/components/schemas/SavedLocationResponse'
@@ -1154,6 +1162,7 @@ components:
       type: object
       properties:
         radius:
+          description: The suggested radius for a given location rounded to 2 decimal places.
           type: number
           title: Radius
         radius_unit:
