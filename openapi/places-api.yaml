@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
-  title: PredictHQ Places API
-  description: PredictHQ Places API
+  title: PredictHQ Places
+  description: 'The Places API gives you a read-only interface to PredictHQ''s places data. A place represents a [Geonames](http://www.geonames.org/) Feature, which can be either an Area, an Administrative Feature, or a Populated Place.'
   version: 1.0.0
   license:
     name: MIT
@@ -10,14 +10,14 @@ info:
 security:
   - BearerAuth: []
 tags:
-  - name: Places API
+  - name: Places
     externalDocs:
       url: 'https://docs.predicthq.com/api/places/search-places'
-      description: Places Public API
-  - name: Places Hierarchies API
+      description: Places Docs
+  - name: Hierarchies
     externalDocs:
       url: 'https://docs.predicthq.com/api/places/get-place-hierarchies'
-      description: Places Hierarchies Public API
+      description: Hierarchies Docs
 servers:
   - url: 'https://api.predicthq.com'
 externalDocs:
@@ -28,7 +28,7 @@ paths:
   /v1/places/hierarchies:
     get:
       operationId: get_hierarchies_places_hierarchies_get
-      summary: Search hierarchies given cooridinate or place_ids
+      summary: Get the list of hierarchies for a Place.
       parameters:
         - name: location.place_id
           in: query
@@ -45,6 +45,8 @@ paths:
             items:
               type: string
             title: Location.Place Id
+          explode: false
+          style: form
         - name: country
           in: query
           description: |-
@@ -64,7 +66,7 @@ paths:
             A place level.
 
 
-            Defaults to locality.
+            Defaults to 'locality'.
 
 
             E.g. `?level=county`
@@ -81,11 +83,27 @@ paths:
             Please note that you must specify either `location.origin` or `location.place_id` in your request.
 
 
-            E.g. `?location.origin=47.615337,-122.203981 `
+            E.g. `?location.origin=47.615337,-122.203981`
           required: false
           schema:
             type: string
             title: Location.Origin
+          explode: false
+          style: form
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            title: Offset
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            title: Limit
       responses:
         '200':
           description: Successful Response
@@ -100,12 +118,26 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
       tags:
-        - Places Hierarchies API
+        - Hierarchies
   /v1/places:
     get:
       operationId: search_geonames_places_get
-      summary: Search for places by q/country/location/place_id
+      summary: Search for Place
       parameters:
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            title: Offset
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            title: Limit
         - name: id
           in: query
           description: |-
@@ -119,6 +151,8 @@ paths:
             items:
               type: string
             title: Id
+          explode: false
+          style: form
         - name: country
           in: query
           description: |-
@@ -132,10 +166,12 @@ paths:
             items:
               type: string
             title: Country
+          explode: false
+          style: form
         - name: location
           in: query
           description: |-
-            A coordinate in the form @{latitude},{longitude}.
+            A coordinate in the form `@{latitude},{longitude}`.
 
 
             E.g. `?location=@40.66677,-73.88236`
@@ -144,6 +180,8 @@ paths:
             description: 'lat,lon'
             type: string
             title: Location
+          explode: false
+          style: form
         - name: q
           in: query
           description: |-
@@ -180,6 +218,8 @@ paths:
                 - metro
                 - local
             title: Type
+          explode: false
+          style: form
       responses:
         '200':
           description: Successful Response
@@ -194,7 +234,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
       tags:
-        - Places API
+        - Places
 components:
   schemas:
     BaseLevel:
@@ -269,7 +309,7 @@ components:
             The administrative level of the place..
 
 
-            E.g. `locailty`
+            E.g. `locality`
           $ref: '#/components/schemas/BaseLevel'
         name:
           description: |-
@@ -281,7 +321,7 @@ components:
           title: Name
         county:
           description: |-
-            The name of the place's administrative level 2 place, or null if it does not apply.
+            The name of the place's administrative level 2 place, or `null` if it does not apply.
 
 
             E.g. `Kings County`
@@ -289,7 +329,7 @@ components:
           title: County
         region:
           description: |-
-            The name of the place's administrative level 1 place, or null if it does not apply.
+            The name of the place's administrative level 1 place, or `null` if it does not apply.
 
 
             E.g. `East New York`
@@ -297,7 +337,7 @@ components:
           title: Region
         country:
           description: |-
-            The name of the place's administrative level 0 place, or null if it does not apply.
+            The name of the place's administrative level 0 place, or `null` if it does not apply.
 
 
             E.g. `United States`
@@ -305,7 +345,7 @@ components:
           title: Country
         country_alpha2:
           description: |-
-            The ISO 3166-1 alpha-2 country code, or null if there is no country.
+            The ISO 3166-1 alpha-2 country code, or `null` if there is no country.
 
 
             E.g. `US`
@@ -313,7 +353,7 @@ components:
           title: Country Alpha2
         country_alpha3:
           description: |-
-            The ISO 3166-1 alpha-3 country code, or null if there is no country.
+            The ISO 3166-1 alpha-3 country code, or `null` if there is no country.
 
 
             E.g. `USA`
@@ -323,13 +363,15 @@ components:
           description: |-
             A 2-tuple representing the centroid of the place.
 
-            Note that the longitude/latitude coordinates use the GeoJSON order [lon, lat].
+            Note that the longitude/latitude coordinates use the [GeoJSON](http://geojson.org/) order `[lon, lat]`.
 
 
             E.g. `[-73.88236, 40.66677]`
           type: array
           items:
             type: number
+          maxItems: 2
+          minItems: 2
           title: Location
       required:
         - id
