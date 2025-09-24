@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
-  title: PredictHQ Public Broadcasts API
-  description: PredictHQ Public Places API
+  title: PredictHQ Broadcasts API
+  description: Search for Live TV broadcasts happening in a location.
   version: 1.0.0
   license:
     name: MIT
@@ -60,8 +60,16 @@ paths:
         - name: broadcast_status
           in: query
           description: |-
-            Find broadcasts by broadcast status.
-            Multiple values are accepted as a comma-separated list.
+            The schedule status of the broadcast.
+
+
+            Possible values:
+            - scheduled: the broadcast is scheduled to be televised.
+            - predicted: the broadcast is predicted to be televised.
+            - cancelled: the broadcast is no longer scheduled to be televised.
+
+
+            Our guide on [different sport types](https://docs.predicthq.com/getting-started/guides/live-tv-event-guides/find-broadcasts-for-specific-sport-types) in the API explains when the scheduled and predicted statuses are used.
           required: false
           schema:
             type: array
@@ -435,8 +443,16 @@ paths:
         - name: broadcast_status
           in: query
           description: |-
-            Find broadcasts by broadcast status.
-            Multiple values are accepted as a comma-separated list.
+            The schedule status of the broadcast.
+
+
+            Possible values:
+            - scheduled: the broadcast is scheduled to be televised.
+            - predicted: the broadcast is predicted to be televised.
+            - cancelled: the broadcast is no longer scheduled to be televised.
+
+
+            Our guide on [different sport types](https://docs.predicthq.com/getting-started/guides/live-tv-event-guides/find-broadcasts-for-specific-sport-types) in the API explains when the scheduled and predicted statuses are used.
           required: false
           schema:
             type: array
