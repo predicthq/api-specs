@@ -64,9 +64,9 @@ paths:
 
 
             Possible values:
-            - scheduled: the broadcast is scheduled to be televised.
-            - predicted: the broadcast is predicted to be televised.
-            - cancelled: the broadcast is no longer scheduled to be televised.
+            - `scheduled`: the broadcast is scheduled to be televised.
+            - `predicted`: the broadcast is predicted to be televised.
+            - `cancelled`: the broadcast is no longer scheduled to be televised.
 
 
             Our guide on [different sport types](https://docs.predicthq.com/getting-started/guides/live-tv-event-guides/find-broadcasts-for-specific-sport-types) in the API explains when the scheduled and predicted statuses are used.
@@ -447,9 +447,9 @@ paths:
 
 
             Possible values:
-            - scheduled: the broadcast is scheduled to be televised.
-            - predicted: the broadcast is predicted to be televised.
-            - cancelled: the broadcast is no longer scheduled to be televised.
+            - `scheduled`: the broadcast is scheduled to be televised.
+            - `predicted`: the broadcast is predicted to be televised.
+            - `cancelled`: the broadcast is no longer scheduled to be televised.
 
 
             Our guide on [different sport types](https://docs.predicthq.com/getting-started/guides/live-tv-event-guides/find-broadcasts-for-specific-sport-types) in the API explains when the scheduled and predicted statuses are used.
