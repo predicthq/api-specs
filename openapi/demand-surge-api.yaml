@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
-  title: PredictHQ Public Demand Surge API
-  description: PredictHQ Public Demand Surge API
+  title: PredictHQ Demand Surge API
+  description: Identify dates with surges in demand caused by multiple events happening at the same time and location.
   version: 1.0.0
   license:
     name: MIT
