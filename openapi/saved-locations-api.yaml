@@ -1,7 +1,11 @@
 openapi: 3.1.0
 info:
-  title: PredictHQ Saved-Locations API
-  description: PredictHQ Saved-Locations API
+  title: PredictHQ Saved Locations API
+  description: |-
+    Saved Locations are persistent, user-defined geographic entities that serve as reusable identifiers across PredictHQ’s platform. Defined using a name and a GeoJSON location shape, they may also include an external ID and optional labels for filtering or grouping.
+
+
+    This API is currently in beta.
   version: 1.0.0
   license:
     name: MIT
@@ -10,10 +14,10 @@ info:
 security:
   - BearerAuth: []
 tags:
-  - name: Saved-Locations API
+  - name: Saved Locations API
     externalDocs:
       url: 'https://docs.predicthq.com/api/saved-locations/overview'
-      description: Saved-Locations API
+      description: Saved Locations API Docs
 servers:
   - url: 'https://api.predicthq.com'
 externalDocs:
@@ -24,7 +28,7 @@ paths:
   /v1/locations:
     get:
       operationId: get_locations_public_locations_get
-      summary: Retrieve list of saved locations for the Org
+      summary: Search Saved Locations
       parameters:
         - name: q
           in: query
@@ -107,7 +111,7 @@ paths:
                 - '-unscheduled_events'
             default:
               - created
-          explode: true
+          explode: false
           style: form
         - name: location_id
           in: query
@@ -121,16 +125,7 @@ paths:
             type: array
             items:
               type: string
-          explode: true
-          style: form
-        - name: labels
-          in: query
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-          explode: true
+          explode: false
           style: form
       responses:
         '200':
@@ -146,7 +141,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
       tags:
-        - Saved-Locations API
+        - Saved Locations API
     post:
       operationId: save_location_public_locations_post
       summary: Create new location
@@ -175,7 +170,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
       tags:
-        - Saved-Locations API
+        - Saved Locations API
   '/v1/locations/{location_id}':
     get:
       operationId: get_location_public_locations__location_id__get
@@ -201,7 +196,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
       tags:
-        - Saved-Locations API
+        - Saved Locations API
     put:
       operationId: replace_location_data_public_locations__location_id__put
       summary: Replace location data
@@ -228,10 +223,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
       tags:
-        - Saved-Locations API
+        - Saved Locations API
     delete:
       operationId: delete_location_public_locations__location_id__delete
-      summary: Delete specified location
+      summary: Delete a Saved Location
       parameters:
         - name: location_id
           in: path
@@ -249,11 +244,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
       tags:
-        - Saved-Locations API
+        - Saved Locations API
   '/v1/locations/{location_id}/insights/events':
     get:
       operationId: get_location_events_public_locations__location_id__insights_events_get
-      summary: Retrieve events for specified location
+      summary: Search Events for a Saved Location
+      description: 'Please refer to the [Events API](https://docs.predicthq.com/api/events/search-events) docs for the available query parameters in addition to those listed below.'
       parameters:
         - name: location_id
           in: path
@@ -283,70 +279,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
       tags:
-        - Saved-Locations API
-  /v1/suggested-radius/:
-    get:
-      operationId: get_suggested_radius_public_suggested_radius__get
-      summary: Get optimal radius for a location and industry
-      parameters:
-        - name: radius_unit
-          in: query
-          description: |-
-            Unit in which the suggested radius will be returned.
-            The default unit is m
-
-            Possible values:
-            - m - meters (default)     
-            - km - kilometers      
-            - ft - feet       
-            - mi - miles    
-
-
-            E.g. `?radius_unit=km`
-          required: false
-          schema:
-            default: m
-            $ref: '#/components/schemas/RadiusUnit'
-        - name: industry
-          in: query
-          description: |-
-            The industry of interest for which the radius will be calculated. For different industries, the radii will be different based on the various types of events that would impact the location. For example, if you were getting the suggested radius around a hotel you’d specify accommodation as the industry.
-
-
-            E.g. `?industry=accommodation`
-          required: false
-          schema:
-            default: other
-            $ref: '#/components/schemas/Industry'
-        - name: location.origin
-          in: query
-          description: |-
-            A comma-separated string consisting of the latitude and longitude of the location to find the optimal radius for. For example your store or hotel location.
-
-
-            The format is `<latitude>,<longitude>`
-
-
-            E.g. `?location.origin=37.747767,-122.455320`
-          required: true
-          schema:
-            type: string
-            pattern: '^-?\d{1,3}(?:\.\d+)?,\-?\d{1,3}(?:\.\d+)?$'
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SuggestedRadiusResponse'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-      tags:
-        - Saved-Locations API
+        - Saved Locations API
 components:
   parameters:
     LimitParam:
@@ -508,6 +441,7 @@ components:
       title: DateRange
     DateRangeType:
       type: string
+      default: next_90d
       const: next_90d
       title: DateRangeType
     GeoJson-Input:
@@ -577,19 +511,6 @@ components:
             $ref: '#/components/schemas/ValidationError'
           title: Detail
       title: HTTPValidationError
-    Industry:
-      type: string
-      enum:
-        - parking
-        - restaurants
-        - retail
-        - accommodation
-        - cpg
-        - tourism
-        - marketing
-        - transportation
-        - other
-      title: Industry
     LineString:
       type: object
       properties:
@@ -619,30 +540,6 @@ components:
       required:
         - coordinates
       title: LineString
-    Location:
-      description: |-
-        A json object representing the geo location of the event.
-
-
-        E.g.:
-        ```json
-        {
-          "lat": 37.747767,
-          "lon": -122.455320
-        }
-        ```
-      type: object
-      properties:
-        lat:
-          type: string
-          title: Lat
-        lon:
-          type: string
-          title: Lon
-      required:
-        - lat
-        - lon
-      title: Location
     MultiLineString:
       type: object
       properties:
@@ -1158,22 +1055,6 @@ components:
         - features_api
         - notifications
       title: SubscriptionValidType
-    SuggestedRadiusResponse:
-      type: object
-      properties:
-        radius:
-          description: The suggested radius for a given location rounded to 2 decimal places.
-          type: number
-          title: Radius
-        radius_unit:
-          $ref: '#/components/schemas/RadiusUnit'
-        location:
-          $ref: '#/components/schemas/Location'
-      required:
-        - radius
-        - radius_unit
-        - location
-      title: SuggestedRadiusResponse
     SummaryInsights:
       type: object
       properties:
