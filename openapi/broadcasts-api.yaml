@@ -1,0 +1,1430 @@
+openapi: 3.1.0
+info:
+  title: PredictHQ Broadcasts API
+  description: Search for Live TV broadcasts happening in a location.
+  version: 1.0.0
+  license:
+    name: MIT
+    url: 'https://opensource.org/licenses/MIT'
+  termsOfService: 'https://www.predicthq.com/legal/terms'
+security:
+  - BearerAuth: []
+tags:
+  - name: Broadcasts API
+    externalDocs:
+      url: 'https://docs.predicthq.com/api/broadcasts/search-broadcasts'
+      description: Broadcasts API
+servers:
+  - url: 'https://api.predicthq.com'
+externalDocs:
+  url: 'https://docs.predicthq.com'
+  description: PredictHQ Tech Docs
+x-hideTryItPanel: true
+paths:
+  /v1/broadcasts/:
+    get:
+      operationId: search_broadcasts_v1_broadcasts__get
+      summary: Search Broadcasts
+      parameters:
+        - name: broadcast_id
+          in: query
+          description: |-
+            Find broadcasts by unique identifier. 
+
+            Multiple values are accepted as a comma-separated list.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            title: Broadcast Id
+          example: '?broadcast_id=tFk2LbcpzgeuLXw8dKWa3J'
+        - name: record_status
+          in: query
+          description: |-
+            Find broadcasts by their record status.
+            Multiple values are accepted as a comma-separated list.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - active
+                - deleted
+                - duplicate
+            default:
+              - active
+            title: Record Status
+          example: '?record_status=deleted'
+        - name: broadcast_status
+          in: query
+          description: |-
+            The schedule status of the broadcast.
+
+
+            Possible values:
+            - scheduled: the broadcast is scheduled to be televised.
+            - predicted: the broadcast is predicted to be televised.
+            - cancelled: the broadcast is no longer scheduled to be televised.
+
+
+            Our guide on [different sport types](https://docs.predicthq.com/getting-started/guides/live-tv-event-guides/find-broadcasts-for-specific-sport-types) in the API explains when the scheduled and predicted statuses are used.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - cancelled
+                - predicted
+                - scheduled
+            title: Broadcast Status
+          example: '?broadcast_status=scheduled'
+        - name: start.gt
+          in: query
+          description: |-
+            Find broadcasts by their start time: greater than.
+
+            Format: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss
+          required: false
+          schema:
+            type: string
+            title: Start.Gt
+        - name: start.gte
+          in: query
+          description: |-
+            Find broadcasts by their start time: greater than or equal to.
+
+            Format: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss
+          required: false
+          schema:
+            type: string
+            title: Start.Gte
+        - name: start.lt
+          in: query
+          description: |-
+            Find broadcasts by their start time: less than.
+
+            Format: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss
+          required: false
+          schema:
+            type: string
+            title: Start.Lt
+        - name: start.lte
+          in: query
+          description: |-
+            Find broadcasts by their start time: less than or equal to.
+
+            Format: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss
+          required: false
+          schema:
+            type: string
+            title: Start.Lte
+        - name: start.tz
+          in: query
+          description: |-
+            Time zone of the updated times used; 
+
+            a [TZ Database name](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
+
+            Default is UTC
+          required: false
+          schema:
+            type: string
+            title: Start.Tz
+        - name: updated.gt
+          in: query
+          description: |-
+            Find broadcasts by the time they were last updated: greater than.
+
+            Format: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss
+          required: false
+          schema:
+            type: string
+            title: Updated.Gt
+        - name: updated.gte
+          in: query
+          description: |-
+            Find broadcasts by the time they were last updated: greater than or equal to.
+
+            Format: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss
+          required: false
+          schema:
+            type: string
+            title: Updated.Gte
+        - name: updated.lt
+          in: query
+          description: |-
+            Find broadcasts by the time they were last updated: less than.
+
+            Format: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss
+          required: false
+          schema:
+            type: string
+            title: Updated.Lt
+        - name: updated.lte
+          in: query
+          description: |-
+            Find broadcasts by the time they were last updated: less than or equal to.
+
+            Format: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss
+          required: false
+          schema:
+            type: string
+            title: Updated.Lte
+        - name: updated.tz
+          in: query
+          description: |-
+            Time zone of the updated times used; 
+
+            a [TZ Database name](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
+
+            Default is UTC
+          required: false
+          schema:
+            type: string
+            title: Updated.Tz
+        - name: first_seen.gt
+          in: query
+          description: |-
+            Find broadcasts by the time they were seen for the first time: greater than.
+
+            Format: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss
+          required: false
+          schema:
+            type: string
+            title: First Seen.Gt
+        - name: first_seen.gte
+          in: query
+          description: |-
+            Find broadcasts by the time they were seen for the first time: greater than or equal to.
+
+            Format: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss
+          required: false
+          schema:
+            type: string
+            title: First Seen.Gte
+        - name: first_seen.lt
+          in: query
+          description: |-
+            Find broadcasts by the time they were seen for the first time: less than.
+
+            Format: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss
+          required: false
+          schema:
+            type: string
+            title: First Seen.Lt
+        - name: first_seen.lte
+          in: query
+          description: |-
+            Find broadcasts by the time they were seen for the first time: less than or equal to.
+
+            Format: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss
+          required: false
+          schema:
+            type: string
+            title: First Seen.Lte
+        - name: first_seen.tz
+          in: query
+          description: |-
+            Time zone of the first_seen times used; 
+
+            a [TZ Database name](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
+
+            Default is UTC
+          required: false
+          schema:
+            type: string
+            title: First Seen.Tz
+        - name: phq_viewership.gt
+          in: query
+          description: |-
+            Find broadcasts by their PHQ Viewership number: greater than.
+
+            Format: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss
+          required: false
+          schema:
+            type: integer
+            title: Phq Viewership.Gt
+        - name: phq_viewership.gte
+          in: query
+          description: |-
+            Find broadcasts by their PHQ Viewership number: greater than or equal to.
+
+            Format: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss
+          required: false
+          schema:
+            type: integer
+            title: Phq Viewership.Gte
+        - name: phq_viewership.lt
+          in: query
+          description: |-
+            Find broadcasts by their PHQ Viewership number: less than.
+
+            Format: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss
+          required: false
+          schema:
+            type: integer
+            title: Phq Viewership.Lt
+        - name: phq_viewership.lte
+          in: query
+          description: |-
+            Find broadcasts by their PHQ Viewership number: less than or equal to.
+
+            Format: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss
+          required: false
+          schema:
+            type: integer
+            title: Phq Viewership.Lte
+        - name: location.place_id
+          in: query
+          description: |-
+            Find broadcasts by their location's place_id. Multiple values are accepted as a comma-separated list.
+
+
+            Places in the Broadcasts API have the same identifiers as those in the [Places API](https://docs.predicthq.com/api/places/search-places).
+
+
+            All broadcast location places are counties, but this parameter accepts other types of places in the hierarchy. See [Places](https://docs.predicthq.com/api/places/search-places) for different place types.
+
+            If the `place_id` of a county is specified, broadcasts in that county will be returned.
+
+            If the `place_id` of a state (region) is specified, broadcasts in all the counties within that state will be returned. US states have the place type region.E.g. If you specify `location.place_id=5332921` (California), results will contain broadcasts for all counties in California.
+
+            For places below the county level, broadcasts in the county that the place belongs to will be returned. E.g. If you specify `location.place_id=5327684` (Berkeley), results will contain broadcasts for Alameda County; Berkeley is located within Alameda County. Some places below county level do not belong to a county, in this case, you can try using the `location.origin param`.
+
+            A [CSV](https://docs.predicthq.com/api/broadcasts/search-broadcasts#mapping-file) file of broadcast counties is available. It contains the place_id and name of all counties and states in the US.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            title: Location.Place Id
+          example: '?location.place_id=5391997,5128594,5379524,5129915'
+        - name: location.origin
+          in: query
+          description: |-
+            Find broadcasts in the county for the provided geopoint (a latitude and longitude coordinate). The format of the geopoint is `{latitude},{longitude}`.
+
+
+            The Broadcasts API returns broadcasts at the county level. When you specify a geopoint using `location.origin` the API returns broadcasts for the county the specified geopoint is within.
+
+
+            If you specify a geopoint within Los Angeles County then broadcasts for Los Angeles County will be returned.
+          required: false
+          schema:
+            type: string
+            title: Location.Origin
+          example: '?location.origin=40.730610,-73.935242'
+        - name: sort
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - start
+                - '-start'
+                - phq_viewership
+                - '-phq_viewership'
+                - updated
+                - '-updated'
+                - first_seen
+                - '-first_seen'
+            default:
+              - start
+            title: Sort
+        - $ref: '#/components/parameters/OffsetParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: event.event_id
+          in: query
+          description: |-
+            Find broadcasts by their physical event’s unique identifier. Multiple values are accepted as a comma-separated list.
+            Events in the Broadcasts API have the same identifiers as those in the [Events API](https://docs.predicthq.com/api/events/search-events).
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            title: Event.Event Id
+          example: '?event.event_id=svbfg9xT4YSVUeeAKp'
+        - name: event.category
+          in: query
+          description: Find broadcasts by their physical event’s category.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            title: Event.Category
+          example: '?event.category=sports'
+        - name: event.label
+          in: query
+          description: |-
+            Find broadcasts by their physical event’s labels. Multiple values are accepted as a comma-separated list.
+
+            Where multiple labels are provided, broadcasts which match any of the labels are returned.
+
+            Please note that all event labels are lowercase and that the search is case sensitive.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            title: Event.Label
+          example: '?event.label=nfl,nba'
+        - name: event.entity_id
+          in: query
+          description: |-
+            Find broadcasts by their entity's unique identifier. Multiple values are accepted as a comma-separated list.
+            Entities in the Broadcasts API have the same identifiers as those in the [Events API](https://docs.predicthq.com/api/events/search-events).
+
+            This parameter can be used to filter broadcasts by team, e.g. `?event.entity_id=GduZL2z24phJQni4ktERGw` to retrieve the Los Angeles Lakers broadcasts, or by venue, e.g. `?event.entity_id=qSpch2mYLDa4iygkMdMPYu` to retrieve the broadcasts related to a physical game happening at the STAPLES center.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            title: Event.Entity Id
+          example: '?event.entity_id=GduZL2z24phJQni4ktERGw'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BroadcastsResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+        - Broadcasts API
+  /v1/broadcasts/count/:
+    get:
+      operationId: count_broadcasts_v1_broadcasts_count__get
+      summary: Count Broadcasts
+      parameters:
+        - name: broadcast_id
+          in: query
+          description: |-
+            Find broadcasts by unique identifier. 
+
+            Multiple values are accepted as a comma-separated list.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            title: Broadcast Id
+          example: '?broadcast_id=tFk2LbcpzgeuLXw8dKWa3J'
+        - name: record_status
+          in: query
+          description: |-
+            Find broadcasts by their record status.
+            Multiple values are accepted as a comma-separated list.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - active
+                - deleted
+                - duplicate
+            default:
+              - active
+            title: Record Status
+          example: '?record_status=deleted'
+        - name: broadcast_status
+          in: query
+          description: |-
+            The schedule status of the broadcast.
+
+
+            Possible values:
+            - scheduled: the broadcast is scheduled to be televised.
+            - predicted: the broadcast is predicted to be televised.
+            - cancelled: the broadcast is no longer scheduled to be televised.
+
+
+            Our guide on [different sport types](https://docs.predicthq.com/getting-started/guides/live-tv-event-guides/find-broadcasts-for-specific-sport-types) in the API explains when the scheduled and predicted statuses are used.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - cancelled
+                - predicted
+                - scheduled
+            title: Broadcast Status
+          example: '?broadcast_status=scheduled'
+        - name: start.gt
+          in: query
+          description: |-
+            Find broadcasts by their start time: greater than.
+
+            Format: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss
+          required: false
+          schema:
+            type: string
+            title: Start.Gt
+        - name: start.gte
+          in: query
+          description: |-
+            Find broadcasts by their start time: greater than or equal to.
+
+            Format: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss
+          required: false
+          schema:
+            type: string
+            title: Start.Gte
+        - name: start.lt
+          in: query
+          description: |-
+            Find broadcasts by their start time: less than.
+
+            Format: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss
+          required: false
+          schema:
+            type: string
+            title: Start.Lt
+        - name: start.lte
+          in: query
+          description: |-
+            Find broadcasts by their start time: less than or equal to.
+
+            Format: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss
+          required: false
+          schema:
+            type: string
+            title: Start.Lte
+        - name: start.tz
+          in: query
+          description: |-
+            Time zone of the updated times used; 
+
+            a [TZ Database name](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
+
+            Default is UTC
+          required: false
+          schema:
+            type: string
+            title: Start.Tz
+        - name: updated.gt
+          in: query
+          description: |-
+            Find broadcasts by the time they were last updated: greater than.
+
+            Format: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss
+          required: false
+          schema:
+            type: string
+            title: Updated.Gt
+        - name: updated.gte
+          in: query
+          description: |-
+            Find broadcasts by the time they were last updated: greater than or equal to.
+
+            Format: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss
+          required: false
+          schema:
+            type: string
+            title: Updated.Gte
+        - name: updated.lt
+          in: query
+          description: |-
+            Find broadcasts by the time they were last updated: less than.
+
+            Format: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss
+          required: false
+          schema:
+            type: string
+            title: Updated.Lt
+        - name: updated.lte
+          in: query
+          description: |-
+            Find broadcasts by the time they were last updated: less than or equal to.
+
+            Format: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss
+          required: false
+          schema:
+            type: string
+            title: Updated.Lte
+        - name: updated.tz
+          in: query
+          description: |-
+            Time zone of the updated times used; 
+
+            a [TZ Database name](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
+
+            Default is UTC
+          required: false
+          schema:
+            type: string
+            title: Updated.Tz
+        - name: first_seen.gt
+          in: query
+          description: |-
+            Find broadcasts by the time they were seen for the first time: greater than.
+
+            Format: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss
+          required: false
+          schema:
+            type: string
+            title: First Seen.Gt
+        - name: first_seen.gte
+          in: query
+          description: |-
+            Find broadcasts by the time they were seen for the first time: greater than or equal to.
+
+            Format: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss
+          required: false
+          schema:
+            type: string
+            title: First Seen.Gte
+        - name: first_seen.lt
+          in: query
+          description: |-
+            Find broadcasts by the time they were seen for the first time: less than.
+
+            Format: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss
+          required: false
+          schema:
+            type: string
+            title: First Seen.Lt
+        - name: first_seen.lte
+          in: query
+          description: |-
+            Find broadcasts by the time they were seen for the first time: less than or equal to.
+
+            Format: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss
+          required: false
+          schema:
+            type: string
+            title: First Seen.Lte
+        - name: first_seen.tz
+          in: query
+          description: |-
+            Time zone of the first_seen times used; 
+
+            a [TZ Database name](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
+
+            Default is UTC
+          required: false
+          schema:
+            type: string
+            title: First Seen.Tz
+        - name: phq_viewership.gt
+          in: query
+          description: |-
+            Find broadcasts by their PHQ Viewership number: greater than.
+
+            Format: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss
+          required: false
+          schema:
+            type: integer
+            title: Phq Viewership.Gt
+        - name: phq_viewership.gte
+          in: query
+          description: |-
+            Find broadcasts by their PHQ Viewership number: greater than or equal to.
+
+            Format: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss
+          required: false
+          schema:
+            type: integer
+            title: Phq Viewership.Gte
+        - name: phq_viewership.lt
+          in: query
+          description: |-
+            Find broadcasts by their PHQ Viewership number: less than.
+
+            Format: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss
+          required: false
+          schema:
+            type: integer
+            title: Phq Viewership.Lt
+        - name: phq_viewership.lte
+          in: query
+          description: |-
+            Find broadcasts by their PHQ Viewership number: less than or equal to.
+
+            Format: YYYY-MM-DD or YYYY-MM-DDThh:mm:ss
+          required: false
+          schema:
+            type: integer
+            title: Phq Viewership.Lte
+        - name: location.place_id
+          in: query
+          description: |-
+            Find broadcasts by their location's place_id. Multiple values are accepted as a comma-separated list.
+
+
+            Places in the Broadcasts API have the same identifiers as those in the [Places API](https://docs.predicthq.com/api/places/search-places).
+
+
+            All broadcast location places are counties, but this parameter accepts other types of places in the hierarchy. See [Places](https://docs.predicthq.com/api/places/search-places) for different place types.
+
+            If the `place_id` of a county is specified, broadcasts in that county will be returned.
+
+            If the `place_id` of a state (region) is specified, broadcasts in all the counties within that state will be returned. US states have the place type region.E.g. If you specify `location.place_id=5332921` (California), results will contain broadcasts for all counties in California.
+
+            For places below the county level, broadcasts in the county that the place belongs to will be returned. E.g. If you specify `location.place_id=5327684` (Berkeley), results will contain broadcasts for Alameda County; Berkeley is located within Alameda County. Some places below county level do not belong to a county, in this case, you can try using the `location.origin param`.
+
+            A [CSV](https://docs.predicthq.com/api/broadcasts/search-broadcasts#mapping-file) file of broadcast counties is available. It contains the place_id and name of all counties and states in the US.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            title: Location.Place Id
+          example: '?location.place_id=5391997,5128594,5379524,5129915'
+        - name: location.origin
+          in: query
+          description: |-
+            Find broadcasts in the county for the provided geopoint (a latitude and longitude coordinate). The format of the geopoint is `{latitude},{longitude}`.
+
+
+            The Broadcasts API returns broadcasts at the county level. When you specify a geopoint using `location.origin` the API returns broadcasts for the county the specified geopoint is within.
+
+
+            If you specify a geopoint within Los Angeles County then broadcasts for Los Angeles County will be returned.
+          required: false
+          schema:
+            type: string
+            title: Location.Origin
+          example: '?location.origin=40.730610,-73.935242'
+        - name: event.event_id
+          in: query
+          description: |-
+            Find broadcasts by their physical event’s unique identifier. Multiple values are accepted as a comma-separated list.
+            Events in the Broadcasts API have the same identifiers as those in the Events [API](https://docs.predicthq.com/api/events/search-events).
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            title: Event.Event Id
+          example: '?event.event_id=svbfg9xT4YSVUeeAKp'
+        - name: event.category
+          in: query
+          description: Find broadcasts by their physical event’s category.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            title: Event.Category
+          example: '?event.category=sports'
+        - name: event.label
+          in: query
+          description: |-
+            Find broadcasts by their physical event’s labels. Multiple values are accepted as a comma-separated list.
+
+            Where multiple labels are provided, broadcasts which match any of the labels are returned.
+
+            Please note that all event labels are lowercase and that the search is case sensitive.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            title: Event.Label
+          example: '?event.label=nfl,nba'
+        - name: event.entity_id
+          in: query
+          description: |-
+            Find broadcasts by their entity's unique identifier. Multiple values are accepted as a comma-separated list.
+            Entities in the Broadcasts API have the same identifiers as those in the [Events API](https://docs.predicthq.com/api/events/search-events).
+
+            This parameter can be used to filter broadcasts by team, e.g. `?event.entity_id=GduZL2z24phJQni4ktERGw` to retrieve the Los Angeles Lakers broadcasts, or by venue, e.g. `?event.entity_id=qSpch2mYLDa4iygkMdMPYu` to retrieve the broadcasts related to a physical game happening at the STAPLES center.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            title: Event.Entity Id
+          example: '?event.entity_id=GduZL2z24phJQni4ktERGw'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BroadcastCountResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+        - Broadcasts API
+components:
+  parameters:
+    LimitParam:
+      name: limit
+      in: query
+      description: Limit the number of results.
+      required: false
+      schema:
+        type: integer
+        default: 10
+    OffsetParam:
+      name: offset
+      in: query
+      description: Offset the results.
+      required: false
+      schema:
+        type: integer
+        default: 0
+  schemas:
+    ActiveBroadcastRecordStatus:
+      type: string
+      const: active
+      title: ActiveBroadcastRecordStatus
+    BroadcastCountResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          title: Count
+      required:
+        - count
+      title: BroadcastCountResponse
+    BroadcastEntityType:
+      type: string
+      enum:
+        - venue
+        - organisation
+      title: BroadcastEntityType
+    BroadcastEventCategory:
+      type: string
+      const: sports
+      title: BroadcastEventCategory
+    BroadcastStatus:
+      type: string
+      enum:
+        - cancelled
+        - predicted
+        - scheduled
+      title: BroadcastStatus
+    BroadcastsResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          title: Count
+        next:
+          type: string
+          title: Next
+        previous:
+          type: string
+          title: Previous
+        overflow:
+          type: boolean
+          title: Overflow
+        results:
+          type: array
+          items:
+            anyOf:
+              - $ref: '#/components/schemas/PublicBroadcast'
+              - $ref: '#/components/schemas/PublicDeletedBroadcast'
+              - $ref: '#/components/schemas/PublicDuplicateBroadcast'
+          title: Results
+      required:
+        - count
+        - overflow
+        - results
+      title: BroadcastsResponse
+    DeletedBroadcastRecordStatus:
+      type: string
+      const: deleted
+      title: DeletedBroadcastRecordStatus
+    DuplicateBroadcastRecordStatus:
+      type: string
+      const: duplicate
+      title: DuplicateBroadcastRecordStatus
+    GeoPoint:
+      type: object
+      properties:
+        lon:
+          description: Must be between -180.0 and 180.0
+          type: number
+          exclusiveMaximum: 180
+          exclusiveMinimum: -180
+          title: Lon
+        lat:
+          description: Must be between -90.0 and 90.0
+          type: number
+          exclusiveMaximum: 90
+          exclusiveMinimum: -90
+          title: Lat
+      required:
+        - lon
+        - lat
+      title: GeoPoint
+    HTTPValidationError:
+      type: object
+      properties:
+        detail:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          title: Detail
+      title: HTTPValidationError
+    PlaceType:
+      type: string
+      enum:
+        - 'admin:city:major'
+        - locality
+        - county
+      title: PlaceType
+    PublicBroadcast:
+      type: object
+      properties:
+        broadcast_id:
+          description: |-
+            The unique identifier.
+
+
+            E.g. `u5aCvebffuNFpGSGNQFiU4`
+          type: string
+          title: Broadcast Id
+        updated:
+          description: |-
+            The time the broadcast was last updated. In YYYY-MM-DDThh:mm:ssZ format.
+
+
+            E.g. `2020-11-30T06:58:28Z`
+          type: string
+          format: date-time
+          title: Updated
+        first_seen:
+          description: |-
+            The time the broadcast was seen for the first time. In YYYY-MM-DDThh:mm:ssZ format.
+
+
+            E.g. `2020-11-30T06:58:28Z`
+          type: string
+          format: date-time
+          title: First Seen
+        dates:
+          $ref: '#/components/schemas/PublicBroadcastDate'
+        location:
+          $ref: '#/components/schemas/PublicBroadcastLocation'
+        phq_viewership:
+          description: |-
+            The estimated number of people in the broadcast’s location that will watch the broadcast.
+
+
+            E.g. `300000`
+          type: integer
+          title: Phq Viewership
+        record_status:
+          description: |-
+            The record status of the broadcast.
+
+
+            Possible values:
+            - active: the broadcast record is valid.
+            - duplicate: the broadcast record is a duplicate of an active record.
+            - deleted: the broadcast record is no longer valid.
+
+
+            E.g. `active`
+          $ref: '#/components/schemas/ActiveBroadcastRecordStatus'
+        broadcast_status:
+          description: |-
+            The schedule status of the broadcast.
+
+
+            Our guide on [different sport](https://github.com/predicthq/gitbook-tech-docs/blob/main/docs/getting-started/guides/live-tv-event-guides/find-broadcasts-for-specific-sport-types.md) types in the API explains when the `scheduled` and `predicted` statuses are used.
+
+
+            E.g. 'scheduled'
+          $ref: '#/components/schemas/BroadcastStatus'
+        event:
+          $ref: '#/components/schemas/PublicEvent'
+      required:
+        - broadcast_id
+        - updated
+        - first_seen
+        - record_status
+      title: PublicBroadcast
+    PublicBroadcastDate:
+      type: object
+      properties:
+        start:
+          description: |-
+            The time the broadcast is scheduled to start, in UTC. In YYYY-MM-DDThh:mm:ssZ format.
+
+
+            E.g. `2018-01-01T17:00:00Z`
+          type: string
+          format: date-time
+          title: Start
+        start_local:
+          description: |-
+            The time the broadcast is scheduled to start in the time zone of the broadcast’s location. In YYYY-MM-DDThh:mm:ss format.
+
+
+            E.g. `2018-01-01T12:00:00`
+          type: string
+          format: date-time
+          title: Start Local
+        timezone:
+          description: |-
+            The time zone of the broadcast’s location. In TZ Database name format.
+
+
+            E.g. `America/New_York`
+          type: string
+          title: Timezone
+      required:
+        - start
+      title: PublicBroadcastDate
+    PublicBroadcastLocation:
+      type: object
+      properties:
+        geopoint:
+          description: |-
+            The latitude and longitude coordinates of the location where the broadcast is televised.
+
+
+            **E.g.**
+              ```json
+              {
+                "lon": -122.4425,
+                "lat": 37.77823
+              }
+              ```
+          $ref: '#/components/schemas/GeoPoint'
+        place_hierarchies:
+          description: |-
+            An array of place hierarchies for the location where the broadcast is televised. A broadcast record is only televised in one location.
+
+
+            A hierarchy is an array of place ids (see [Places](https://docs.predicthq.com/api/places/search-places)). The final id in a hierarchy is the place_id of the place where the broadcast is televised.
+
+            **E.g.**
+              ```json
+              [
+                [
+                  "6295630",
+                  "6255149",
+                  "6252001",
+                  "5332921",
+                  "5391997"
+                ]
+              ]
+              ```
+          type: array
+          items:
+            items:
+              type: string
+            type: array
+          title: Place Hierarchies
+        places:
+          description: |-
+            An array of place details for the place where the broadcast is televised. A broadcast record is only televised in one place.
+
+            A [CSV file of broadcast counties](https://docs.predicthq.com/api/broadcasts/search-broadcasts#mapping-file) is available. It contains the place_id and name of all counties and states in the US.
+            **E.g.**
+              ```json
+              [
+                {
+                  "place_id": "5391997",
+                  "type": "county",
+                  "name": "San Francisco County",
+                  "county": "City and County of San Francisco",
+                  "region": "California",
+                  "country": "US"
+                }
+              ]
+              ```
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicPlace'
+          title: Places
+        country:
+          description: |-
+            The country code of the location where the broadcast is televised. In [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format.
+
+
+            E.g. `US`
+          type: string
+          title: Country
+      required:
+        - geopoint
+        - place_hierarchies
+        - places
+        - country
+      title: PublicBroadcastLocation
+    PublicDeletedBroadcast:
+      type: object
+      properties:
+        broadcast_id:
+          description: |-
+            The unique identifier.
+
+
+            E.g. `u5aCvebffuNFpGSGNQFiU4`
+          type: string
+          title: Broadcast Id
+        updated:
+          description: |-
+            The time the broadcast was last updated. In YYYY-MM-DDThh:mm:ssZ format.
+
+
+            E.g. `2020-11-30T06:58:28Z`
+          type: string
+          format: date-time
+          title: Updated
+        first_seen:
+          description: |-
+            The time the broadcast was seen for the first time. In YYYY-MM-DDThh:mm:ssZ format.
+
+
+            E.g. `2020-11-30T06:58:28Z`
+          type: string
+          format: date-time
+          title: First Seen
+        record_status:
+          $ref: '#/components/schemas/DeletedBroadcastRecordStatus'
+      required:
+        - broadcast_id
+        - updated
+        - first_seen
+        - record_status
+      title: PublicDeletedBroadcast
+    PublicDuplicateBroadcast:
+      type: object
+      properties:
+        broadcast_id:
+          description: |-
+            The unique identifier.
+
+
+            E.g. `u5aCvebffuNFpGSGNQFiU4`
+          type: string
+          title: Broadcast Id
+        updated:
+          description: 'The time the broadcast was last updated. In YYYY-MM-DDThh:mm:ssZ format.'
+          type: string
+          format: date-time
+          title: Updated
+        first_seen:
+          description: |-
+            The time the broadcast was seen for the first time. In YYYY-MM-DDThh:mm:ssZ format.
+
+
+            E.g. `2020-11-30T06:58:28Z`
+          type: string
+          format: date-time
+          title: First Seen
+        record_status:
+          $ref: '#/components/schemas/DuplicateBroadcastRecordStatus'
+        duplicate_of_id:
+          description: |-
+            The active record unique identifier the current broadcast is a duplicate of. Please note that this field is only present for records with record status `duplicate`.
+
+
+            E.g. `u5aCvebffuNFpGSGNQFiU4`
+          type: string
+          title: Duplicate Of Id
+      required:
+        - broadcast_id
+        - updated
+        - first_seen
+        - record_status
+        - duplicate_of_id
+      title: PublicDuplicateBroadcast
+    PublicEntity:
+      type: object
+      properties:
+        entity_id:
+          type: string
+          title: Entity Id
+        type:
+          $ref: '#/components/schemas/BroadcastEntityType'
+        name:
+          type: string
+          title: Name
+        formatted_address:
+          type: string
+          title: Formatted Address
+      required:
+        - entity_id
+        - type
+        - name
+      title: PublicEntity
+    PublicEvent:
+      type: object
+      properties:
+        event_id:
+          description: |-
+            The unique identifier of the physical event. Events in the Broadcasts API have the same identifiers as those in the Events API.
+
+
+            E.g. `svbfg9xT4YSVUeeAKp`
+          type: string
+          title: Event Id
+        title:
+          description: |-
+            The title of the physical event.
+
+
+            E.g. `Super Bowl - 49ers vs Kansas City Chiefs`
+          type: string
+          title: Title
+        category:
+          description: |-
+            The category of the physical event.
+
+
+            E.g. `sports`
+          $ref: '#/components/schemas/BroadcastEventCategory'
+        labels:
+          description: |-
+            The labels associated with the physical event.
+
+
+            E.g. `["american-football", "nfl", "sport"]`
+          type: array
+          items:
+            type: string
+          title: Labels
+        dates:
+          description: |-
+            Details about the time of the physical event.
+
+
+            **E.g.**
+              ```json
+              {
+                "start": "2018-01-01T17:00:00Z",
+                "end": "2018-01-01T20:43:26Z",
+                "start_local": "2018-01-01T12:00:00",
+                "end_local": "2018-01-01T15:43:26",
+                "predicted_end_local": "2018-01-01T15:20:00",
+                "timezone": "America/New_York"
+              }
+              ```
+          $ref: '#/components/schemas/PublicEventDates'
+        location:
+          description: |-
+            Details about the location of the physical event.
+
+
+             **E.g.**
+                ```json
+                {
+                  "geopoint": {
+                    "lon": -80.23886040000002,
+                    "lat": 25.9579665
+                  },
+                  "place_hierarchies": [
+                    [
+                      "6295630",
+                      "6255149",
+                      "6252001",
+                      "4155751",
+                      "4164238",
+                      "4161298"
+                    ]
+                  ],
+                  "country": "US"
+                }
+                ```
+          $ref: '#/components/schemas/PublicEventLocation'
+        entities:
+          description: |-
+            Venue entities linked to the physical event.
+
+
+            **E.g.**
+              ```json
+              [
+                {
+                  "entity_id": "wVgG7p8ZKRKEPPrNDq4my9",
+                  "type": "venue",
+                  "name": "Hard Rock Stadium",
+                  "formatted_address": "347 Don Shula Dr\nMiami Gardens, FL 33056\nUnited States of America"
+                }
+              ]
+              ```
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicEntity'
+          title: Entities
+        phq_attendance:
+          description: |-
+            The number of people predicted to attend the physical event.
+
+
+            E.g. `65000`
+          type: integer
+          title: Phq Attendance
+        phq_rank:
+          description: |-
+            The PHQ Rank number of the physical event. PHQ Rank represents the physical event’s impact independent of its geographical location.
+
+
+            E.g. `100`
+          type: integer
+          title: Phq Rank
+        local_rank:
+          description: |-
+            The Local Rank number of the physical event. Local Rank represents the physical event’s impact on its local geographical location.
+
+
+            E.g. `100`
+          type: integer
+          title: Local Rank
+        aviation_rank:
+          description: |-
+            The [Aviation Rank](https://github.com/predicthq/gitbook-tech-docs/blob/main/docs/getting-started/predicthq-data/ranks/aviation-rank.md) number of the physical event. Aviation Rank represents the physical event’s impact on flight bookings by considering both domestic and international travel.
+
+
+            E.g. `100`
+          type: integer
+          title: Aviation Rank
+      required:
+        - event_id
+        - title
+        - category
+        - labels
+        - dates
+        - location
+        - entities
+      title: PublicEvent
+    PublicEventDates:
+      type: object
+      properties:
+        start:
+          description: The start time of the physical event.
+          type: string
+          format: date-time
+          title: Start
+        end:
+          description: The end time of the physical event.
+          type: string
+          format: date-time
+          title: End
+        start_local:
+          description: The start time in the physical event’s time zone.
+          type: string
+          format: date-time
+          title: Start Local
+        end_local:
+          description: The end time in the physical event’s time zone.
+          type: string
+          format: date-time
+          title: End Local
+        predicted_end_local:
+          description: the time the physical event is predicted to end in the event's time zone
+          type: string
+          format: date-time
+          title: Predicted End Local
+        timezone:
+          description: The time zone of the physical event.
+          type: string
+          title: Timezone
+      required:
+        - start
+        - start_local
+        - timezone
+      title: PublicEventDates
+    PublicEventLocation:
+      type: object
+      properties:
+        geopoint:
+          description: The latitude and longitude coordinates.
+          $ref: '#/components/schemas/GeoPoint'
+        place_hierarchies:
+          description: Place hierarchies of the physical event.
+          type: array
+          items:
+            items:
+              type: string
+            type: array
+          title: Place Hierarchies
+        country:
+          description: The country code.
+          type: string
+          title: Country
+      required:
+        - geopoint
+        - place_hierarchies
+        - country
+      title: PublicEventLocation
+    PublicPlace:
+      type: object
+      properties:
+        place_id:
+          description: id of the place
+          type: string
+          title: Place Id
+        type:
+          description: The type of the place. Broadcasts are located at counties or county-equivalents.
+          $ref: '#/components/schemas/PlaceType'
+        name:
+          description: The name of the place.
+          type: string
+          title: Name
+        county:
+          description: The name of the Place’s county. This is the same as the name if the Place is a county.
+          type: string
+          title: County
+        region:
+          description: 'The name of the Place’s region. In the US, regions represent states or federal districts.'
+          type: string
+          title: Region
+        country:
+          description: 'The [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code of the Place’s country.'
+          type: string
+          title: Country
+      required:
+        - place_id
+        - type
+        - name
+        - county
+        - region
+        - country
+      title: PublicPlace
+    ValidationError:
+      type: object
+      properties:
+        loc:
+          type: array
+          items:
+            anyOf:
+              - type: string
+              - type: integer
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      required:
+        - loc
+        - msg
+        - type
+      title: ValidationError
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: $API_KEY
+      description: |
+        Use 'Authorization: Bearer <YOUR_API_KEY>' as documented at https://docs.predicthq.com/authentication
+
