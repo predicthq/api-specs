@@ -25,7 +25,7 @@ externalDocs:
   description: PredictHQ Tech Docs
 x-hideTryItPanel: true
 paths:
-  /v1/locations:
+  /v1/saved-locations:
     get:
       operationId: get_locations_public_locations_get
       summary: Search Saved Locations
@@ -34,11 +34,11 @@ paths:
           in: query
           description: |-
             A full-text search query that searches across the following fields:
-            - name
-            - description
-            - location_code
-            - formatted_address
-            - labels
+            - `name`
+            - `description`
+            - `location_code`
+            - `formatted_address`
+            - `labels`
 
 
             E.g. `q=alabama`
@@ -171,13 +171,14 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       tags:
         - Saved Locations API
-  '/v1/locations/{location_id}':
+  '/v1/saved-locations/{location_id}':
     get:
       operationId: get_location_public_locations__location_id__get
       summary: Retrieve specified location
       parameters:
         - name: location_id
           in: path
+          description: An existing Saved Location ID.
           required: true
           schema:
             type: string
@@ -203,6 +204,7 @@ paths:
       parameters:
         - name: location_id
           in: path
+          description: An existing Saved Location ID.
           required: true
           schema:
             type: string
@@ -230,6 +232,7 @@ paths:
       parameters:
         - name: location_id
           in: path
+          description: An existing Saved Location ID.
           required: true
           schema:
             type: string
@@ -245,7 +248,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       tags:
         - Saved Locations API
-  '/v1/locations/{location_id}/insights/events':
+  '/v1/saved-locations/{location_id}/insights/events':
     get:
       operationId: get_location_events_public_locations__location_id__insights_events_get
       summary: Search Events for a Saved Location
@@ -253,12 +256,26 @@ paths:
       parameters:
         - name: location_id
           in: path
+          description: An existing Saved Location ID.
           required: true
           schema:
             type: string
             title: Location Id
         - name: date_range_type
           in: query
+          description: |-
+            Date range to fetch events for.
+
+
+            Currently the only supported date ranges are:
+
+            `next_90d`
+
+
+            E.g. `?date_range_type=next_90d`
+
+
+            Default: `null`
           required: false
           schema:
             $ref: '#/components/schemas/DateRangeType'
@@ -441,7 +458,6 @@ components:
       title: DateRange
     DateRangeType:
       type: string
-      default: next_90d
       const: next_90d
       title: DateRangeType
     GeoJson-Input:
@@ -796,13 +812,13 @@ components:
             Events that are within the radius or that overlap the radius are included
 
             Geometry - Possible types:
-            - Point 
-            - Polygon 
-            - MultiPolygon
-            - LineString
-            - MultiLineString
+            - `Point` 
+            - `Polygon` 
+            - `MultiPolygon`
+            - `LineString`
+            - `MultiLineString`
 
-            Here is an example for the Polygon geometry type.
+            Here is an example for the `Polygon` geometry type.
             **E.g.**
                ```json
                {
@@ -823,7 +839,7 @@ components:
               }
               ```
 
-            Here is an example for the Point geometry type.
+            Here is an example for the `Point` geometry type.
             **E.g.**
               ```json
               {
