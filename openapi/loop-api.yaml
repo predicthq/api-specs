@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
-  title: PredictHQ Public Loop API
-  description: PredictHQ Public Loop API
+  title: PredictHQ Loop API
+  description: PredictHQ Loop API
   version: 1.0.0
   license:
     name: MIT
