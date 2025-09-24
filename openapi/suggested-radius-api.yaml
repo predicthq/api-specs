@@ -1,0 +1,190 @@
+openapi: 3.1.0
+info:
+  title: PredictHQ Suggested Radius API
+  description: Take the guesswork out of working out a suitable radius around your business when searching for events.
+  version: 1.0.0
+  license:
+    name: MIT
+    url: 'https://opensource.org/licenses/MIT'
+  termsOfService: 'https://www.predicthq.com/legal/terms'
+security:
+  - BearerAuth: []
+tags:
+  - name: Suggested Radius API
+    externalDocs:
+      url: 'https://docs.predicthq.com/api/suggested-radius'
+      description: Suggested Radius API Docs
+servers:
+  - url: 'https://api.predicthq.com'
+externalDocs:
+  url: 'https://docs.predicthq.com'
+  description: PredictHQ Tech Docs
+x-hideTryItPanel: true
+paths:
+  /v1/suggested-radius/:
+    get:
+      operationId: get_suggested_radius_public_suggested_radius__get
+      summary: Get optimal radius for a location and industry
+      parameters:
+        - name: radius_unit
+          in: query
+          description: |-
+            Unit in which the suggested radius will be returned.
+            The default unit is m
+
+            Possible values:
+            - m - meters (default)     
+            - km - kilometers      
+            - ft - feet       
+            - mi - miles    
+
+
+            E.g. `?radius_unit=km`
+          required: false
+          schema:
+            default: m
+            $ref: '#/components/schemas/RadiusUnit'
+        - name: industry
+          in: query
+          description: |-
+            The industry of interest for which the radius will be calculated. For different industries, the radii will be different based on the various types of events that would impact the location. For example, if you were getting the suggested radius around a hotel you’d specify accommodation as the industry.
+
+
+            E.g. `?industry=accommodation`
+          required: false
+          schema:
+            default: other
+            $ref: '#/components/schemas/Industry'
+        - name: location.origin
+          in: query
+          description: |-
+            A comma-separated string consisting of the latitude and longitude of the location to find the optimal radius for. For example your store or hotel location.
+
+
+            The format is `<latitude>,<longitude>`
+
+
+            E.g. `?location.origin=37.747767,-122.455320`
+          required: true
+          schema:
+            type: string
+            pattern: '^-?\d{1,3}(?:\.\d+)?,\-?\d{1,3}(?:\.\d+)?$'
+          explode: false
+          style: form
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuggestedRadiusResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+        - Suggested Radius API
+components:
+  schemas:
+    HTTPValidationError:
+      type: object
+      properties:
+        detail:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          title: Detail
+      title: HTTPValidationError
+    Industry:
+      type: string
+      enum:
+        - parking
+        - restaurants
+        - retail
+        - accommodation
+        - cpg
+        - tourism
+        - marketing
+        - transportation
+        - other
+      title: Industry
+    Location:
+      description: |-
+        A json object representing the geo location of the event.
+
+
+        E.g.:
+        ```json
+        {
+          "lat": 37.747767,
+          "lon": -122.455320
+        }
+        ```
+      type: object
+      properties:
+        lat:
+          type: string
+          title: Lat
+        lon:
+          type: string
+          title: Lon
+      required:
+        - lat
+        - lon
+      title: Location
+    RadiusUnit:
+      description: The unit of the radius returned. This will be the unit specified in the radius_unit parameter in the call made.
+      type: string
+      enum:
+        - m
+        - km
+        - ft
+        - mi
+      title: RadiusUnit
+    SuggestedRadiusResponse:
+      type: object
+      properties:
+        radius:
+          description: The suggested radius for a given location rounded to 2 decimal places.
+          type: number
+          title: Radius
+        radius_unit:
+          $ref: '#/components/schemas/RadiusUnit'
+        location:
+          $ref: '#/components/schemas/Location'
+      required:
+        - radius
+        - radius_unit
+        - location
+      title: SuggestedRadiusResponse
+    ValidationError:
+      type: object
+      properties:
+        loc:
+          type: array
+          items:
+            anyOf:
+              - type: string
+              - type: integer
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      required:
+        - loc
+        - msg
+        - type
+      title: ValidationError
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: $API_KEY
+      description: |
+        Use 'Authorization: Bearer <YOUR_API_KEY>' as documented at https://docs.predicthq.com/authentication
+
