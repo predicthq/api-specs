@@ -1,0 +1,431 @@
+openapi: 3.1.0
+info:
+  title: PredictHQ Places API
+  description: 'The Places API gives you a read-only interface to PredictHQ''s places data. A place represents a [Geonames](http://www.geonames.org/) Feature, which can be either an Area, an Administrative Feature, or a Populated Place.'
+  version: 1.0.0
+  license:
+    name: MIT
+    url: 'https://opensource.org/licenses/MIT'
+  termsOfService: 'https://www.predicthq.com/legal/terms'
+security:
+  - BearerAuth: []
+tags:
+  - name: Places
+    externalDocs:
+      url: 'https://docs.predicthq.com/api/places/search-places'
+      description: Places Docs
+  - name: Hierarchies
+    externalDocs:
+      url: 'https://docs.predicthq.com/api/places/get-place-hierarchies'
+      description: Hierarchies Docs
+servers:
+  - url: 'https://api.predicthq.com'
+externalDocs:
+  url: 'https://docs.predicthq.com'
+  description: PredictHQ Tech Docs
+x-hideTryItPanel: true
+paths:
+  /v1/places/hierarchies:
+    get:
+      operationId: get_hierarchies_places_hierarchies_get
+      summary: Get the list of hierarchies for a Place.
+      parameters:
+        - name: location.place_id
+          in: query
+          description: |-
+            A list of place_id in the form {place_id1},{place_id2},....
+
+            Please note that you must specify either location.origin or location.place_id in your request.
+
+
+            E.g. `?location.place_id=5809844,6252001`
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            title: Location.Place Id
+          explode: false
+          style: form
+        - name: country
+          in: query
+          description: |-
+            An [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code.
+
+
+            E.g. `?country=US`
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            title: Country
+        - name: level
+          in: query
+          description: |-
+            A place level.
+
+
+            Defaults to `locality`.
+
+
+            E.g. `?level=county`
+          required: false
+          schema:
+            $ref: '#/components/schemas/BaseLevel'
+            title: Level
+        - name: location.origin
+          in: query
+          description: |-
+            A coordinate in the form `{latitude},{longitude}`.
+
+
+            Please note that you must specify either `location.origin` or `location.place_id` in your request.
+
+
+            E.g. `?location.origin=47.615337,-122.203981`
+          required: false
+          schema:
+            type: string
+            title: Location.Origin
+          explode: false
+          style: form
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            title: Offset
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            title: Limit
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HierarchiesResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+        - Hierarchies
+  /v1/places:
+    get:
+      operationId: search_geonames_places_get
+      summary: Search for Place
+      parameters:
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            title: Offset
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            title: Limit
+        - name: id
+          in: query
+          description: |-
+            A comma-separated list of place identifiers.
+
+
+            E.g. `?id=5115985`
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            title: Id
+          explode: false
+          style: form
+        - name: country
+          in: query
+          description: |-
+            A comma-separated list of ISO 3166-1 alpha-2 country code.
+
+
+            E.g. `?country=US`
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            title: Country
+          explode: false
+          style: form
+        - name: location
+          in: query
+          description: |-
+            A coordinate in the form `@{latitude},{longitude}`.
+
+
+            E.g. `?location=@40.66677,-73.88236`
+          required: false
+          schema:
+            description: 'lat,lon'
+            type: string
+            title: Location
+          explode: false
+          style: form
+        - name: q
+          in: query
+          description: |-
+            A full-text search query.
+
+
+            E.g. `?q=New+York`
+          required: false
+          schema:
+            type: string
+            title: Q
+        - name: type
+          in: query
+          description: |-
+            A comma-separated list of place types..
+
+
+            E.g. '?type=country'
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - planet
+                - continent
+                - country
+                - region
+                - county
+                - localadmin
+                - locality
+                - neighbourhood
+                - major
+                - metro
+                - local
+            title: Type
+          explode: false
+          style: form
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicGeonamesPlacesResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+        - Places
+components:
+  schemas:
+    BaseLevel:
+      type: string
+      enum:
+        - planet
+        - continent
+        - country
+        - region
+        - county
+        - localadmin
+        - locality
+        - neighbourhood
+      title: BaseLevel
+    HTTPValidationError:
+      type: object
+      properties:
+        detail:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          title: Detail
+      title: HTTPValidationError
+    HierarchiesResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          title: Count
+        next:
+          type: string
+          title: Next
+        previous:
+          type: string
+          title: Previous
+        place_hierarchies:
+          type: array
+          items:
+            items:
+              $ref: '#/components/schemas/HierarchyDetails'
+            type: array
+          title: Place Hierarchies
+      required:
+        - count
+        - place_hierarchies
+      title: HierarchiesResponse
+    HierarchyDetails:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/BaseLevel'
+        place_id:
+          type: string
+          title: Place Id
+      required:
+        - type
+        - place_id
+      title: HierarchyDetails
+    PublicGeonamesPlaceResponse:
+      type: object
+      properties:
+        id:
+          description: |-
+            The unique identifier of the place.
+
+
+            E.g. `5115985`
+          type: string
+          title: Id
+        type:
+          description: |-
+            The administrative level of the place..
+
+
+            E.g. `locality`
+          $ref: '#/components/schemas/BaseLevel'
+        name:
+          description: |-
+            The name of the place.
+
+
+            E.g. `East New York`
+          type: string
+          title: Name
+        county:
+          description: |-
+            The name of the place's administrative level 2 place, or `null` if it does not apply.
+
+
+            E.g. `Kings County`
+          type: string
+          title: County
+        region:
+          description: |-
+            The name of the place's administrative level 1 place, or `null` if it does not apply.
+
+
+            E.g. `East New York`
+          type: string
+          title: Region
+        country:
+          description: |-
+            The name of the place's administrative level 0 place, or `null` if it does not apply.
+
+
+            E.g. `United States`
+          type: string
+          title: Country
+        country_alpha2:
+          description: |-
+            The ISO 3166-1 alpha-2 country code, or `null` if there is no country.
+
+
+            E.g. `US`
+          type: string
+          title: Country Alpha2
+        country_alpha3:
+          description: |-
+            The ISO 3166-1 alpha-3 country code, or `null` if there is no country.
+
+
+            E.g. `USA`
+          type: string
+          title: Country Alpha3
+        location:
+          description: |-
+            A 2-tuple representing the centroid of the place.
+
+            Note that the longitude/latitude coordinates use the [GeoJSON](http://geojson.org/) order `[lon, lat]`.
+
+
+            E.g. `[-73.88236, 40.66677]`
+          type: array
+          items:
+            type: number
+          maxItems: 2
+          minItems: 2
+          title: Location
+      required:
+        - id
+        - type
+        - name
+        - location
+      title: PublicGeonamesPlaceResponse
+    PublicGeonamesPlacesResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          title: Count
+        next:
+          type: string
+          title: Next
+        previous:
+          type: string
+          title: Previous
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicGeonamesPlaceResponse'
+          title: Results
+      required:
+        - count
+        - results
+      title: PublicGeonamesPlacesResponse
+    ValidationError:
+      type: object
+      properties:
+        loc:
+          type: array
+          items:
+            anyOf:
+              - type: string
+              - type: integer
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      required:
+        - loc
+        - msg
+        - type
+      title: ValidationError
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: $API_KEY
+      description: |
+        Use 'Authorization: Bearer <YOUR_API_KEY>' as documented at https://docs.predicthq.com/authentication
+
