@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
-  title: PredictHQ Public Places API
-  description: PredictHQ Public Places API
+  title: PredictHQ Places API
+  description: PredictHQ Places API
   version: 1.0.0
   license:
     name: MIT
