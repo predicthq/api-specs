@@ -6,6 +6,11 @@ This repository contains the [OpenAPI](https://www.openapis.org/) specifications
 
 We use the OpenAPI 3.1.0 specification format to describe our APIs. This repo includes schemas, request/response examples, and reusable components.
 
+## Data Files
+
+- `data/airport-codes.csv`: Mapping of IATA/ICAO/UNLOCODE airport codes and their corresponding PredictHQ Place IDs.
+- `data/broadcast-county-place-mapping.csv`: Mapping of USA county names to PredictHQ Place IDs.
+
 ## Limitations
 
 - The OpenAPI specs do not yet cover all our APIs. We are working on adding more endpoints.
