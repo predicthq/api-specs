@@ -64,7 +64,10 @@ paths:
               schema:
                 description: CSV export of results
                 type: string
-                format: binary
+                examples:
+                  - |-
+                    date,feature1,feature2
+                    2025-01-01,value1,value2
         '422':
           description: Validation Error
           content:
