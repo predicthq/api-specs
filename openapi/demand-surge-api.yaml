@@ -21,10 +21,10 @@ externalDocs:
   description: PredictHQ Tech Docs
 x-hideTryItPanel: true
 paths:
-  /v1/demand-surge:
+  /v1/demand-surge/:
     get:
       operationId: get_demand_surge_demand_surge_get
-      summary: Get Demand Surge
+      summary: Get Demand Surges
       parameters:
         - name: min_surge_intensity
           in: query
@@ -72,7 +72,7 @@ paths:
         - name: location.origin
           in: query
           description: |-
-            A comma-separated coordinate (`<lat>,<lon>`) representing the centroid of a location. It must be used with `radius` suffix and cannot be used with `place_id` suffix.
+            A comma-separated coordinate (`<lat>,<lon>`) representing the centroid of a location. It must be used with `radius` suffix and cannot be used with `location.place_id`
 
 
             E.g. `?location.origin=40.7128,74.0060`
