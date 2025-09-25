@@ -13,7 +13,7 @@ tags:
   - name: Demand Surge API
     externalDocs:
       url: 'https://docs.predicthq.com/api/demand-surge/get-demand-surges'
-      description: Demand Surge API
+      description: Demand Surge Docs
 servers:
   - url: 'https://api.predicthq.com'
 externalDocs:
@@ -67,6 +67,8 @@ paths:
               examples:
                 - 'value1,value2'
             title: Location.Place Id
+          explode: false
+          style: form
         - name: location.origin
           in: query
           description: |-
@@ -83,14 +85,16 @@ paths:
               examples:
                 - 'value1,value2'
             title: Location.Origin
+          explode: false
+          style: form
         - name: location.radius
           in: query
           description: |-
             A string representing the `radius` for the demand surge, in the format `<radius_value><radius_unit>`, where `<radius_value>` is an integer or a float number up to 2 decimal places and `<radius_unit>` is one of:
-            - m - meters
-            - km - kilometers
-            - ft - feet
-            - mi - miles
+            - `m` - meters
+            - `km` - kilometers
+            - `ft` - feet
+            - `mi` - miles
 
 
             E.g. `?location.radius=100mi`
