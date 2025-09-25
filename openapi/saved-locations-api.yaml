@@ -144,7 +144,7 @@ paths:
         - Saved Locations API
     post:
       operationId: save_location_public_locations_post
-      summary: Create new location
+      summary: Create a Saved Location
       requestBody:
         required: true
         content:
