@@ -28,7 +28,7 @@ paths:
   /v1/places/hierarchies:
     get:
       operationId: get_hierarchies_places_hierarchies_get
-      summary: Get the list of hierarchies for a Place.
+      summary: Get Place Hierarchies
       parameters:
         - name: location.place_id
           in: query
@@ -122,7 +122,7 @@ paths:
   /v1/places:
     get:
       operationId: search_geonames_places_get
-      summary: Search for Place
+      summary: Search Places
       parameters:
         - name: offset
           in: query
