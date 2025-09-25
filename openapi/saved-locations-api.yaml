@@ -51,7 +51,7 @@ paths:
         - name: sort
           in: query
           description: |-
-            A comma-separated list of fields to sort results by. Use the - prefix to sort descending.
+            A comma-separated list of fields to sort results by. Use the `-` prefix to sort descending.
 
 
             E.g.: `?sort=-created`
@@ -116,7 +116,7 @@ paths:
         - name: location_id
           in: query
           description: |-
-            A comma-separated string consisting of a list of 1 or more location_id's.
+            A comma-separated string consisting of a list of 1 or more `location_id`'s.
 
 
             E.g. `?location_id=6TxvEapQeDzq9y_UKVRQCQ`
@@ -174,7 +174,7 @@ paths:
   '/v1/saved-locations/{location_id}':
     get:
       operationId: get_location_public_locations__location_id__get
-      summary: Retrieve specified location
+      summary: Get a Saved Location
       parameters:
         - name: location_id
           in: path
@@ -200,7 +200,7 @@ paths:
         - Saved Locations API
     put:
       operationId: replace_location_data_public_locations__location_id__put
-      summary: Replace location data
+      summary: Update (replace) a Saved Location
       parameters:
         - name: location_id
           in: path
@@ -265,17 +265,12 @@ paths:
           in: query
           description: |-
             Date range to fetch events for.
-
-
+              
+              
             Currently the only supported date ranges are:
+              
 
-            `next_90d`
-
-
-            E.g. `?date_range_type=next_90d`
-
-
-            Default: `null`
+            - `next_90d`
           required: false
           schema:
             $ref: '#/components/schemas/DateRangeType'
@@ -360,68 +355,14 @@ components:
           description: |-
             You can define the geolocation of the Saved Location either by GeoJSON or Place IDs.
 
-            When using GeoJSON please note the following:
 
-            Currently, we support Point, Polygon, MultiPolygon, LineString, MultiLineString geometry types.
+            For the Point geometry type, we require a radius to be defined using a special set of properties on the GeoJSON record. As in the example below, these are `radius` and `radius_unit`. The radius property must be an integer or a float number up to 2 decimal places.
+
 
             Remember that GeoJSON coordinates are ordered longitude then latitude.
 
-            For the Point geometry type, we require a radius to be defined using a special set of properties on the GeoJSON record. As in the example below, these are radius and radius_unit.
 
-            The radius property must be an integer or a float number up to 2 decimal places. 
-
-            The radius_unit property must be one of: 
-            - m - meters
-            - km - kilometers
-            - ft - feet
-            - mi - miles
-
-            Note: For Point geometry type, we strongly recommend using our [Suggested Radius API](https://docs.predicthq.com/api/saved-locations/create-a-saved-location#:~:text=recommend%20using%20our-,Suggested,-Radius%20API%20to) to find a suitable radius value for your location and industry.
-
-            For all other geometry types the GeoJSON properties field is not required and will be ignored.
-
-            Here is an example for the Polygon geometry type.
-
-            **E.g.**
-              ```json
-              {
-                "geojson": {
-                  "type": "Feature",
-                  "geometry": {
-                    "coordinates": [
-                      [
-                        [-87.94056213135401, 42.2319776767614],
-                        [-89.50381034693073, 41.273515480388085],
-                        [-86.81789419577427, 41.42279055968166],
-                        [-87.94056213135401, 42.2319776767614]
-                      ]
-                    ],
-                    "type": "Polygon"
-                  }
-                }
-              }
-              ```
-
-            Here is an example for the Point geometry type.
-            **E.g.**
-               ```json
-               {
-                "geojson": {
-                  "type": "Feature",
-                  "properties": {
-                    "radius": 2.23,
-                    "radius_unit": "mi"
-                  },
-                  "geometry": {
-                    "type": "Point",
-                    "coordinates": [
-                      -115.1728484,
-                      36.1147065
-                    ]
-                  }
-                }
-               }
-               ```
+            Note: For Point geometry type, we strongly recommend using our [Suggested Radius API](https://docs.predicthq.com/api/suggested-radius/get-suggested-radius) to find a suitable radius value for your location and industry.
           $ref: '#/components/schemas/GeoJson-Input'
         place_ids:
           description: |-
@@ -772,10 +713,10 @@ components:
       properties:
         location_code:
           description: |-
-            The autogenerated identifier for the saved location.
+            The user-supplied identifier for the location.
 
 
-            E.g. `8gZ2rn8BRcTjM_3SWdjP`
+            E.g. `4t855453234t5623`
           type: string
           title: Location Code
         name:
@@ -797,68 +738,7 @@ components:
             type: string
           title: Labels
         geojson:
-          description: |-
-            An object containing the geographic information about a location. 
-            Represents the geometry associated with the event in the [GeoJSON format](https://geojson.org/).
-
-
-            This will be present for locations that use a centerpoint and radius or (Multi)Polygon/(Multi)LineString. 
-            For locations that cover an area (for example city, state or country) 
-            they will not have the geojson value defined instead they use place_ids.
-
-
-            Point type locations are defined by latitude and longitude.
-            The radius field defines which events are included in the location.
-            Events that are within the radius or that overlap the radius are included
-
-            Geometry - Possible types:
-            - `Point` 
-            - `Polygon` 
-            - `MultiPolygon`
-            - `LineString`
-            - `MultiLineString`
-
-            Here is an example for the `Polygon` geometry type.
-            **E.g.**
-               ```json
-               {
-                "geojson": {
-                  "type": "Feature",
-                  "geometry": {
-                    "coordinates": [
-                      [
-                        [-87.94056213135401, 42.2319776767614],
-                        [-89.50381034693073, 41.273515480388085],
-                        [-86.81789419577427, 41.42279055968166],
-                        [-87.94056213135401, 42.2319776767614]
-                      ]
-                    ],
-                    "type": "Polygon"
-                  }
-                }
-              }
-              ```
-
-            Here is an example for the `Point` geometry type.
-            **E.g.**
-              ```json
-              {
-                "geojson": {
-                  "type": "Feature",
-                  "properties": {
-                    "radius": 0.9,
-                    "radius_unit": "mi"
-                  },
-                  "geometry": {
-                    "type": "Point",
-                    "coordinates": [
-                      -122.40152,
-                      37.7869
-                    ]
-                  }
-                }
-              }
-              ```
+          description: 'An object containing the geographic information about a location. Represents the geometry associated with the event in the [GeoJSON format](https://geojson.org/).'
           $ref: '#/components/schemas/GeoJson-Output'
         place_ids:
           description: |-
@@ -959,68 +839,18 @@ components:
             E.g. `active`
           $ref: '#/components/schemas/SavedLocationStatus'
         summary_insights:
-          description: |
+          description: |-
             This object contains the saved locations stats. 
             This includes values for each of the 4 stats as well as the date_range field. 
             The stats reflect the number of events and attend happening for the location.
 
             The date range field includes the start and end datetime for the period that the stats have been calculated for.
-
-            ```json
-            {
-            "summary_insights": [
-              {
-                "date_range": {
-                  "type": "next_90d",
-                  "start_dt": "2023-07-03T04:39:16+00:00",
-                  "end_dt": "2023-10-01T04:39:16+00:00"
-                },
-                "phq_attendance_sum": 2646606,
-                "attended_event_count": 519,
-                "non_attended_event_count": 85,
-                "unscheduled_event_count": 0,
-                "pes_total_sum": 746427,
-                "pes_accommodation_sum": 104256,
-                "pes_hospitality_sum": 482976, 
-                "pes_transportation_sum": 159193
-                }
-              ]
-            }
-            ```
           type: array
           items:
             $ref: '#/components/schemas/SummaryInsights'
           title: Summary Insights
         places:
-          description: |
-            This object contains the saved locations stats. 
-            This includes values for each of the 4 stats as well as the date_range field. 
-            The stats reflect the number of events and attend happening for the location.
-
-            ```json
-              {
-              "places": [
-                {
-                  "place_id": 5391959,
-                  "type": "locality",
-                  "name": "San Francisco",
-                  "county": "City and County of San Francisco",
-                  "region": "California",
-                  "country": "US",
-                  "geojson": {
-                    "type": "Feature",
-                    "geometry": {
-                      "type": "Point",
-                      "coordinates": [
-                        -122.41942,
-                        37.77493
-                      ]
-                    }
-                  }
-                }
-              ]
-            }
-              ```
+          description: 'This is a list of (geonames) Places. It is based on the lowest level place_id in the [place_hierarchies](https://github.com/predicthq/gitbook-tech-docs/blob/main/docs/getting-started/guides/geolocation-guides/understanding-place-hierarchies.md). It will usually only contain 1 item in the list but will always be a list.'
           type: array
           items:
             $ref: '#/components/schemas/Place'
