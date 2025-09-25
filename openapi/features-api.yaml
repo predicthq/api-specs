@@ -41,17 +41,11 @@ paths:
                         
           required: false
           schema:
-            description: |-
-              Receive results in JSON or CSV by specifying the appropriate Accept header.
-                          Supported values:
-
-                          - application/json
-
-                          - text/csv
-
-                          
             type: string
-            pattern: ^(application\/json|text\/csv|\*\/\*)$
+            default: application/json
+            enum:
+              - application/json
+              - text/csv
             title: Accept
       requestBody:
         required: true
@@ -177,7 +171,6 @@ components:
 
             Note that all dates here are in local time (not UTC). Features API works on specific locations.
 
-            Please also note that the maximum supported date range is 90 days. If you require features over a wider date range please make multiple API requests.
 
             **E.g.**
             ```json
@@ -196,9 +189,7 @@ components:
             - `analysis_id` (required if `beam` is present): Beam analysis ID
             - `group_id` (optional): Beam analysis group ID
 
-            If both `beam.analysis_id` and `beam.group_id` are provided, all the above fields will be calculated from the Beam analysis but the phq_* features will be calculated from the Beam analysis Group.
-
-            Note: This is useful for when you want to request features for a variety of locations while maintaining feature consistency by limiting the returned features to those of the group's feature importance results.
+            If beam.analysis_id is provided, the `location`, `interval`, `week_start_day` , `phq_*` features including `stats` and `phq_rank` will be calculated from the Beam analysis.
 
             **E.g.**
             ```json
@@ -208,7 +199,7 @@ components:
               }
             }
             ```
-            If both beam.analysis_id and beam.group_id are provided, all the above fields will be calculated from the Beam analysis but the phq_* features will be calculated from the Beam analysis Group.
+            If both `beam.analysis_id` and `beam.group_id` are provided, all the above fields will be calculated from the Beam analysis but the `phq_*` features will be calculated from the Beam analysis Group.
 
             Note: This is useful for when you want to request features for a variety of locations while maintaining feature consistency by limiting the returned features to those of the group's feature importance results.
 
@@ -226,7 +217,7 @@ components:
           description: |
             Time range (per day) to calculate features for.
 
-            Note: This field is currently only supported on phq_viewership_* features.
+            Note: This field is currently only supported on `phq_viewership_*` features.
 
             If your location only operates within certain hours of the day you can use this filter to only include records that are happening within those hours.
 
@@ -253,14 +244,13 @@ components:
           $ref: '#/components/schemas/HourOfDayRange'
         location:
           description: |
-            Location to calculate features for. You can specify the location as a latitude/longitude (with radius), Place ID(s) or Saved Location ID(s).
+            Location to calculate features for. You can specify the location as a latitude/longitude (with radius), Place ID(s) or [Saved Location IDs](https://docs.predicthq.com/api/saved-locations/overview). 
 
-            We recommend using a lat/lon+radius or a saved location id (for a point and radius location) as they could define the location of your interest more accurately. To work out a suitable radius around your location we strongly recommend using our Suggested Radius API.
+            We recommend using a lat/lon+radius or a saved location id (for a point and radius location) as they could define the location of your interest more accurately. To work out a suitable radius around your location we strongly recommend using our [Suggested Radius API](https://docs.predicthq.com/api/suggested-radius/get-suggested-radius).
 
             Note: When using Place IDs or Saved Location IDs a maximum of 3 IDs may be used.
 
-            Note: When using lat/lon+radius, the radius must be in the format <radius><radius_unit>, where <radius> is an integer or a float number up to 2 decimal places and <radius_unit> is one of:
-            **Fields:**
+            Note: When using lat/lon+radius, the radius must be in the format `<radius><radius_unit>`, where `<radius>` is an integer or a float number up to 2 decimal places and `<radius_unit>` is one of:
             - `m` - meters
             - `km` - kilometers
             - `ft` - feet
@@ -289,7 +279,7 @@ components:
                   }
                 }
             ```
-            E.g. using a latitude/longitude and radius (recommended):
+            E.g. using a latitude/longitude and radius:
             ```json
                 {
                   "location": {
@@ -316,8 +306,7 @@ components:
             The weekday to be treated as the start of the week.
 
             Possible values:
-                **Fields:**
-            - `monday (default)`
+            - `monday` (default)
             - `tuesday`
             - `wednesday`
             - `thursday`
@@ -328,22 +317,7 @@ components:
             Only applicable when interval is set to week.
           $ref: '#/components/schemas/Weekday'
         predicted_events:
-          description: |
-            Include or Exclude predicted events.
-
-            Supports the following fields:
-               **Fields:**
-                - `exclude` Possible values:
-                    - `true`
-                    - `false` (default) Include predicted events
-            E.g.
-            ```json
-            {
-              "predicted_events": {
-                "exclude": false
-              }
-            }
-            ```
+          description: Include or Exclude predicted events.
           $ref: '#/components/schemas/PredictedEvents'
         phq_attendance_academic_graduation:
           description: Academic - Graduation
@@ -831,6 +805,7 @@ components:
       title: HourOfDayRange
     Interval:
       type: string
+      default: day
       enum:
         - day
         - week
@@ -1167,6 +1142,7 @@ components:
       title: ValidationError
     Weekday:
       type: string
+      default: monday
       enum:
         - monday
         - tuesday
