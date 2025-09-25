@@ -1,0 +1,974 @@
+openapi: 3.1.0
+info:
+  title: PredictHQ Saved Locations API
+  description: |-
+    Saved Locations are persistent, user-defined geographic entities that serve as reusable identifiers across PredictHQ’s platform. Defined using a name and a GeoJSON location shape, they may also include an external ID and optional labels for filtering or grouping.
+
+
+    This API is currently in beta.
+  version: 1.0.0
+  license:
+    name: MIT
+    url: 'https://opensource.org/licenses/MIT'
+  termsOfService: 'https://www.predicthq.com/legal/terms'
+security:
+  - BearerAuth: []
+tags:
+  - name: Saved Locations API
+    externalDocs:
+      url: 'https://docs.predicthq.com/api/saved-locations/overview'
+      description: Saved Locations API Docs
+servers:
+  - url: 'https://api.predicthq.com'
+externalDocs:
+  url: 'https://docs.predicthq.com'
+  description: PredictHQ Tech Docs
+x-hideTryItPanel: true
+paths:
+  /v1/saved-locations:
+    get:
+      operationId: get_locations_public_locations_get
+      summary: Search Saved Locations
+      parameters:
+        - name: q
+          in: query
+          description: |-
+            A full-text search query that searches across the following fields:
+            - `name`
+            - `description`
+            - `location_code`
+            - `formatted_address`
+            - `labels`
+
+
+            E.g. `q=alabama`
+          required: false
+          schema:
+            type: string
+            title: Q
+        - $ref: '#/components/parameters/OffsetParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: sort
+          in: query
+          description: |-
+            A comma-separated list of fields to sort results by. Use the `-` prefix to sort descending.
+
+
+            E.g.: `?sort=-created`
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - created
+                - '-created'
+                - address
+                - '-address'
+                - name
+                - '-name'
+                - updated
+                - '-updated'
+                - attended_event_count
+                - '-attended_event_count'
+                - non_attended_event_count
+                - '-non_attended_event_count'
+                - phq_attendance_sum
+                - '-phq_attendance_sum'
+                - pes_accommodation_sum
+                - '-pes_accommodation_sum'
+                - pes_hospitality_sum
+                - '-pes_hospitality_sum'
+                - pes_total_sum
+                - '-pes_total_sum'
+                - pes_transportation_sum
+                - '-pes_transportation_sum'
+                - unscheduled_event_count
+                - '-unscheduled_event_count'
+                - next_90d.attended_event_count
+                - '-next_90d.attended_event_count'
+                - next_90d.non_attended_event_count
+                - '-next_90d.non_attended_event_count'
+                - next_90d.pes_accommodation_sum
+                - '-next_90d.pes_accommodation_sum'
+                - next_90d.pes_hospitality_sum
+                - '-next_90d.pes_hospitality_sum'
+                - next_90d.pes_total_sum
+                - '-next_90d.pes_total_sum'
+                - next_90d.pes_transportation_sum
+                - '-next_90d.pes_transportation_sum'
+                - next_90d.phq_attendance_sum
+                - '-next_90d.phq_attendance_sum'
+                - next_90d.unscheduled_event_count
+                - '-next_90d.unscheduled_event_count'
+                - attended_events
+                - '-attended_events'
+                - non_attended_events
+                - '-non_attended_events'
+                - attendance
+                - '-attendance'
+                - unscheduled_events
+                - '-unscheduled_events'
+            default:
+              - created
+          explode: false
+          style: form
+        - name: location_id
+          in: query
+          description: |-
+            A comma-separated string consisting of a list of 1 or more `location_id`'s.
+
+
+            E.g. `?location_id=6TxvEapQeDzq9y_UKVRQCQ`
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+          explode: false
+          style: form
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SavedLocationsResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+        - Saved Locations API
+    post:
+      operationId: save_location_public_locations_post
+      summary: Create new location
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSavedLocationRequest'
+      responses:
+        '201':
+          description: Location created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  location_id:
+                    type: string
+                required:
+                  - location_id
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+        - Saved Locations API
+  '/v1/saved-locations/{location_id}':
+    get:
+      operationId: get_location_public_locations__location_id__get
+      summary: Get a Saved Location
+      parameters:
+        - name: location_id
+          in: path
+          description: An existing Saved Location ID.
+          required: true
+          schema:
+            type: string
+            title: Location Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SavedLocationResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+        - Saved Locations API
+    put:
+      operationId: replace_location_data_public_locations__location_id__put
+      summary: Update (replace) a Saved Location
+      parameters:
+        - name: location_id
+          in: path
+          description: An existing Saved Location ID.
+          required: true
+          schema:
+            type: string
+            title: Location Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSavedLocationRequest'
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+        - Saved Locations API
+    delete:
+      operationId: delete_location_public_locations__location_id__delete
+      summary: Delete a Saved Location
+      parameters:
+        - name: location_id
+          in: path
+          description: An existing Saved Location ID.
+          required: true
+          schema:
+            type: string
+            title: Location Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+        - Saved Locations API
+  '/v1/saved-locations/{location_id}/insights/events':
+    get:
+      operationId: get_location_events_public_locations__location_id__insights_events_get
+      summary: Search Events for a Saved Location
+      description: 'Please refer to the [Events API](https://docs.predicthq.com/api/events/search-events) docs for the available query parameters in addition to those listed below.'
+      parameters:
+        - name: location_id
+          in: path
+          description: An existing Saved Location ID.
+          required: true
+          schema:
+            type: string
+            title: Location Id
+        - name: date_range_type
+          in: query
+          description: |-
+            Date range to fetch events for.
+              
+              
+            Currently the only supported date ranges are:
+              
+
+            - `next_90d`
+          required: false
+          schema:
+            $ref: '#/components/schemas/DateRangeType'
+            title: Date Range Type
+        - $ref: '#/components/parameters/OffsetParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhqEvents'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+        - Saved Locations API
+components:
+  parameters:
+    LimitParam:
+      name: limit
+      in: query
+      description: Limit the number of results.
+      required: false
+      schema:
+        type: integer
+        default: 10
+    OffsetParam:
+      name: offset
+      in: query
+      description: Offset the results.
+      required: false
+      schema:
+        type: integer
+        default: 0
+  schemas:
+    CreateSavedLocationRequest:
+      type: object
+      properties:
+        location_code:
+          description: |-
+            An optional identifier for your location.
+
+
+            The intention here is to use your own identifier for the location if you have one. 
+            E.g., you might have stores/hotels/etc in your system with their own ID 
+            - use that ID here to make it easier to lookup the location later.
+          type: string
+          title: Location Code
+        name:
+          description: |-
+            Name of the Saved Location.
+
+            E.g. `My Location`
+          type: string
+          title: Name
+        description:
+          description: Description of the location.
+          type: string
+          title: Description
+        labels:
+          description: |-
+            A list of labels to help you categorize your locations.
+            You can use these labels to search upon.
+
+
+            **E.g.**
+              ```json
+                {
+                  "labels": ["label1", "label2"]
+                }
+              ```
+          type: array
+          items:
+            type: string
+          title: Labels
+        geojson:
+          description: |-
+            You can define the geolocation of the Saved Location either by GeoJSON or Place IDs.
+
+
+            For the Point geometry type, we require a radius to be defined using a special set of properties on the GeoJSON record. As in the example below, these are `radius` and `radius_unit`. The radius property must be an integer or a float number up to 2 decimal places.
+
+
+            Remember that GeoJSON coordinates are ordered longitude then latitude.
+
+
+            Note: For Point geometry type, we strongly recommend using our [Suggested Radius API](https://docs.predicthq.com/api/suggested-radius/get-suggested-radius) to find a suitable radius value for your location and industry.
+          $ref: '#/components/schemas/GeoJson-Input'
+        place_ids:
+          description: |-
+            You can define the geolocation of the Saved Location either by GeoJSON or Place IDs.
+
+            The Place IDs option is typically used when the location covers an entire city, county, state or country.
+
+            Use our [Places API](https://docs.predicthq.com/api/places/search-places) to search for the correct Place ID.
+          type: array
+          items:
+            type: integer
+          title: Place Ids
+        formatted_address:
+          type: string
+          title: Formatted Address
+      title: CreateSavedLocationRequest
+    DateRange:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/DateRangeType'
+        start_dt:
+          type: string
+          format: date-time
+          title: Start Dt
+        end_dt:
+          type: string
+          format: date-time
+          title: End Dt
+      required:
+        - type
+        - start_dt
+        - end_dt
+      title: DateRange
+    DateRangeType:
+      type: string
+      const: next_90d
+      title: DateRangeType
+    GeoJson-Input:
+      type: object
+      properties:
+        type:
+          type: string
+          const: Feature
+          title: Type
+        properties:
+          $ref: '#/components/schemas/Properties'
+        geometry:
+          discriminator:
+            propertyName: type
+            mapping:
+              LineString: '#/components/schemas/LineString'
+              MultiLineString: '#/components/schemas/MultiLineString'
+              MultiPolygon: '#/components/schemas/MultiPolygon'
+              Point: '#/components/schemas/Point'
+              Polygon: '#/components/schemas/Polygon'
+          oneOf:
+            - $ref: '#/components/schemas/Point'
+            - $ref: '#/components/schemas/Polygon'
+            - $ref: '#/components/schemas/MultiPolygon'
+            - $ref: '#/components/schemas/LineString'
+            - $ref: '#/components/schemas/MultiLineString'
+          title: Geometry
+      required:
+        - type
+        - geometry
+      title: GeoJSON (Input)
+    GeoJson-Output:
+      type: object
+      properties:
+        type:
+          type: string
+          const: Feature
+          title: Type
+        properties:
+          $ref: '#/components/schemas/Properties'
+        geometry:
+          discriminator:
+            propertyName: type
+            mapping:
+              LineString: '#/components/schemas/LineString'
+              MultiLineString: '#/components/schemas/MultiLineString'
+              MultiPolygon: '#/components/schemas/MultiPolygon'
+              Point: '#/components/schemas/Point'
+              Polygon: '#/components/schemas/Polygon'
+          oneOf:
+            - $ref: '#/components/schemas/Point'
+            - $ref: '#/components/schemas/Polygon'
+            - $ref: '#/components/schemas/MultiPolygon'
+            - $ref: '#/components/schemas/LineString'
+            - $ref: '#/components/schemas/MultiLineString'
+          title: Geometry
+      required:
+        - type
+        - geometry
+      title: GeoJSON (Output)
+    HTTPValidationError:
+      type: object
+      properties:
+        detail:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          title: Detail
+      title: HTTPValidationError
+    LineString:
+      type: object
+      properties:
+        type:
+          type: string
+          default: LineString
+          const: LineString
+          title: Type
+        coordinates:
+          type: array
+          items:
+            anyOf:
+              - prefixItems:
+                  - type: number
+                  - type: number
+                type: array
+                maxItems: 2
+                minItems: 2
+              - prefixItems:
+                  - type: number
+                  - type: number
+                  - type: number
+                type: array
+                maxItems: 3
+                minItems: 3
+          title: Coordinates
+      required:
+        - coordinates
+      title: LineString
+    MultiLineString:
+      type: object
+      properties:
+        type:
+          type: string
+          default: MultiLineString
+          const: MultiLineString
+          title: Type
+        coordinates:
+          type: array
+          items:
+            items:
+              anyOf:
+                - prefixItems:
+                    - type: number
+                    - type: number
+                  type: array
+                  maxItems: 2
+                  minItems: 2
+                - prefixItems:
+                    - type: number
+                    - type: number
+                    - type: number
+                  type: array
+                  maxItems: 3
+                  minItems: 3
+            type: array
+          title: Coordinates
+      required:
+        - coordinates
+      title: MultiLineString
+    MultiPolygon:
+      type: object
+      properties:
+        type:
+          type: string
+          default: MultiPolygon
+          const: MultiPolygon
+          title: Type
+        coordinates:
+          type: array
+          items:
+            items:
+              items:
+                anyOf:
+                  - prefixItems:
+                      - type: number
+                      - type: number
+                    type: array
+                    maxItems: 2
+                    minItems: 2
+                  - prefixItems:
+                      - type: number
+                      - type: number
+                      - type: number
+                    type: array
+                    maxItems: 3
+                    minItems: 3
+              type: array
+            type: array
+          title: Coordinates
+      required:
+        - coordinates
+      title: MultiPolygon
+    PhqEvents:
+      type: object
+      properties:
+        count:
+          description: Total number of results found.
+          type: integer
+          title: Count
+        results:
+          description: |-
+            List of results where each item is an Event.
+
+
+            Please refer to the response fields section in [Search Events](https://docs.predicthq.com/api/events/search-events#response-fields) for the structure of each record.
+          type: array
+          items:
+            additionalProperties: true
+            type: object
+          title: Results
+      required:
+        - count
+        - results
+      title: PhqEvents
+    Place:
+      type: object
+      properties:
+        place_id:
+          type: integer
+          title: Place Id
+        type:
+          type: string
+          title: Type
+        name:
+          type: string
+          title: Name
+        county:
+          type: string
+          title: County
+        region:
+          type: string
+          title: Region
+        country:
+          type: string
+          title: Country
+        geojson:
+          $ref: '#/components/schemas/PlaceGeoJson'
+      required:
+        - place_id
+        - type
+        - name
+        - geojson
+      title: Place
+    PlaceGeoJson:
+      type: object
+      properties:
+        type:
+          type: string
+          default: Feature
+          const: Feature
+          title: Type
+        geometry:
+          anyOf:
+            - $ref: '#/components/schemas/Point'
+            - $ref: '#/components/schemas/Polygon'
+            - $ref: '#/components/schemas/MultiPolygon'
+            - $ref: '#/components/schemas/LineString'
+            - $ref: '#/components/schemas/MultiLineString'
+          title: Geometry
+      required:
+        - geometry
+      title: PlaceGeoJson
+    Point:
+      type: object
+      properties:
+        type:
+          type: string
+          default: Point
+          const: Point
+          title: Type
+        coordinates:
+          anyOf:
+            - prefixItems:
+                - type: number
+                - type: number
+              type: array
+              maxItems: 2
+              minItems: 2
+            - prefixItems:
+                - type: number
+                - type: number
+                - type: number
+              type: array
+              maxItems: 3
+              minItems: 3
+          title: Coordinates
+      required:
+        - coordinates
+      title: Point
+    Polygon:
+      type: object
+      properties:
+        type:
+          type: string
+          default: Polygon
+          const: Polygon
+          title: Type
+        coordinates:
+          type: array
+          items:
+            items:
+              anyOf:
+                - prefixItems:
+                    - type: number
+                    - type: number
+                  type: array
+                  maxItems: 2
+                  minItems: 2
+                - prefixItems:
+                    - type: number
+                    - type: number
+                    - type: number
+                  type: array
+                  maxItems: 3
+                  minItems: 3
+            type: array
+          title: Coordinates
+      required:
+        - coordinates
+      title: Polygon
+    Properties:
+      description: Custom properties for embedding the radius information
+      type: object
+      properties:
+        radius:
+          type: number
+          title: Radius
+        radius_unit:
+          $ref: '#/components/schemas/RadiusUnit'
+      title: Properties
+    RadiusUnit:
+      description: The unit of the radius returned. This will be the unit specified in the radius_unit parameter in the call made.
+      type: string
+      enum:
+        - m
+        - km
+        - ft
+        - mi
+      title: RadiusUnit
+    SavedLocationResponse:
+      type: object
+      properties:
+        location_code:
+          description: |-
+            The user-supplied identifier for the location.
+
+
+            E.g. `4t855453234t5623`
+          type: string
+          title: Location Code
+        name:
+          description: |-
+            The user defined name of the Saved Location set in the create location call.
+
+
+            E.g. `My Parking Building`
+          type: string
+          title: Name
+        labels:
+          description: |-
+            A list of user defined labels for the location.
+
+
+            E.g.: `["test", "retail"]`
+          type: array
+          items:
+            type: string
+          title: Labels
+        geojson:
+          description: 'An object containing the geographic information about a location. Represents the geometry associated with the event in the [GeoJSON format](https://geojson.org/).'
+          $ref: '#/components/schemas/GeoJson-Output'
+        place_ids:
+          description: |-
+            An array of place ids (see the Places API) for locations that are defined as covering an area (see City, State, Country locations) rather than a point and radius.
+
+
+            E.g. `[2750405]`
+          type: array
+          items:
+            type: integer
+          title: Place Ids
+        formatted_address:
+          description: |-
+            The address of the location. This can be supplied when created a location. 
+            If it's not supplied it will be populated by a reverse geocode.
+
+
+            E.g. 
+              ```json
+                {
+                  "formatted_address": "666 Mission St, San Francisco, CA 94105, USA",
+                }
+              ```
+          type: string
+          title: Formatted Address
+        create_dt:
+          description: |-
+            The creation date time for the location in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601).
+
+
+            E.g. `2022-04-26T11:46:24+00:00`
+          type: string
+          format: date-time
+          title: Create Dt
+        update_dt:
+          description: |-
+            The last update date time for the location in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601).
+
+
+            E.g. `2022-04-26T11:46:24+00:00`
+          type: string
+          format: date-time
+          title: Update Dt
+        enrich_dt:
+          description: |-
+            The date time the location was last enriched in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601).
+
+
+            E.g. `2022-04-26T11:46:25+00:00`
+          type: string
+          format: date-time
+          title: Enrich Dt
+        insights_dt:
+          description: |-
+            The date/time insights were last calculated for the location in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601).
+
+
+            E.g. `2022-04-26T11:46:25+00:00`
+          type: string
+          format: date-time
+          title: Insights Dt
+        user_id:
+          description: |-
+            The ID of the user who created the saved location. 
+            This is present for location created in the WebApp. 
+            For locations created via the API this field will not be populated.
+
+
+            E.g. `hjqkKozgS8mm`
+          type: string
+          title: User Id
+        subscription_valid_types:
+          description: |-
+            The value is a list of different (subscription) types that this location is valid for. 
+            The possible values are `events`, `broadcasts`, `notifications`, `features_api`.
+
+
+            It is possible to create locations outside of what your subscription has access to. 
+            In this case this field will be empty and you will not be able to view events for the location
+
+
+            E.g. `["events"]`
+          type: array
+          items:
+            $ref: '#/components/schemas/SubscriptionValidType'
+          title: Subscription Valid Types
+        status:
+          description: |-
+            Reflects if a location has been updated by the enrichment process. When a location is initially created its status will be `pending`.
+
+
+            After the enrichment process has updated the location populating `summary_insights` and other fields the status will be `active`.
+
+
+            Typically locations only have the `pending` status for a short time.
+                  
+                  
+            E.g. `active`
+          $ref: '#/components/schemas/SavedLocationStatus'
+        summary_insights:
+          description: |-
+            This object contains the saved locations stats. 
+            This includes values for each of the 4 stats as well as the date_range field. 
+            The stats reflect the number of events and attend happening for the location.
+
+            The date range field includes the start and end datetime for the period that the stats have been calculated for.
+          type: array
+          items:
+            $ref: '#/components/schemas/SummaryInsights'
+          title: Summary Insights
+        places:
+          description: 'This is a list of (geonames) Places. It is based on the lowest level place_id in the [place_hierarchies](https://github.com/predicthq/gitbook-tech-docs/blob/main/docs/getting-started/guides/geolocation-guides/understanding-place-hierarchies.md). It will usually only contain 1 item in the list but will always be a list.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Place'
+          title: Places
+        location_id:
+          description: |-
+            The autogenerated identifier for the saved location.
+
+
+            E.g. `8gZ2rn8BRcTjM_3SWdjP`
+          type: string
+          title: Location Id
+      required:
+        - create_dt
+        - update_dt
+        - status
+        - location_id
+      title: SavedLocationResponse
+    SavedLocationStatus:
+      type: string
+      enum:
+        - active
+        - deleted
+        - pending
+      title: SavedLocationStatus
+    SavedLocationsResponse:
+      type: object
+      properties:
+        count:
+          description: Total number of results found.
+          type: integer
+          title: Count
+        locations:
+          description: List of results where each item is a Saved Location.
+          type: array
+          items:
+            $ref: '#/components/schemas/SavedLocationResponse'
+          title: Locations
+      required:
+        - count
+        - locations
+      title: SavedLocationsResponse
+    SubscriptionValidType:
+      type: string
+      enum:
+        - broadcasts
+        - events
+        - features_api
+        - notifications
+      title: SubscriptionValidType
+    SummaryInsights:
+      type: object
+      properties:
+        date_range:
+          $ref: '#/components/schemas/DateRange'
+        phq_attendance_sum:
+          type: integer
+          title: Phq Attendance Sum
+        attended_event_count:
+          type: integer
+          title: Attended Event Count
+        non_attended_event_count:
+          type: integer
+          title: Non Attended Event Count
+        unscheduled_event_count:
+          type: integer
+          title: Unscheduled Event Count
+        demand_surge_count:
+          type: integer
+          title: Demand Surge Count
+        venue_count:
+          type: integer
+          title: Venue Count
+        pes_total_sum:
+          type: integer
+          title: Pes Total Sum
+        pes_accommodation_sum:
+          type: integer
+          title: Pes Accommodation Sum
+        pes_hospitality_sum:
+          type: integer
+          title: Pes Hospitality Sum
+        pes_transportation_sum:
+          type: integer
+          title: Pes Transportation Sum
+      required:
+        - date_range
+        - phq_attendance_sum
+        - attended_event_count
+        - non_attended_event_count
+        - unscheduled_event_count
+      title: SummaryInsights
+    ValidationError:
+      type: object
+      properties:
+        loc:
+          type: array
+          items:
+            anyOf:
+              - type: string
+              - type: integer
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      required:
+        - loc
+        - msg
+        - type
+      title: ValidationError
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: $API_KEY
+      description: |
+        Use 'Authorization: Bearer <YOUR_API_KEY>' as documented at https://docs.predicthq.com/authentication
+
