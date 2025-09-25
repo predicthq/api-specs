@@ -11,7 +11,7 @@ security:
   - BearerAuth: []
 tags:
   - externalDocs:
-      description: Features API
+      description: Features API Docs
       url: 'https://docs.predicthq.com/api/features/get-features'
     name: Features API
 servers:
@@ -24,7 +24,7 @@ paths:
   /v1/features/:
     post:
       operationId: obtain_features_given_criteria_features__post
-      summary: Obtain requested features based on specified criteria and categories
+      summary: Get ML Features
       parameters:
         - $ref: '#/components/parameters/OffsetParam'
         - $ref: '#/components/parameters/LimitParam'
@@ -66,6 +66,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PhqFeaturesResponse'
+            text/csv:
+              schema:
+                description: CSV export of results
+                type: string
+                format: binary
         '422':
           description: Validation Error
           content:
@@ -834,7 +839,7 @@ components:
       type: object
       properties:
         place_id:
-          description: PlaceIDs to aggregate across
+          description: Place IDs to aggregate across
           type: array
           items:
             type: integer
@@ -997,6 +1002,19 @@ components:
           items:
             $ref: '#/components/schemas/PhqFeatureSet'
           title: Results
+        count:
+          description: Total number of results
+          type: integer
+        next:
+          description: URL to next page
+          type:
+            - string
+            - 'null'
+        previous:
+          description: URL to previous page
+          type:
+            - string
+            - 'null'
       required:
         - results
       title: PhqFeaturesResponse
@@ -1031,7 +1049,7 @@ components:
           maxItems: 7
           title: Stats
         phq_rank:
-          description: Definition af phq rank range filter criteria
+          description: PHQ Rank range filter
           type: object
           properties:
             gt:
@@ -1056,7 +1074,7 @@ components:
               title: Lte
           title: RankRange
         local_rank:
-          description: Definition af local rank range filter criteria
+          description: Local Rank range filter
           type: object
           properties:
             gt:
@@ -1123,7 +1141,9 @@ components:
           title: '5'
       title: RankStats
     StatsField:
-      $ref: '#/components/schemas/PhqStatisticsFeatureCriteria'
+      anyOf:
+        - type: boolean
+        - $ref: '#/components/schemas/PhqStatisticsFeatureCriteria'
     ValidationError:
       type: object
       properties:
