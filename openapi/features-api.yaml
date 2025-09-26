@@ -114,9 +114,6 @@ components:
           type: string
           format: date
           title: Lte
-        tz:
-          type: string
-          title: Tz
       title: ActiveDateRange
     Beam:
       type: object
