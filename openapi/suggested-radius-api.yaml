@@ -24,7 +24,7 @@ paths:
   /v1/suggested-radius/:
     get:
       operationId: get_suggested_radius_public_suggested_radius__get
-      summary: Get optimal radius for a location and industry
+      summary: Get Suggested Radius
       parameters:
         - name: radius_unit
           in: query
@@ -33,10 +33,10 @@ paths:
             The default unit is m
 
             Possible values:
-            - m - meters (default)     
-            - km - kilometers      
-            - ft - feet       
-            - mi - miles    
+            - `m` - meters (default)     
+            - `km` - kilometers      
+            - `ft` - feet       
+            - `mi` - miles    
 
 
             E.g. `?radius_unit=km`
