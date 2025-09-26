@@ -2313,8 +2313,7 @@ components:
     UploadErrorResponse:
       description: |
         An unsuccessful HTTP response code could be returned for several reasons. In addition to an error message, there may
-        also be a `code` field when applicable. The table below outlines the meaning of several error codes that may be
-        returned.
+        also be a `code` field when applicable.
       oneOf:
         - $ref: '#/components/schemas/content_type_invalid'
         - $ref: '#/components/schemas/data_validation_failed'
