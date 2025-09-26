@@ -36,7 +36,7 @@ paths:
   /v1/loop/events:
     get:
       operationId: search_submission_events_get
-      summary: Search submissions
+      summary: Search Submitted Events
       parameters:
         - name: q
           in: query
@@ -97,7 +97,15 @@ paths:
             - `archived`
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
+              enum:
+                - active
+                - predicted
+                - cancelled
+                - postponed
+                - archived
           explode: false
           style: form
         - name: category
@@ -109,7 +117,9 @@ paths:
             E.g. `?category=expos,festivals`
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
           explode: false
           style: form
         - name: label
@@ -121,7 +131,9 @@ paths:
             E.g. `?label=community,food,music`
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
           explode: false
           style: form
         - name: country
@@ -133,7 +145,9 @@ paths:
             E.g. `?country=NZ,US`
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
           explode: false
           style: form
         - name: start.lt
@@ -761,7 +775,7 @@ paths:
   /v1/loop/feedback/conversations:
     get:
       operationId: search_feedback_conversations_feedback_conversations_get
-      summary: Search feedback conversations
+      summary: Search Feedback
       parameters:
         - name: conversation_id
           in: query
@@ -815,7 +829,7 @@ paths:
             Comma separated list of Record IDs.
 
 
-            Record IDs can refer to either an Event ID (record type event-public) or a Loop Submission (record type event-loop).
+            Record IDs can refer to either an Event ID (record type `event-public`) or a Loop Submission (record type `event-loop`).
 
 
             E.g `?record_id=5uRg7CqGu7DTtu4Rfk`
@@ -1020,7 +1034,7 @@ paths:
                           type: string
                         create_dt:
                           description: |-
-                            The creation date time for the record in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601).
+                            The creation date time for the conversation in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601).
 
 
                             E.g. `2022-04-26T11:46:24+00:00`
@@ -1028,7 +1042,7 @@ paths:
                           format: date-time
                         update_dt:
                           description: |-
-                            The last update date time for the record in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601).
+                            The last update date time for the conversation in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601).
 
 
                             E.g. `2022-04-26T11:46:24+00:00`
@@ -1179,7 +1193,7 @@ paths:
   /v1/loop/links:
     get:
       operationId: search_links_links_get
-      summary: Search Links
+      summary: Search Loop Links
       parameters:
         - $ref: '#/components/parameters/OffsetParam'
         - $ref: '#/components/parameters/LimitParam'
@@ -1200,13 +1214,13 @@ paths:
         - name: link_id
           in: query
           description: |-
-            Comma-separated list of link_id.
+            Comma-separated list of `link_id`.
 
 
             E.g. `?link_id=m4Dk4g4DRA8Yqbp2PC54`
           required: false
           schema:
-            description: A comma-separated list of link ids
+            description: A comma-separated list of Loop Link IDs
             type: array
             items:
               type: string
@@ -1218,13 +1232,13 @@ paths:
         - name: user_id
           in: query
           description: |-
-            Comma-separated list of user_id.
+            Comma-separated list of `user_id`.
 
 
             E.g. `?user_id=hw8Dsmv4Djg`
           required: false
           schema:
-            description: A comma-separated list of user ids
+            description: A comma-separated list of user IDs
             type: array
             items:
               type: string
@@ -1275,7 +1289,7 @@ paths:
         - Loop Links
     post:
       operationId: create_link_links_post
-      summary: Create Link
+      summary: Create a Loop Link
       requestBody:
         required: true
         content:
@@ -1300,7 +1314,7 @@ paths:
   '/v1/loop/links/{link_id}':
     get:
       operationId: get_link_by_id_links__link_id__get
-      summary: Get Link By ID
+      summary: Get a Loop Link
       parameters:
         - name: link_id
           in: path
@@ -1326,7 +1340,7 @@ paths:
         - Loop Links
     put:
       operationId: update_link_links__link_id__put
-      summary: Update Link
+      summary: Update (replace) a Loop Link
       parameters:
         - name: link_id
           in: path
@@ -1354,7 +1368,7 @@ paths:
         - Loop Links
     delete:
       operationId: delete_link_links__link_id__delete
-      summary: Delete Link By ID
+      summary: Delete a Loop Link
       parameters:
         - name: link_id
           in: path
@@ -1377,7 +1391,7 @@ paths:
   /v1/loop/settings:
     get:
       operationId: get_setting_settings_get
-      summary: Get Setting
+      summary: Get Loop Settings
       responses:
         '200':
           description: Successful Response
@@ -1395,7 +1409,7 @@ paths:
         - Loop Settings
     put:
       operationId: create_or_update_setting_settings_put
-      summary: Create Or Update Setting
+      summary: Update Loop Settings
       requestBody:
         required: true
         content:
@@ -1534,11 +1548,23 @@ components:
             - event_id: Event ID to provide the feedback for (if this is not provided, the user will be asked to enter an Event ID).
             - email: Email address of the end-user who is providing the feedback. This will be stored against the submission so the user can receive email notifications about their submission.
           type: object
-          additionalProperties:
-            type: string
-            maxLength: 2083
-            minLength: 1
-            format: uri
+          additionalProperties: false
+          properties:
+            event:
+              description: URL for submitting missing events.
+              type: string
+              format: uri
+              maxLength: 2083
+              minLength: 1
+            event_feedback:
+              description: URL for providing feedback about an existing event.
+              type: string
+              format: uri
+              maxLength: 2083
+              minLength: 1
+          required:
+            - event
+            - event_feedback
           title: Links
       required:
         - link_id
@@ -1595,6 +1621,8 @@ components:
 
             E.g. `Hotel ABC`
           type: string
+          examples:
+            - Hotel ABC
           maxLength: 120
           minLength: 1
           pattern: '^[a-zA-Z0-9 _-]+$'
@@ -1607,14 +1635,18 @@ components:
           type: integer
           title: Count
         next:
-          type: string
-          format: uri
-          minLength: 1
+          anyOf:
+            - type: string
+              minLength: 1
+              format: uri
+            - type: 'null'
           title: Next
         previous:
-          type: string
-          format: uri
-          minLength: 1
+          anyOf:
+            - type: string
+              minLength: 1
+              format: uri
+            - type: 'null'
           title: Previous
         links:
           type: array
