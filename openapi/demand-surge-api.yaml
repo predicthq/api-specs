@@ -1,0 +1,199 @@
+openapi: 3.1.0
+info:
+  title: PredictHQ Demand Surge API
+  description: Identify dates with surges in demand caused by multiple events happening at the same time and location.
+  version: 1.0.0
+  license:
+    name: MIT
+    url: 'https://opensource.org/licenses/MIT'
+  termsOfService: 'https://www.predicthq.com/legal/terms'
+security:
+  - BearerAuth: []
+tags:
+  - name: Demand Surge API
+    externalDocs:
+      url: 'https://docs.predicthq.com/api/demand-surge/get-demand-surges'
+      description: Demand Surge Docs
+servers:
+  - url: 'https://api.predicthq.com'
+externalDocs:
+  url: 'https://docs.predicthq.com'
+  description: PredictHQ Tech Docs
+x-hideTryItPanel: true
+paths:
+  /v1/demand-surge/:
+    get:
+      operationId: get_demand_surge_demand_surge_get
+      summary: Get Demand Surges
+      parameters:
+        - name: min_surge_intensity
+          in: query
+          description: |-
+            Filters out demand surges smaller than the minimum surge intensity provided.
+
+
+            E.g. `?min_surge_intensity=m`
+          required: true
+          schema:
+            $ref: '#/components/schemas/SizeEnum'
+        - name: date_from
+          in: query
+          description: |-
+            The beginning of the demand surge search window. The demand surge will be looked up over the next 90 days after the date you provide for the `date_from` parameter.
+
+
+            The accepted format for this parameter is `YYYY-MM-DD`
+
+
+            E.g. `?date_from=2021-05-12`
+          required: true
+          schema:
+            type: string
+            format: date
+            title: Date From
+        - name: location.place_id
+          in: query
+          description: |-
+            A comma-separated list in the format representing the place ids of a location in the format `<place_id1>,<place_id2>` . It cannot be used with `origin` or `radius` suffixes.
+
+
+            E.g. `?location.place_id=2643743,2643744`
+          required: false
+          schema:
+            description: A comma-separated list of place ids
+            type: array
+            items:
+              type: string
+              examples:
+                - 'value1,value2'
+            title: Location.Place Id
+          explode: false
+          style: form
+        - name: location.origin
+          in: query
+          description: |-
+            A comma-separated coordinate (`<lat>,<lon>`) representing the centroid of a location. It must be used with `radius` suffix and cannot be used with `location.place_id`
+
+
+            E.g. `?location.origin=40.7128,74.0060`
+          required: false
+          schema:
+            description: A comma-separated coordinate representing the centroid of a location
+            type: array
+            items:
+              type: string
+              examples:
+                - 'value1,value2'
+            title: Location.Origin
+          explode: false
+          style: form
+        - name: location.radius
+          in: query
+          description: |-
+            A string representing the `radius` for the demand surge, in the format `<radius_value><radius_unit>`, where `<radius_value>` is an integer or a float number up to 2 decimal places and `<radius_unit>` is one of:
+            - `m` - meters
+            - `km` - kilometers
+            - `ft` - feet
+            - `mi` - miles
+
+
+            E.g. `?location.radius=100mi`
+          required: false
+          schema:
+            type: string
+            title: Location.Radius
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DemandSurgeResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+        - Demand Surge API
+components:
+  schemas:
+    DemandSurgeResponse:
+      type: object
+      properties:
+        count:
+          description: The number of identified demand surges given the search criteria.
+          type: integer
+          title: Count
+        surge_dates:
+          description: An array of identified demand surges.
+          type: array
+          items:
+            $ref: '#/components/schemas/SurgeDate'
+          title: Surge Dates
+      required:
+        - count
+      title: DemandSurgeResponse
+    HTTPValidationError:
+      type: object
+      properties:
+        detail:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          title: Detail
+      title: HTTPValidationError
+    SizeEnum:
+      type: string
+      enum:
+        - s
+        - m
+        - l
+        - xl
+      title: SizeEnum
+    SurgeDate:
+      type: object
+      properties:
+        date:
+          description: The date of the identified demand surge.
+          type: string
+          format: date
+          title: Date
+        phq_attendance_sum:
+          description: The sum of all attendance based features in the identified demand surge.
+          type: integer
+          title: Phq Attendance Sum
+      required:
+        - date
+        - phq_attendance_sum
+      title: SurgeDate
+    ValidationError:
+      type: object
+      properties:
+        loc:
+          type: array
+          items:
+            anyOf:
+              - type: string
+              - type: integer
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      required:
+        - loc
+        - msg
+        - type
+      title: ValidationError
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: $API_KEY
+      description: |
+        Use 'Authorization: Bearer <YOUR_API_KEY>' as documented at https://docs.predicthq.com/authentication
+
