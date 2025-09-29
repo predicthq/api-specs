@@ -1635,19 +1635,15 @@ components:
           type: integer
           title: Count
         next:
-          anyOf:
-            - type: string
-              minLength: 1
-              format: uri
-            - type: 'null'
-          title: Next
+          description: URL to next page
+          type:
+            - string
+            - 'null'
         previous:
-          anyOf:
-            - type: string
-              minLength: 1
-              format: uri
-            - type: 'null'
-          title: Previous
+          description: URL to previous page
+          type:
+            - string
+            - 'null'
         links:
           type: array
           items:
