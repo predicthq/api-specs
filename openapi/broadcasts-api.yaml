@@ -822,10 +822,14 @@ components:
           type: integer
           title: Count
         next:
-          type: string
+          anyOf:
+            - type: string
+            - type: 'null'
           title: Next
         previous:
-          type: string
+          anyOf:
+            - type: string
+            - type: 'null'
           title: Previous
         overflow:
           type: boolean

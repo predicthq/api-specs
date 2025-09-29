@@ -265,11 +265,15 @@ components:
           type: integer
           title: Count
         next:
-          type: string
-          title: Next
+          description: URL to next page
+          type:
+            - string
+            - 'null'
         previous:
-          type: string
-          title: Previous
+          description: URL to previous page
+          type:
+            - string
+            - 'null'
         place_hierarchies:
           type: array
           items:
@@ -386,11 +390,15 @@ components:
           type: integer
           title: Count
         next:
-          type: string
-          title: Next
+          description: URL to next page
+          type:
+            - string
+            - 'null'
         previous:
-          type: string
-          title: Previous
+          description: URL to previous page
+          type:
+            - string
+            - 'null'
         results:
           type: array
           items:
