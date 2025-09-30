@@ -64,16 +64,37 @@ paths:
               schema:
                 description: CSV export of results
                 type: string
+                format: binary
                 examples:
                   - |-
                     date,feature1,feature2
                     2025-01-01,value1,value2
-        '422':
-          description: Validation Error
+        '400':
+          description: Bad Request / Validation Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden (insufficient scope)
+        '415':
+          description: Unsupported Media Type (expected application/json)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+        '422':
+          description: Validation error
       tags:
         - Features API
 components:
@@ -770,15 +791,6 @@ components:
         - lon
         - lat
       title: GeoDistancePoint
-    HTTPValidationError:
-      type: object
-      properties:
-        detail:
-          type: array
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          title: Detail
-      title: HTTPValidationError
     HourOfDayRange:
       type: object
       properties:
@@ -1119,27 +1131,6 @@ components:
       anyOf:
         - type: boolean
         - $ref: '#/components/schemas/PhqStatisticsFeatureCriteria'
-    ValidationError:
-      type: object
-      properties:
-        loc:
-          type: array
-          items:
-            anyOf:
-              - type: string
-              - type: integer
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      required:
-        - loc
-        - msg
-        - type
-      title: ValidationError
     Weekday:
       type: string
       default: monday
