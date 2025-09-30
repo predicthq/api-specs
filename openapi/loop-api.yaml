@@ -614,11 +614,32 @@ paths:
                               items:
                                 type: object
                                 properties:
-                                  maximum_attendance:
-                                    type: number
                                   attendance:
-                                    type: number
-                                additionalProperties: false
+                                    type: object
+                                    properties:
+                                      count:
+                                        type: integer
+                                        maximum: 9223372036854775807
+                                        minimum: 0
+                                  maximum_attendance:
+                                    type: integer
+                                    maximum: 9223372036854775807
+                                    minimum: 0
+                                  estimated_fatalities:
+                                    type: object
+                                    properties:
+                                      count:
+                                        type: integer
+                                        maximum: 9223372036854775807
+                                        minimum: 0
+                                  estimated_injuries:
+                                    type: object
+                                    properties:
+                                      count:
+                                        type: integer
+                                        maximum: 9223372036854775807
+                                        minimum: 0
+                              additionalProperties: true
                             dates:
                               description: |-
                                 Event dates.
@@ -636,9 +657,20 @@ paths:
                                   }
                                   ```
                               type: object
+                              additionalProperties: false
+                              oneOf:
+                                - required:
+                                    - floating_date
+                                - required:
+                                    - floating_time
+                                - required:
+                                    - fixed_date
+                                - required:
+                                    - fixed_time
                               properties:
-                                fixed_date:
+                                floating_date:
                                   type: object
+                                  additionalProperties: false
                                   properties:
                                     start_date:
                                       type: string
@@ -648,9 +680,55 @@ paths:
                                       format: date
                                   required:
                                     - start_date
-                                    - end_date
-                              required:
-                                - fixed_date
+                                floating_time:
+                                  type: object
+                                  additionalProperties: false
+                                  properties:
+                                    start_local_datetime:
+                                      type: string
+                                      format: date-time-local
+                                    end_local_datetime:
+                                      type: string
+                                      format: date-time-local
+                                  required:
+                                    - start_local_datetime
+                                fixed_date:
+                                  type: object
+                                  additionalProperties: false
+                                  properties:
+                                    start_date:
+                                      type: string
+                                      format: date
+                                    end_date:
+                                      type: string
+                                      format: date
+                                    timezone:
+                                      type: string
+                                  required:
+                                    - start_date
+                                fixed_time:
+                                  type: object
+                                  additionalProperties: false
+                                  anyOf:
+                                    - required:
+                                        - start_timestamp
+                                    - required:
+                                        - start_local_datetime
+                                  properties:
+                                    start_timestamp:
+                                      type: string
+                                      format: date-time
+                                    end_timestamp:
+                                      type: string
+                                      format: date-time
+                                    start_local_datetime:
+                                      type: string
+                                      format: date-time-local
+                                    end_local_datetime:
+                                      type: string
+                                      format: date-time-local
+                                    timezone:
+                                      type: string
                             labels:
                               description: |-
                                 List of labels for the event.
@@ -675,18 +753,18 @@ paths:
 
 
                                 E.g. `38.901544`
-                              type: number
+                              type: string
                               examples:
-                                - 38.901544
+                                - '38.901544'
                             lon:
                               description: |-
                                 Longitude for the event.
 
 
                                 E.g. `-119.7030036`
-                              type: number
+                              type: string
                               examples:
-                                - -119.7030036
+                                - '-119.7030036'
                             address:
                               description: |-
                                 Address for the event.
@@ -716,22 +794,7 @@ paths:
                               description: Postcode of the event.
                               type: string
                             country:
-                              description: |-
-                                Geographic location of the event. Represented in [GeoJSON](https://geojson.org/) format.
-
-
-                                **E.g.**
-                                  ```json
-                                  {
-                                    "geometry": {
-                                      "type": "Point",
-                                      "coordinates": [
-                                        -119.703022,
-                                        38.9012446
-                                      ]
-                                    }
-                                  }
-                                  ```
+                              description: 'Country code in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format.'
                               type: string
                             geometry:
                               description: |-
