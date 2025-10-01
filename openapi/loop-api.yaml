@@ -1699,14 +1699,18 @@ components:
           title: Count
         next:
           description: URL to next page
-          type:
-            - string
-            - 'null'
+          anyOf:
+            - type: string
+              minLength: 1
+              format: uri
+            - type: 'null'
         previous:
           description: URL to previous page
-          type:
-            - string
-            - 'null'
+          anyOf:
+            - type: string
+              minLength: 1
+              format: uri
+            - type: 'null'
         links:
           type: array
           items:
