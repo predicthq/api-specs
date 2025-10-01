@@ -822,15 +822,15 @@ components:
           type: integer
           title: Count
         next:
+          description: URL to next page
           anyOf:
             - type: string
             - type: 'null'
-          title: Next
         previous:
+          description: URL to previous page
           anyOf:
             - type: string
             - type: 'null'
-          title: Previous
         overflow:
           type: boolean
           title: Overflow

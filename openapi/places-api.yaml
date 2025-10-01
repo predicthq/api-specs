@@ -266,14 +266,14 @@ components:
           title: Count
         next:
           description: URL to next page
-          type:
-            - string
-            - 'null'
+          anyOf:
+            - type: string
+            - type: 'null'
         previous:
           description: URL to previous page
-          type:
-            - string
-            - 'null'
+          anyOf:
+            - type: string
+            - type: 'null'
         place_hierarchies:
           type: array
           items:
@@ -391,14 +391,14 @@ components:
           title: Count
         next:
           description: URL to next page
-          type:
-            - string
-            - 'null'
+          anyOf:
+            - type: string
+            - type: 'null'
         previous:
           description: URL to previous page
-          type:
-            - string
-            - 'null'
+          anyOf:
+            - type: string
+            - type: 'null'
         results:
           type: array
           items:
