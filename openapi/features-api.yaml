@@ -982,14 +982,14 @@ components:
           type: integer
         next:
           description: URL to next page
-          type:
-            - string
-            - 'null'
+          anyof:
+            - type: string
+            - type: 'null'
         previous:
           description: URL to previous page
-          type:
-            - string
-            - 'null'
+          anyof:
+            - type: string
+            - type: 'null'
       required:
         - results
       title: PhqFeaturesResponse
