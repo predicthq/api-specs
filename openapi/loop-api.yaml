@@ -57,7 +57,9 @@ paths:
             E.g. `?link_id=m4Dk4g4DRA8Yqbp2PC54`
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
           explode: false
           style: form
         - name: event_id
@@ -70,7 +72,9 @@ paths:
             E.g. `?event_id=5uRg7CqGu7DTtu4Rfk`
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
           explode: false
           style: form
         - name: user_id
@@ -82,7 +86,9 @@ paths:
             E.g. `?user_id=hw8Dsmv4Djg`
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
           explode: false
           style: form
         - name: state
@@ -470,11 +476,7 @@ paths:
                     description: Total number of results found.
                     type: integer
                   events:
-                    description: |-
-                      List of results where each item is a Submitted Event.
-
-
-                      Please refer to the Submitted Event Response Fields section below for the structure of each record.
+                    description: List of results where each item is a Submitted Event.
                     type: array
                     items:
                       type: object
@@ -849,7 +851,9 @@ paths:
             E.g `?conversation_id=Eeh4ahnohghah0deeshahda`
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
           explode: false
           style: form
         - name: q
@@ -871,7 +875,9 @@ paths:
             E.g `?link_id=m4Dk4g4DRA8Yqbp2PC54`
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
           explode: false
           style: form
         - name: user_id
@@ -883,7 +889,9 @@ paths:
             E.g. `?user_id=hw8Dsmv4Djg`
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
           explode: false
           style: form
         - name: record_id
@@ -898,7 +906,9 @@ paths:
             E.g `?record_id=5uRg7CqGu7DTtu4Rfk`
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
           explode: false
           style: form
         - name: record_type
@@ -910,10 +920,12 @@ paths:
             E.g `?record_type=event-public`
           required: false
           schema:
-            type: string
-            enum:
-              - event-public
-              - event-loop
+            type: array
+            items:
+              type: string
+              enum:
+                - event-public
+                - event-loop
           explode: false
           style: form
         - name: feedback_type
@@ -925,14 +937,16 @@ paths:
             E.g `?feedback_type=general`
           required: false
           schema:
-            type: string
-            enum:
-              - attendance_or_rank
-              - category
-              - dates
-              - general
-              - polygon
-              - venue
+            type: array
+            items:
+              type: string
+              enum:
+                - attendance_or_rank
+                - category
+                - dates
+                - general
+                - polygon
+                - venue
           explode: false
           style: form
         - name: status
@@ -944,10 +958,12 @@ paths:
             E.g. `?status=open`
           required: false
           schema:
-            type: string
-            enum:
-              - open
-              - closed
+            type: array
+            items:
+              type: string
+              enum:
+                - open
+                - closed
           explode: false
           style: form
         - name: created.gt
@@ -1079,11 +1095,7 @@ paths:
                     description: Total number of results found.
                     type: integer
                   conversations:
-                    description: |-
-                      List of results where each item is a Conversation.
-
-
-                      Please refer to the Conversation Response Fields section below for the structure of each record.
+                    description: List of results where each item is a Conversation.
                     type: array
                     items:
                       type: object
@@ -1441,7 +1453,7 @@ paths:
             type: string
             title: Link Id
       responses:
-        '200':
+        '204':
           description: Successful Response
         '422':
           description: Validation Error
