@@ -1166,15 +1166,20 @@ paths:
                                 }
                               }
                           type: object
-                          enum:
-                            - attendance_or_rank
-                            - category
-                            - dates
-                            - duplicate
-                            - general
-                            - polygon
-                            - submitted
-                            - venue
+                          properties:
+                            type:
+                              type: string
+                              enum:
+                                - attendance_or_rank
+                                - category
+                                - dates
+                                - duplicate
+                                - general
+                                - polygon
+                                - submitted
+                                - venue
+                          required:
+                            - type
                         log:
                           description: |-
                             Log of actions taken with the feedback.
