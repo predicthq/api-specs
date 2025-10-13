@@ -1165,7 +1165,7 @@ paths:
                                   "type": "submitted"
                                 }
                               }
-                          type: string
+                          type: object
                           enum:
                             - attendance_or_rank
                             - category
