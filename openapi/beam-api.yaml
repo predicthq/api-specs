@@ -1551,7 +1551,9 @@ components:
       title: ExcludedAnalysis
     ExcludedFromReason:
       type: string
-      const: feature_importance
+      enum:
+        - feature_importance
+        - value_quant
       title: ExcludedFromReason
     FeatureGroup:
       type: object
