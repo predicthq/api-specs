@@ -1113,7 +1113,6 @@ components:
         - '-name'
         - '-created'
         - '-updated'
-        - '-value_quant'
       title: AnalysisGroupSortField
     AnalysisGroupStatus:
       description: Status of the Analysis Group.
@@ -1351,7 +1350,6 @@ components:
         - '-name'
         - '-created'
         - '-updated'
-        - '-value_quant'
       title: AnalysisSortField
     AnalysisStatus:
       type: string
