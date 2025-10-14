@@ -12,10 +12,14 @@ info:
 security:
   - BearerAuth: []
 tags:
-  - name: Beam API
+  - name: Analyses
     externalDocs:
-      url: 'https://docs.predicthq.com/api/beam'
-      description: Beam API Docs
+      url: 'https://docs.predicthq.com/api/beam/analyses'
+      description: Analyses Documentation
+  - name: Analysis Groups
+    externalDocs:
+      url: 'https://docs.predicthq.com/api/beam/analysis-groups'
+      description: Analysis Groups Documentation
 servers:
   - url: 'https://api.predicthq.com'
 externalDocs:
@@ -23,7 +27,7 @@ externalDocs:
   description: PredictHQ Tech Docs
 x-hideTryItPanel: true
 paths:
-  /v1/analyses:
+  /v1/beam/analyses:
     post:
       operationId: create_analysis_public_analyses_post
       summary: Create an Analysis
@@ -48,9 +52,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      externalDocs:
-        url: 'https://docs.predicthq.com/api/beam/analyses/create-an-analysis'
-        description: Create an Analysis docs
       tags:
         - Analyses
     get:
@@ -60,7 +61,7 @@ paths:
       parameters:
         - name: status
           in: query
-          description: Comma separated list used to filter Beam analyses by their status.
+          description: Comma-separated list used to filter Beam analyses by their status.
           required: false
           schema:
             type: array
@@ -68,9 +69,10 @@ paths:
               $ref: '#/components/schemas/AnalysisStatus'
             examples:
               - 'active,deleted'
+            explode: false
+            style: form
         - name: readiness_status
           in: query
-          description: Comma separated list used to filter Beam analyses by their readiness status.
           required: false
           schema:
             type: array
@@ -78,9 +80,11 @@ paths:
               $ref: '#/components/schemas/AnalysisReadinessStatus'
             examples:
               - 'pending,ready'
+            explode: false
+            style: form
         - name: group_id
           in: query
-          description: Comma separated list of Analysis Group IDs. Analyses that belong to these groups will be returned.
+          description: Comma-separated list of Analysis Group IDs. Analyses that belong to these groups will be returned.
           required: false
           schema:
             type: array
@@ -88,16 +92,22 @@ paths:
               type: string
             examples:
               - 3ED1zxXqAY
+            explode: false
+            style: form
         - name: demand_type.interval
           in: query
+          description: Allows to filter Analyses by the demand type (interval) of their analyses.
           required: false
           schema:
             type: array
             items:
               $ref: '#/components/schemas/Interval'
+            examples:
+              - day
+            explode: false
+            style: form
         - name: demand_type.industry
           in: query
-          description: Allows to filter analyses by one or more industries.
           required: false
           schema:
             type: array
@@ -105,6 +115,8 @@ paths:
               $ref: '#/components/schemas/Industry'
             examples:
               - 'accommodation,tourism'
+            explode: false
+            style: form
         - name: external_id
           in: query
           description: Comma-separated list of External IDs.
@@ -115,6 +127,8 @@ paths:
               type: string
             examples:
               - 'id1,id2'
+            explode: false
+            style: form
         - name: label
           in: query
           description: Comma-separated list of labels.
@@ -125,6 +139,8 @@ paths:
               type: string
             examples:
               - 'label1,label2,label3'
+            explode: false
+            style: form
         - name: location.saved_location_id
           in: query
           description: Comma-separated list of Saved Location IDs.
@@ -135,9 +151,11 @@ paths:
               type: string
             examples:
               - 'id1,id2'
+            explode: false
+            style: form
         - name: sort
           in: query
-          description: Comma separated list used to sort Beam analyses.
+          description: Comma-separated list used to sort Beam analyses.
           required: false
           schema:
             type: array
@@ -147,6 +165,8 @@ paths:
               - '-updated'
             examples:
               - 'name,created'
+            explode: false
+            style: form
         - $ref: '#/components/parameters/LimitParam'
         - $ref: '#/components/parameters/OffsetParam'
       responses:
@@ -162,12 +182,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      externalDocs:
-        url: 'https://docs.predicthq.com/api/beam/analyses/search-analyses'
-        description: Search Analyses docs
       tags:
         - Analyses
-  '/v1/analyses/{analysis_id}':
+  '/v1/beam/analyses/{analysis_id}':
     get:
       operationId: get_analysis_public_analyses__analysis_id__get
       summary: Get an Analysis
@@ -198,9 +215,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      externalDocs:
-        url: 'https://docs.predicthq.com/api/beam/analyses/get-an-analysis'
-        description: Get an Analysis docs
       tags:
         - Analyses
     put:
@@ -211,14 +225,12 @@ paths:
 
         This endpoint accepts the same request body fields as the Create an Analysis endpoint.
 
-        {% hint style="info" %}
         Remember this is a PUT endpoint which means you must provide all supported fields or you may lose data - you are
         effectively replacing the existing record with a new record containing all the fields you provide.
         We recommend first getting the existing record and pre-populating the request body with the current values,
         then change the fields you need to change.
 
-        If you wish to update a smaller number of fields please use the [PATCH endpoint](partially-update-an-analysis.md).
-        {% endhint %}
+        If you wish to update a smaller number of fields please use the PATCH endpoint.
       parameters:
         - name: analysis_id
           in: path
@@ -249,9 +261,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      externalDocs:
-        url: 'https://docs.predicthq.com/api/beam/analyses/update-an-analysis'
-        description: Update an Analysis docs
       tags:
         - Analyses
     patch:
@@ -288,9 +297,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      externalDocs:
-        url: 'https://docs.predicthq.com/api/beam/analyses/partially-update-an-analysis'
-        description: Partially Update an Analysis docs
       tags:
         - Analyses
     delete:
@@ -320,7 +326,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       tags:
         - Analyses
-  '/v1/analyses/{analysis_id}/feature-importance':
+  '/v1/beam/analyses/{analysis_id}/feature-importance':
     get:
       operationId: feature_importance_public_analyses__analysis_id__feature_importance_get
       summary: Get Feature Importance
@@ -332,10 +338,8 @@ paths:
         These values represent each group of features' statistical significance when it comes to impacting observable 
         incremental/decremental changes in demand.
 
-        {% hint style="info" %}
         The easiest way to get these ML features from our Features API to be used in your models is by using the Beam 
         `analysis_id` in your Features API request.
-        {% endhint %}
       parameters:
         - name: analysis_id
           in: path
@@ -362,12 +366,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      externalDocs:
-        url: 'https://docs.predicthq.com/api/beam/analyses/get-feature-importance'
-        description: Get Feature Importance docs
       tags:
         - Analyses
-  '/v1/analyses/{analysis_id}/sink':
+  '/v1/beam/analyses/{analysis_id}/sink':
     post:
       operationId: upload_demand_public_analyses__analysis_id__sink_post
       summary: Upload Demand Data
@@ -388,11 +389,9 @@ paths:
         Uploading data replaces existing data for the same date. It's not currently possible to remove data for a 
         particular date. The idea with this endpoint is that you're continuously adding new demand data over time.
 
-        {% hint style="info" %}
         The data can be uploaded in chunks, but the analysis data must remain valid at all times. If a newly uploaded 
         chunk renders the analysis data invalid (for example, by introducing a large gap between data points), the 
         chunk will be rejected, and the previously stored demand data will be preserved.
-        {% endhint %}
       parameters:
         - name: analysis_id
           in: path
@@ -416,6 +415,8 @@ paths:
               - application/x-ldjson
             examples:
               - text/csv
+      requestBody:
+        $ref: '#/components/requestBodies/UploadDemandData'
       responses:
         '202':
           description: Successful Response
@@ -437,12 +438,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      externalDocs:
-        url: 'https://docs.predicthq.com/api/beam/analyses/upload-demand-data'
-        description: Upload Demand Data docs
       tags:
         - Analyses
-  '/v1/analyses/{analysis_id}/refresh':
+  '/v1/beam/analyses/{analysis_id}/refresh':
     post:
       operationId: refresh_public_analyses__analysis_id__refresh_post
       summary: Refresh an Analysis
@@ -471,12 +469,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      externalDocs:
-        url: 'https://docs.predicthq.com/api/beam/analyses/refresh-an-analysis'
-        description: Refresh an Analysis docs
       tags:
         - Analyses
-  '/v1/analyses/{analysis_id}/correlate':
+  '/v1/beam/analyses/{analysis_id}/correlate':
     get:
       operationId: correlate_public_analyses__analysis_id__correlate_get
       summary: Get Correlation Results
@@ -547,12 +542,9 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
         '500':
           description: Internal inconsistency detected. Please refresh the analysis
-      externalDocs:
-        url: 'https://docs.predicthq.com/api/beam/analyses/get-correlation'
-        description: Get Correlation Results docs
       tags:
         - Analyses
-  /v1/analysis-groups:
+  /v1/beam/analysis-groups:
     get:
       operationId: search_analysis_groups_public_analysis_groups_get
       summary: Search Analysis Groups
@@ -568,7 +560,7 @@ paths:
               - MyAnalysisGroup
         - name: status
           in: query
-          description: Comma separated list used to filter Beam analyses by their status.
+          description: Comma-separated list used to filter Beam analyses by their status.
           required: false
           schema:
             type: array
@@ -576,9 +568,11 @@ paths:
               $ref: '#/components/schemas/AnalysisGroupStatus'
             examples:
               - 'active,deleted'
+            explode: false
+            style: form
         - name: readiness_status
           in: query
-          description: Comma separated list used to filter Beam analyses by their readiness status.
+          description: Comma-separated list used to filter Analysis Groups by their readiness status.
           required: false
           schema:
             type: array
@@ -586,6 +580,8 @@ paths:
               $ref: '#/components/schemas/AnalysisGroupReadinessStatus'
             examples:
               - 'pending,ready'
+            explode: false
+            style: form
         - name: demand_type.interval
           in: query
           description: Allows to filter Analysis Groups by the demand type (interval) of their analyses.
@@ -596,9 +592,11 @@ paths:
               $ref: '#/components/schemas/Interval'
             examples:
               - day
+            explode: false
+            style: form
         - name: demand_type.industry
           in: query
-          description: Allows to filter analyses by one or more industries.
+          description: Allows to filter Analysis Groups by industry.
           required: false
           schema:
             type: array
@@ -606,9 +604,11 @@ paths:
               $ref: '#/components/schemas/Industry'
             examples:
               - 'accommodation,tourism'
+            explode: false
+            style: form
         - name: sort
           in: query
-          description: Comma separated list used to sort Beam analyses.
+          description: Comma-separated list used to sort Beam analyses.
           required: false
           schema:
             type: array
@@ -618,6 +618,8 @@ paths:
               - '-updated'
             examples:
               - 'name,created'
+            explode: false
+            style: form
         - $ref: '#/components/parameters/OffsetParam'
         - $ref: '#/components/parameters/LimitParam'
       responses:
@@ -633,15 +635,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      externalDocs:
-        url: 'https://docs.predicthq.com/api/beam/analysis-groups/search-analysis-groups'
-        description: Search Analysis Groups docs
       tags:
         - Analysis Groups
     post:
       operationId: create_analysis_group_public_analysis_groups_post
       summary: Create an Analysis Group
       description: Creating an Analysis Group allows to aggregate Feature Importance for a number of Analyses
+      parameters: []
       requestBody:
         required: true
         content:
@@ -665,12 +665,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      externalDocs:
-        url: 'https://docs.predicthq.com/api/beam/analysis-groups/create-an-analysis-group'
-        description: Create an Analysis Group docs
       tags:
         - Analysis Groups
-  '/v1/analysis-groups/{group_id}':
+  '/v1/beam/analysis-groups/{group_id}':
     get:
       operationId: get_analysis_group_public_analysis_groups__group_id__get
       summary: Get an Analysis Group
@@ -678,12 +675,14 @@ paths:
       parameters:
         - name: group_id
           in: path
-          description: Comma separated list of Analysis Group IDs. Analyses that belong to these groups will be returned.
+          description: Comma-separated list of Analysis Group IDs. Analyses that belong to these groups will be returned.
           required: true
           schema:
             type: string
             examples:
               - 3ED1zxXqAY
+            explode: false
+            style: form
       responses:
         '200':
           description: Successful Response
@@ -701,9 +700,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      externalDocs:
-        url: 'https://docs.predicthq.com/api/beam/analysis-groups/get-an-analysis-group'
-        description: Get an Analysis Group
       tags:
         - Analysis Groups
     put:
@@ -712,23 +708,23 @@ paths:
       description: |-
         Update (replace) an existing Analysis Group.
 
-        {% hint style="info" %}
         This endpoint accepts the same request body fields as the Create an Analysis Group endpoint.
 
         Remember this is a PUT endpoint which means you must provide all supported fields - you are effectively replacing 
         the existing record with a new record containing all the fields you provide. We recommend first getting the 
         existing record and pre-populating the request body with the current values, then change the fields you need to 
         change.
-        {% endhint %}
       parameters:
         - name: group_id
           in: path
-          description: Comma separated list of Analysis Group IDs. Analyses that belong to these groups will be returned.
+          description: Comma-separated list of Analysis Group IDs. Analyses that belong to these groups will be returned.
           required: true
           schema:
             type: string
             examples:
               - 3ED1zxXqAY
+            explode: false
+            style: form
       requestBody:
         required: true
         content:
@@ -752,9 +748,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      externalDocs:
-        url: 'https://docs.predicthq.com/api/beam/analysis-groups/update-an-analysis-group'
-        description: Update an Analysis Group docs
       tags:
         - Analysis Groups
     patch:
@@ -763,22 +756,22 @@ paths:
       description: |-
         Partially update an existing Analysis Group.
 
-        {% hint style="info" %}
         This endpoint accepts the same request body fields as the Create an Analysis endpoint.
 
         Remember this is a PATCH endpoint which means only the fields you provide will be updated.
 
         If you wish to replace all fields please use the PUT endpoint.
-        {% endhint %}
       parameters:
         - name: group_id
           in: path
-          description: Comma separated list of Analysis Group IDs. Analyses that belong to these groups will be returned.
+          description: Comma-separated list of Analysis Group IDs. Analyses that belong to these groups will be returned.
           required: true
           schema:
             type: string
             examples:
               - 3ED1zxXqAY
+            explode: false
+            style: form
       requestBody:
         required: true
         content:
@@ -802,9 +795,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      externalDocs:
-        url: 'https://docs.predicthq.com/api/beam/analysis-groups/partially-update-an-analysis-group'
-        description: Partially Update an Analysis Group docs
       tags:
         - Analysis Groups
     delete:
@@ -814,12 +804,14 @@ paths:
       parameters:
         - name: group_id
           in: path
-          description: Comma separated list of Analysis Group IDs. Analyses that belong to these groups will be returned.
+          description: Comma-separated list of Analysis Group IDs. Analyses that belong to these groups will be returned.
           required: true
           schema:
             type: string
             examples:
               - 3ED1zxXqAY
+            explode: false
+            style: form
       responses:
         '202':
           description: Successful Response
@@ -835,12 +827,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      externalDocs:
-        url: 'https://docs.predicthq.com/api/beam/analysis-groups/delete-an-analysis-group'
-        description: Delete an Analysis Group docs
       tags:
         - Analysis Groups
-  '/v1/analysis-groups/{group_id}/refresh':
+  '/v1/beam/analysis-groups/{group_id}/refresh':
     post:
       operationId: refresh_analysis_group_public_analysis_groups__group_id__refresh_post
       summary: Refresh an Analysis Group
@@ -848,12 +837,14 @@ paths:
       parameters:
         - name: group_id
           in: path
-          description: Comma separated list of Analysis Group IDs. Analyses that belong to these groups will be returned.
+          description: Comma-separated list of Analysis Group IDs. Analyses that belong to these groups will be returned.
           required: true
           schema:
             type: string
             examples:
               - 3ED1zxXqAY
+            explode: false
+            style: form
       responses:
         '202':
           description: Successful Response
@@ -871,12 +862,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      externalDocs:
-        url: 'https://docs.predicthq.com/api/beam/analysis-groups/refresh-an-analysis-group'
-        description: Refresh an Analysis Group docs
       tags:
         - Analysis Groups
-  '/v1/analysis-groups/{group_id}/feature-importance':
+  '/v1/beam/analysis-groups/{group_id}/feature-importance':
     get:
       operationId: feature_importance_for_analysis_group_public_analysis_groups__group_id__feature_importance_get
       summary: Get Feature Importance for an Analysis Group
@@ -884,12 +872,14 @@ paths:
       parameters:
         - name: group_id
           in: path
-          description: Comma separated list of Analysis Group IDs. Analyses that belong to these groups will be returned.
+          description: Comma-separated list of Analysis Group IDs. Analyses that belong to these groups will be returned.
           required: true
           schema:
             type: string
             examples:
               - 3ED1zxXqAY
+            explode: false
+            style: form
       responses:
         '200':
           description: Successful Response
@@ -909,9 +899,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      externalDocs:
-        url: 'https://docs.predicthq.com/api/beam/analysis-groups/get-aggregated-feature-importance'
-        description: Analysis Group Feature Importance docs
       tags:
         - Analysis Groups
 components:
@@ -976,30 +963,6 @@ components:
           default: Sales
           title: Unit Descriptor
       title: AnalysisGroupDemandTypeInput
-    AnalysisGroupDemandTypeResponse:
-      description: |-
-        Indicates the demand type of the Analyses within the group. Fields: interval (day or week), week_start_day (e.g.
-        sunday, monday). week_start_day is only present for weekly groups.
-      type: object
-      properties:
-        interval:
-          description: 'Demand interval for analyses in the group. Possible values: day, week.'
-          $ref: '#/components/schemas/Interval'
-        week_start_day:
-          description: 'Week start day (e.g. sunday, monday). Only present for weekly Analysis Groups.'
-          $ref: '#/components/schemas/Weekday'
-        industry:
-          $ref: '#/components/schemas/Industry'
-        unit_descriptor:
-          description: |-
-            The description of the unit of demand, which specifies the type or measure being quantified (e.g.,
-            "Occupancy Rate", "Sales", "Number of Transactions").
-          type: string
-          default: Sales
-          title: Unit Descriptor
-        currency_code:
-          $ref: '#/components/schemas/CurrencyCode'
-      title: AnalysisGroupDemandTypeResponse
     AnalysisGroupIdResponse:
       type: object
       properties:
@@ -1032,6 +995,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ExcludedAnalysis'
+          default: []
           examples:
             - - analysis_id: 0GTpLZ522Bc
                 reason: analysis_failed
@@ -1066,13 +1030,15 @@ components:
           minLength: 1
           title: Name
         analysis_ids:
-          description: A list of strings containing the IDs of Analyses included in this Group.
+          description: Comma-separated list of strings containing the IDs of Analyses included in this Group.
           type: array
           items:
             type: string
           examples:
             - - 0GTpLZ522Bc
               - 6OK88wZ_Pv0
+          explode: false
+          style: form
           title: Analysis Ids
         user_id:
           description: |-
@@ -1091,7 +1057,7 @@ components:
         readiness_status:
           $ref: '#/components/schemas/AnalysisGroupReadinessStatus'
         demand_type:
-          $ref: '#/components/schemas/AnalysisGroupDemandTypeResponse'
+          $ref: '#/components/schemas/DemandTypeResponse'
         status:
           $ref: '#/components/schemas/AnalysisGroupStatus'
         create_dt:
@@ -1147,7 +1113,6 @@ components:
         - '-name'
         - '-created'
         - '-updated'
-        - value_quant
         - '-value_quant'
       title: AnalysisGroupSortField
     AnalysisGroupStatus:
@@ -1247,7 +1212,6 @@ components:
           minLength: 1
           title: Name
         location:
-          description: Location of the Analysis.
           $ref: '#/components/schemas/LocationResponse'
         rank:
           description: Specifies which rank type was set to use when calculating event impacts and anomaly detection.
@@ -1325,15 +1289,13 @@ components:
             - external_id: abc123
           title: External Id
         label:
-          description: List of labels associated with the Analysis.
+          description: Comma-separated list of labels that can be used to search and filter analyses.
           type: array
           items:
             type: string
-          examples:
-            - label:
-                - label1
-                - label2
-                - label3
+          examples: 'label1,label2,label3'
+          explode: false
+          style: form
           title: Label
         saved_location:
           $ref: '#/components/schemas/SavedLocationResponse'
@@ -1389,7 +1351,6 @@ components:
         - '-name'
         - '-created'
         - '-updated'
-        - value_quant
         - '-value_quant'
       title: AnalysisSortField
     AnalysisStatus:
@@ -1459,12 +1420,6 @@ components:
           examples:
             - 5893
           title: Actual Demand
-        anomaly_detection_result_1:
-          type: boolean
-          title: Anomaly Detection Result 1
-        anomaly_detection_result_2:
-          type: boolean
-          title: Anomaly Detection Result 2
         impact_significance:
           description: Enum specifying how unusual the remainder is for a given date.
           type: string
@@ -1513,7 +1468,7 @@ components:
         - date
         - impact_significance
       title: DemandDerivativeResponse
-    DemandTypeRequest:
+    DemandType:
       description: Provides information about the demand type of the analysis.
       type: object
       properties:
@@ -1546,7 +1501,7 @@ components:
             currency_code: USD
             unit_currency_multiplier: 1
             unit_descriptor: Sales
-      title: DemandTypeRequest
+      title: DemandType
     DemandTypeResponse:
       description: |-
         Indicates the detected type of the uploaded demand data as well as other user-defined information about
@@ -1556,9 +1511,11 @@ components:
         industry:
           $ref: '#/components/schemas/Industry'
         interval:
+          description: 'Demand interval for analyses in the group. Possible values: day, week.'
           default: day
           $ref: '#/components/schemas/Interval'
         week_start_day:
+          description: 'Week start day (e.g. sunday, monday). Only present for weekly Analysis Groups.'
           $ref: '#/components/schemas/Weekday'
         unit_descriptor:
           description: |-
@@ -1567,6 +1524,14 @@ components:
           type: string
           default: Sales
           title: Unit Descriptor
+        currency_code:
+          default: USD
+          $ref: '#/components/schemas/CurrencyCode'
+        unit_currency_multiplier:
+          description: The multiplier used to adjust the unit of demand to its equivalent value in the specified currency.
+          type: number
+          default: 1
+          title: Unit Currency Multiplier
       title: DemandTypeResponse
     ExcludedAnalysis:
       type: object
@@ -1580,6 +1545,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ExcludedFromReason'
+          default: []
           title: Excluded From
       required:
         - analysis_id
@@ -1587,9 +1553,7 @@ components:
       title: ExcludedAnalysis
     ExcludedFromReason:
       type: string
-      enum:
-        - feature_importance
-        - value_quant
+      const: feature_importance
       title: ExcludedFromReason
     FeatureGroup:
       type: object
@@ -1640,21 +1604,6 @@ components:
             $ref: '#/components/schemas/FeatureGroup'
           title: Feature Importance
       title: FeatureImportanceResponse
-    GeoJson:
-      type: object
-      properties:
-        type:
-          type: string
-          const: Feature
-          title: Type
-        properties:
-          $ref: '#/components/schemas/GeoJsonProperies'
-        geometry:
-          $ref: '#/components/schemas/GeoJsonGeometry'
-      required:
-        - type
-        - geometry
-      title: GeoJson
     GeoJsonGeometry:
       type: object
       properties:
@@ -1677,7 +1626,7 @@ components:
         - LineString
         - MultiLineString
       title: GeoJsonGeometryType
-    GeoJsonProperies:
+    GeoJsonProperties:
       type: object
       properties:
         radius:
@@ -1694,7 +1643,21 @@ components:
       required:
         - radius
         - radius_unit
-      title: GeoJsonProperies
+      title: GeoJsonProperties
+    GeoJsonResponse:
+      type: object
+      properties:
+        type:
+          type: string
+          title: Type
+        properties:
+          $ref: '#/components/schemas/GeoJsonProperties'
+        geometry:
+          $ref: '#/components/schemas/GeoJsonGeometry'
+      required:
+        - type
+        - geometry
+      title: GeoJsonResponse
     GeoPoint:
       description: |-
         Contains `lat` and `lon` coordinates for your analysis, e.g. if you are creating an analysis for a store in
@@ -1958,10 +1921,9 @@ components:
           minLength: 1
           title: Name
         location:
-          description: Location of the Analysis.
           $ref: '#/components/schemas/Location'
         demand_type:
-          $ref: '#/components/schemas/DemandTypeRequest'
+          $ref: '#/components/schemas/DemandType'
         external_id:
           description: 'External identifier associated with the Analysis (optional, user-defined).'
           type: string
@@ -1970,23 +1932,21 @@ components:
           minLength: 1
           title: External Id
         label:
-          description: List of labels associated with the Analysis.
+          description: Comma-separated list of labels that can be used to search and filter analyses.
           type: array
           items:
             type: string
             minLength: 1
-          examples:
-            - label:
-                - label1
-                - label2
-                - label3
+          examples: 'label1,label2,label3'
+          explode: false
           minItems: 1
+          style: form
           title: Label
         rank:
           $ref: '#/components/schemas/Rank'
       additionalProperties: false
       title: PatchAnalysisRequest
-    Place:
+    PlaceResponse:
       type: object
       properties:
         place_id:
@@ -2008,13 +1968,13 @@ components:
           type: string
           title: Country
         geojson:
-          $ref: '#/components/schemas/GeoJson'
+          $ref: '#/components/schemas/GeoJsonResponse'
       required:
         - place_id
         - type
         - name
         - geojson
-      title: Place
+      title: PlaceResponse
     PutAnalysisGroupRequest:
       type: object
       properties:
@@ -2063,10 +2023,9 @@ components:
           minLength: 1
           title: Name
         location:
-          description: Location of the Analysis.
           $ref: '#/components/schemas/Location'
         demand_type:
-          $ref: '#/components/schemas/DemandTypeRequest'
+          $ref: '#/components/schemas/DemandType'
         external_id:
           description: 'External identifier associated with the Analysis (optional, user-defined).'
           type: string
@@ -2075,17 +2034,15 @@ components:
           minLength: 1
           title: External Id
         label:
-          description: List of labels associated with the Analysis.
+          description: Comma-separated list of labels that can be used to search and filter analyses.
           type: array
           items:
             type: string
             minLength: 1
-          examples:
-            - label:
-                - label1
-                - label2
-                - label3
+          examples: 'label1,label2,label3'
+          explode: false
           minItems: 1
+          style: form
           title: Label
         rank:
           $ref: '#/components/schemas/Rank'
@@ -2104,8 +2061,7 @@ components:
       title: RadiusUnit
     Rank:
       description: |-
-        Specifies which rank type to use when calculating event impacts and anomaly detection. Currently, only PHQ rank is
-        supported (also known as "Rank") so this value should be set to `phq` as shown in the example.
+        Specifies which rank type to use when calculating event impacts and anomaly detection.
 
         Optionally, specify the minimum rank level to use when calculating event impacts.
         **We strongly recommend** not setting the rank levels and instead letting Beam define the best rank levels
@@ -2203,7 +2159,7 @@ components:
           description: |-
             An object containing the geographic information about the saved location. Represents the geometry in the GeoJSON
             format.
-          $ref: '#/components/schemas/GeoJson'
+          $ref: '#/components/schemas/GeoJsonResponse'
           examples:
             - type: Feature
               geometry:
@@ -2242,7 +2198,7 @@ components:
           description: 'A list of Geonames Places corresponding to the saved location. Usually a single item, but always a list.'
           type: array
           items:
-            $ref: '#/components/schemas/Place'
+            $ref: '#/components/schemas/PlaceResponse'
           examples:
             - - place_id: 2750405
                 type: city
@@ -2588,6 +2544,61 @@ components:
           type: string
           examples:
             - An unexpected error occurred.
+    DemandDataPoint:
+      description: A single demand data point consisting of a date and a positive numeric demand value.
+      type: object
+      properties:
+        date:
+          description: ISO8601 Date format (YYYY-MM-DD)
+          type: string
+          format: date
+          examples:
+            - '2023-01-01'
+        demand:
+          description: 'Number value (float or integer, must be a positive number).'
+          type: number
+          examples:
+            - 12.235
+          exclusiveMinimum: 0
+      required:
+        - date
+        - demand
+  requestBodies:
+    UploadDemandData:
+      description: 'Upload demand data in CSV, newline-delimited JSON (NDJSON), or JSON formats.'
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DemandDataPoint'
+          example:
+            date: '2023-01-01'
+            demand: 12.235
+        application/x-ldjson:
+          schema:
+            description: Deprecated. Same format as application/x-ndjson (newline-delimited JSON objects).
+            type: string
+          example: |-
+            {"date": "2023-01-01", "demand": 12.235}
+            {"date": "2023-01-02", "demand": 11.4}
+            {"date": "2023-01-03", "demand": 12.14}
+        application/x-ndjson:
+          schema:
+            description: Newline-delimited JSON where each line is an object with date and demand.
+            type: string
+          example: |-
+            {"date": "2023-01-01", "demand": 12.235}
+            {"date": "2023-01-02", "demand": 11.4}
+            {"date": "2023-01-03", "demand": 12.14}
+        text/csv:
+          schema:
+            description: 'CSV with lowercase headers date,demand and multiple rows of values.'
+            type: string
+          example: |-
+            date,demand
+            2023-01-01,12.235
+            2023-01-02,11.4
+            2023-01-03,12.14
   securitySchemes:
     BearerAuth:
       type: http
