@@ -68,8 +68,8 @@ paths:
             items:
               $ref: '#/components/schemas/AnalysisStatus'
             examples:
-              - active
-              - deleted
+              - - active
+                - deleted
           explode: false
           style: form
         - name: readiness_status
@@ -80,8 +80,8 @@ paths:
             items:
               $ref: '#/components/schemas/AnalysisReadinessStatus'
             examples:
-              - pending
-              - ready
+              - - pending
+                - ready
           explode: false
           style: form
         - name: group_id
@@ -92,7 +92,8 @@ paths:
             type: array
             items:
               type: string
-            examples: 3ED1zxXqAY
+            examples:
+              - 3ED1zxXqAY
         - name: demand_type.interval
           in: query
           description: Allows to filter Analyses by the demand type (interval) of their analyses.
@@ -102,8 +103,8 @@ paths:
             items:
               $ref: '#/components/schemas/Interval'
             examples:
-              - accommodation
-              - tourism
+              - - accommodation
+                - tourism
           explode: false
           style: form
         - name: demand_type.industry
@@ -114,8 +115,8 @@ paths:
             items:
               $ref: '#/components/schemas/Industry'
             examples:
-              - accommodation
-              - tourism
+              - - accommodation
+                - tourism
           explode: false
           style: form
         - name: external_id
@@ -127,8 +128,8 @@ paths:
             items:
               type: string
             examples:
-              - id1
-              - id2
+              - - id1
+                - id2
           explode: false
           style: form
         - name: label
@@ -140,9 +141,9 @@ paths:
             items:
               type: string
             examples:
-              - label1
-              - label2
-              - label3
+              - - label1
+                - label2
+                - label3
           explode: false
           style: form
         - name: location.saved_location_id
@@ -154,8 +155,8 @@ paths:
             items:
               type: string
             examples:
-              - id1
-              - id2
+              - - id1
+                - id2
           explode: false
           style: form
         - name: sort
@@ -169,8 +170,8 @@ paths:
             default:
               - '-updated'
             examples:
-              - name
-              - created
+              - - name
+                - created
           explode: false
           style: form
         - $ref: '#/components/parameters/LimitParam'
@@ -573,8 +574,8 @@ paths:
             items:
               $ref: '#/components/schemas/AnalysisGroupStatus'
             examples:
-              - active
-              - deleted
+              - - active
+                - deleted
           explode: false
           style: form
         - name: readiness_status
@@ -586,8 +587,8 @@ paths:
             items:
               $ref: '#/components/schemas/AnalysisGroupReadinessStatus'
             examples:
-              - pending
-              - ready
+              - - pending
+                - ready
           explode: false
           style: form
         - name: demand_type.interval
@@ -599,8 +600,8 @@ paths:
             items:
               $ref: '#/components/schemas/Interval'
             examples:
-              - accommodation
-              - tourism
+              - - accommodation
+                - tourism
           explode: false
           style: form
         - name: demand_type.industry
@@ -612,8 +613,8 @@ paths:
             items:
               $ref: '#/components/schemas/Industry'
             examples:
-              - accommodation
-              - tourism
+              - - accommodation
+                - tourism
           explode: false
           style: form
         - name: sort
@@ -627,8 +628,8 @@ paths:
             default:
               - '-updated'
             examples:
-              - name
-              - created
+              - - name
+                - created
           explode: false
           style: form
         - $ref: '#/components/parameters/OffsetParam'
@@ -690,7 +691,8 @@ paths:
           required: true
           schema:
             type: string
-            examples: 3ED1zxXqAY
+            examples:
+              - 3ED1zxXqAY
       responses:
         '200':
           description: Successful Response
@@ -729,7 +731,8 @@ paths:
           required: true
           schema:
             type: string
-            examples: 3ED1zxXqAY
+            examples:
+              - 3ED1zxXqAY
       requestBody:
         required: true
         content:
@@ -773,7 +776,8 @@ paths:
           required: true
           schema:
             type: string
-            examples: 3ED1zxXqAY
+            examples:
+              - 3ED1zxXqAY
       requestBody:
         required: true
         content:
@@ -810,7 +814,8 @@ paths:
           required: true
           schema:
             type: string
-            examples: 3ED1zxXqAY
+            examples:
+              - 3ED1zxXqAY
       responses:
         '202':
           description: Successful Response
@@ -840,7 +845,8 @@ paths:
           required: true
           schema:
             type: string
-            examples: 3ED1zxXqAY
+            examples:
+              - 3ED1zxXqAY
       responses:
         '202':
           description: Successful Response
@@ -872,7 +878,8 @@ paths:
           required: true
           schema:
             type: string
-            examples: 3ED1zxXqAY
+            examples:
+              - 3ED1zxXqAY
       responses:
         '200':
           description: Successful Response
@@ -1286,9 +1293,9 @@ components:
           items:
             type: string
           examples:
-            - label1
-            - label2
-            - label3
+            - - label1
+              - label2
+              - label3
           explode: false
           style: form
           title: Label
@@ -1558,8 +1565,8 @@ components:
           description: The name of the group. This typically aligns to an event category.
           type: string
           examples:
-            - severe-weather
-            - concerts
+            - - severe-weather
+              - concerts
           title: Feature Group
         features:
           description: The names of the features in the feature group. These refer directly to features available in Features API.
@@ -1934,9 +1941,9 @@ components:
             type: string
             minLength: 1
           examples:
-            - label1
-            - label2
-            - label3
+            - - label1
+              - label2
+              - label3
           explode: false
           minItems: 1
           style: form
@@ -2039,9 +2046,9 @@ components:
             type: string
             minLength: 1
           examples:
-            - label1
-            - label2
-            - label3
+            - - label1
+              - label2
+              - label3
           explode: false
           minItems: 1
           style: form
