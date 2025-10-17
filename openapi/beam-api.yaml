@@ -15,11 +15,11 @@ tags:
   - name: Analyses
     externalDocs:
       url: 'https://docs.predicthq.com/api/beam/analyses'
-      description: Analyses Documentation
+      description: Analyses Docs
   - name: Analysis Groups
     externalDocs:
       url: 'https://docs.predicthq.com/api/beam/analysis-groups'
-      description: Analysis Groups Documentation
+      description: Analysis Groups Docs
 servers:
   - url: 'https://api.predicthq.com'
 externalDocs:
@@ -68,9 +68,10 @@ paths:
             items:
               $ref: '#/components/schemas/AnalysisStatus'
             examples:
-              - 'active,deleted'
-            explode: false
-            style: form
+              - active
+              - deleted
+          explode: false
+          style: form
         - name: readiness_status
           in: query
           required: false
@@ -79,21 +80,19 @@ paths:
             items:
               $ref: '#/components/schemas/AnalysisReadinessStatus'
             examples:
-              - 'pending,ready'
-            explode: false
-            style: form
+              - pending
+              - ready
+          explode: false
+          style: form
         - name: group_id
           in: query
-          description: Comma-separated list of Analysis Group IDs. Analyses that belong to these groups will be returned.
+          description: An Analysis Group ID. Analyses that belong to this group will be returned.
           required: false
           schema:
             type: array
             items:
               type: string
-            examples:
-              - 3ED1zxXqAY
-            explode: false
-            style: form
+            examples: 3ED1zxXqAY
         - name: demand_type.interval
           in: query
           description: Allows to filter Analyses by the demand type (interval) of their analyses.
@@ -103,9 +102,10 @@ paths:
             items:
               $ref: '#/components/schemas/Interval'
             examples:
-              - day
-            explode: false
-            style: form
+              - accommodation
+              - tourism
+          explode: false
+          style: form
         - name: demand_type.industry
           in: query
           required: false
@@ -114,9 +114,10 @@ paths:
             items:
               $ref: '#/components/schemas/Industry'
             examples:
-              - 'accommodation,tourism'
-            explode: false
-            style: form
+              - accommodation
+              - tourism
+          explode: false
+          style: form
         - name: external_id
           in: query
           description: Comma-separated list of External IDs.
@@ -126,9 +127,10 @@ paths:
             items:
               type: string
             examples:
-              - 'id1,id2'
-            explode: false
-            style: form
+              - id1
+              - id2
+          explode: false
+          style: form
         - name: label
           in: query
           description: Comma-separated list of labels.
@@ -138,9 +140,11 @@ paths:
             items:
               type: string
             examples:
-              - 'label1,label2,label3'
-            explode: false
-            style: form
+              - label1
+              - label2
+              - label3
+          explode: false
+          style: form
         - name: location.saved_location_id
           in: query
           description: Comma-separated list of Saved Location IDs.
@@ -150,9 +154,10 @@ paths:
             items:
               type: string
             examples:
-              - 'id1,id2'
-            explode: false
-            style: form
+              - id1
+              - id2
+          explode: false
+          style: form
         - name: sort
           in: query
           description: Comma-separated list used to sort Beam analyses.
@@ -164,9 +169,10 @@ paths:
             default:
               - '-updated'
             examples:
-              - 'name,created'
-            explode: false
-            style: form
+              - name
+              - created
+          explode: false
+          style: form
         - $ref: '#/components/parameters/LimitParam'
         - $ref: '#/components/parameters/OffsetParam'
       responses:
@@ -567,9 +573,10 @@ paths:
             items:
               $ref: '#/components/schemas/AnalysisGroupStatus'
             examples:
-              - 'active,deleted'
-            explode: false
-            style: form
+              - active
+              - deleted
+          explode: false
+          style: form
         - name: readiness_status
           in: query
           description: Comma-separated list used to filter Analysis Groups by their readiness status.
@@ -579,9 +586,10 @@ paths:
             items:
               $ref: '#/components/schemas/AnalysisGroupReadinessStatus'
             examples:
-              - 'pending,ready'
-            explode: false
-            style: form
+              - pending
+              - ready
+          explode: false
+          style: form
         - name: demand_type.interval
           in: query
           description: Allows to filter Analysis Groups by the demand type (interval) of their analyses.
@@ -591,9 +599,10 @@ paths:
             items:
               $ref: '#/components/schemas/Interval'
             examples:
-              - day
-            explode: false
-            style: form
+              - accommodation
+              - tourism
+          explode: false
+          style: form
         - name: demand_type.industry
           in: query
           description: Allows to filter Analysis Groups by industry.
@@ -603,9 +612,10 @@ paths:
             items:
               $ref: '#/components/schemas/Industry'
             examples:
-              - 'accommodation,tourism'
-            explode: false
-            style: form
+              - accommodation
+              - tourism
+          explode: false
+          style: form
         - name: sort
           in: query
           description: Comma-separated list used to sort Beam analyses.
@@ -617,9 +627,10 @@ paths:
             default:
               - '-updated'
             examples:
-              - 'name,created'
-            explode: false
-            style: form
+              - name
+              - created
+          explode: false
+          style: form
         - $ref: '#/components/parameters/OffsetParam'
         - $ref: '#/components/parameters/LimitParam'
       responses:
@@ -675,14 +686,11 @@ paths:
       parameters:
         - name: group_id
           in: path
-          description: Comma-separated list of Analysis Group IDs. Analyses that belong to these groups will be returned.
+          description: An Analysis Group ID. Analyses that belong to this group will be returned.
           required: true
           schema:
             type: string
-            examples:
-              - 3ED1zxXqAY
-            explode: false
-            style: form
+            examples: 3ED1zxXqAY
       responses:
         '200':
           description: Successful Response
@@ -717,14 +725,11 @@ paths:
       parameters:
         - name: group_id
           in: path
-          description: Comma-separated list of Analysis Group IDs. Analyses that belong to these groups will be returned.
+          description: An Analysis Group ID. Analyses that belong to this group will be returned.
           required: true
           schema:
             type: string
-            examples:
-              - 3ED1zxXqAY
-            explode: false
-            style: form
+            examples: 3ED1zxXqAY
       requestBody:
         required: true
         content:
@@ -764,14 +769,11 @@ paths:
       parameters:
         - name: group_id
           in: path
-          description: Comma-separated list of Analysis Group IDs. Analyses that belong to these groups will be returned.
+          description: An Analysis Group ID. Analyses that belong to this group will be returned.
           required: true
           schema:
             type: string
-            examples:
-              - 3ED1zxXqAY
-            explode: false
-            style: form
+            examples: 3ED1zxXqAY
       requestBody:
         required: true
         content:
@@ -804,14 +806,11 @@ paths:
       parameters:
         - name: group_id
           in: path
-          description: Comma-separated list of Analysis Group IDs. Analyses that belong to these groups will be returned.
+          description: An Analysis Group ID. Analyses that belong to this group will be returned.
           required: true
           schema:
             type: string
-            examples:
-              - 3ED1zxXqAY
-            explode: false
-            style: form
+            examples: 3ED1zxXqAY
       responses:
         '202':
           description: Successful Response
@@ -837,14 +836,11 @@ paths:
       parameters:
         - name: group_id
           in: path
-          description: Comma-separated list of Analysis Group IDs. Analyses that belong to these groups will be returned.
+          description: An Analysis Group ID. Analyses that belong to this group will be returned.
           required: true
           schema:
             type: string
-            examples:
-              - 3ED1zxXqAY
-            explode: false
-            style: form
+            examples: 3ED1zxXqAY
       responses:
         '202':
           description: Successful Response
@@ -872,14 +868,11 @@ paths:
       parameters:
         - name: group_id
           in: path
-          description: Comma-separated list of Analysis Group IDs. Analyses that belong to these groups will be returned.
+          description: An Analysis Group ID. Analyses that belong to this group will be returned.
           required: true
           schema:
             type: string
-            examples:
-              - 3ED1zxXqAY
-            explode: false
-            style: form
+            examples: 3ED1zxXqAY
       responses:
         '200':
           description: Successful Response
@@ -1292,7 +1285,10 @@ components:
           type: array
           items:
             type: string
-          examples: 'label1,label2,label3'
+          examples:
+            - label1
+            - label2
+            - label3
           explode: false
           style: form
           title: Label
@@ -1818,7 +1814,7 @@ components:
         - geopoint:
             lat: '-36.849761'
             lon: '174.7628903'
-          radius: '1.22'
+          radius: 1.22
           unit: km
       title: LocationResponse
     MultiAnalysisGroupResponse:
@@ -1937,7 +1933,10 @@ components:
           items:
             type: string
             minLength: 1
-          examples: 'label1,label2,label3'
+          examples:
+            - label1
+            - label2
+            - label3
           explode: false
           minItems: 1
           style: form
@@ -2039,7 +2038,10 @@ components:
           items:
             type: string
             minLength: 1
-          examples: 'label1,label2,label3'
+          examples:
+            - label1
+            - label2
+            - label3
           explode: false
           minItems: 1
           style: form
