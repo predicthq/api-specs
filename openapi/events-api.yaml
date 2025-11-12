@@ -1,33 +1,31 @@
 openapi: 3.1.0
 info:
   title: PredictHQ Events API
+  description: Access events data enriched by PredictHQ to power your applications and analyses.
   version: 1.0.0
   license:
     name: MIT
-    url: https://opensource.org/licenses/MIT
-  termsOfService: https://www.predicthq.com/legal/terms
-servers:
-  - url: https://api.predicthq.com
-externalDocs:
-  url: https://docs.predicthq.com
-  description: PredictHQ Tech Docs
-x-hideTryItPanel: true
+    url: 'https://opensource.org/licenses/MIT'
+  termsOfService: 'https://www.predicthq.com/legal/terms'
 security:
   - BearerAuth: []
 tags:
   - name: Events API
     externalDocs:
-      url: https://docs.predicthq.com/api/events
+      url: 'https://docs.predicthq.com/api/events'
       description: Events API Docs
+servers:
+  - url: 'https://api.predicthq.com'
+externalDocs:
+  url: 'https://docs.predicthq.com'
+  description: PredictHQ Tech Docs
+x-hideTryItPanel: true
 paths:
   /v1/events/:
     get:
       operationId: searchEvents
-      tags:
-        - Events API
       summary: Search Events
-      description: |-
-        Search for events happening in a location and date range. Use our extensive filters to narrow down your results.
+      description: Search for events happening in a location and date range. Use our extensive filters to narrow down your results.
       parameters:
         - $ref: '#/components/parameters/ActiveGteParam'
         - $ref: '#/components/parameters/ActiveGtParam'
@@ -146,14 +144,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EventsResponse'
+      tags:
+        - Events API
   /v1/events/count/:
     get:
       operationId: countEvents
-      tags:
-        - Events API
       summary: Get Event Counts
-      description: |-
-        Get the count of events by category, PHQ Label and more. The Count endpoint supports the same query parameters as the Search Events endpoint.
+      description: 'Get the count of events by category, PHQ Label and more. The Count endpoint supports the same query parameters as the Search Events endpoint.'
       parameters:
         - $ref: '#/components/parameters/ActiveGteParam'
         - $ref: '#/components/parameters/ActiveGtParam'
@@ -270,6 +267,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EventsCountResponse'
+      tags:
+        - Events API
 components:
   parameters:
     ActiveGteParam:
@@ -365,8 +364,8 @@ components:
       schema:
         type: string
         enum:
-          - "true"
-          - "false"
+          - 'true'
+          - 'false'
     CancelledGteParam:
       in: query
       name: cancelled.gte
@@ -442,25 +441,26 @@ components:
         items:
           type: string
           enum:
-            - "academic"
-            - "school-holidays"
-            - "public-holidays"
-            - "observances"
-            - "politics"
-            - "conferences"
-            - "expos"
-            - "concerts"
-            - "festivals"
-            - "performing-arts"
-            - "sports"
-            - "community"
-            - "daylight-savings"
-            - "airport-delays"
-            - "severe-weather"
-            - "disasters"
-            - "terror"
-            - "health-warnings"
-      style: simple
+            - academic
+            - school-holidays
+            - public-holidays
+            - observances
+            - politics
+            - conferences
+            - expos
+            - concerts
+            - festivals
+            - performing-arts
+            - sports
+            - community
+            - daylight-savings
+            - airport-delays
+            - severe-weather
+            - disasters
+            - terror
+            - health-warnings
+      style: form
+      explode: false
     CountryParam:
       in: query
       name: country
@@ -473,7 +473,8 @@ components:
         type: array
         items:
           type: string
-      style: simple
+      style: form
+      explode: false
     DeletedReasonParam:
       in: query
       name: deleted_reason
@@ -491,7 +492,66 @@ components:
             - invalid
             - duplicate
             - postponed
-      style: simple
+      style: form
+      explode: false
+    EndAroundDecayParam:
+      in: query
+      name: end_around.decay
+      description: |-
+        Score value at the scale distance (optional).
+
+        Example: `0.9`
+
+        Default: `0.5`
+      required: false
+      deprecated: true
+      schema:
+        type: number
+        format: double
+        maximum: 1
+        minimum: 0
+    EndAroundOffsetParam:
+      in: query
+      name: end_around.offset
+      description: |-
+        The number of days from the origin before the score starts to decay (optional).
+
+        Example: `5d`
+
+        Default: `0d`
+      required: false
+      deprecated: true
+      schema:
+        type: string
+        pattern: '^\d{1,3}d$'
+    EndAroundOriginParam:
+      in: query
+      name: end_around.origin
+      description: |-
+        Fuzzy date search around event end datetime. When using `end_around.*` params, `origin` is required.
+
+        Can influence `relevance`.
+
+        Example: `2025-02-01`
+      required: false
+      deprecated: true
+      schema:
+        type: string
+        format: date
+    EndAroundScaleParam:
+      in: query
+      name: end_around.scale
+      description: |-
+        Distance from origin +/- offset at which the score will equal the decay value (optional).
+
+        Example: `10d`
+
+        Default: `3d`
+      required: false
+      deprecated: true
+      schema:
+        type: string
+        pattern: '^\d{1,3}d$'
     EndGteParam:
       in: query
       name: end.gte
@@ -552,64 +612,6 @@ components:
       required: false
       schema:
         type: string
-    EndAroundOriginParam:
-      in: query
-      name: end_around.origin
-      description: |-
-        Fuzzy date search around event end datetime. When using `end_around.*` params, `origin` is required.
-
-        Can influence `relevance`.
-
-        Example: `2025-02-01`
-      required: false
-      deprecated: true
-      schema:
-        type: string
-        format: date
-    EndAroundOffsetParam:
-      in: query
-      name: end_around.offset
-      description: |-
-        The number of days from the origin before the score starts to decay (optional).
-
-        Example: `5d`
-
-        Default: `0d`
-      required: false
-      deprecated: true
-      schema:
-        type: string
-        pattern: '^\d{1,3}d$'
-    EndAroundScaleParam:
-      in: query
-      name: end_around.scale
-      description: |-
-        Distance from origin +/- offset at which the score will equal the decay value (optional).
-
-        Example: `10d`
-
-        Default: `3d`
-      required: false
-      deprecated: true
-      schema:
-        type: string
-        pattern: '^\d{1,3}d$'
-    EndAroundDecayParam:
-      in: query
-      name: end_around.decay
-      description: |-
-        Score value at the scale distance (optional).
-
-        Example: `0.9`
-
-        Default: `0.5`
-      required: false
-      deprecated: true
-      schema:
-        type: number
-        format: double
-        minimum: 0.0
-        maximum: 1.0
     EntityIdParam:
       in: query
       name: entity.id
@@ -622,7 +624,8 @@ components:
         type: array
         items:
           type: string
-      style: simple
+      style: form
+      explode: false
     FirstSeenGteParam:
       in: query
       name: first_seen.gte
@@ -695,7 +698,8 @@ components:
         type: array
         items:
           type: string
-      style: simple
+      style: form
+      explode: false
     ImpactGteParam:
       in: query
       name: impact.gte
@@ -726,6 +730,27 @@ components:
       schema:
         type: string
         format: date-time
+    ImpactIndustryParam:
+      in: query
+      name: impact.industry
+      description: |-
+        Selected industry for the Predicted Impact Patterns.
+
+        If no industry is selected, `impact.*` will function effectively the same as `active.*`.
+
+        Example: `accommodation`
+      required: false
+      schema:
+        type: string
+        enum:
+          - accommodation
+          - cpg
+          - tourism
+          - marketing
+          - parking
+          - restaurants
+          - retail
+          - transportation
     ImpactLteParam:
       in: query
       name: impact.lte
@@ -762,27 +787,6 @@ components:
       required: false
       schema:
         type: string
-    ImpactIndustryParam:
-      in: query
-      name: impact.industry
-      description: |-
-        Selected industry for the Predicted Impact Patterns.
-
-        If no industry is selected, `impact.*` will function effectively the same as `active.*`.
-
-        Example: `accommodation`
-      required: false
-      schema:
-        type: string
-        enum:
-          - "accommodation"
-          - "cpg"
-          - "tourism"
-          - "marketing"
-          - "parking"
-          - "restaurants"
-          - "retail"
-          - "transportation"
     LabelParam:
       in: query
       name: label
@@ -798,51 +802,42 @@ components:
       deprecated: true
       schema:
         $ref: '#/components/schemas/LegacyLabels'
-      style: simple
+      style: form
+      explode: false
+    LimitParam:
+      name: limit
+      in: query
+      description: Limit the number of results.
+      required: false
+      schema:
+        type: integer
+        default: 10
     LocalRankGteParam:
       in: query
       name: local_rank.gte
       description: |-
         Filters events with a Local Rank greater than or equal to the specified value.
 
+        Events without a Local Rank will not be returned.
+
         Example: `80`
       required: false
       schema:
         type: integer
-        minimum: 0
         maximum: 100
+        minimum: 0
     LocalRankGtParam:
       in: query
       name: local_rank.gt
       description: |-
         Filters events with a Local Rank greater than the specified value.
-      required: false
-      schema:
-        type: integer
-        minimum: 0
-        maximum: 100
-    LocalRankLteParam:
-      in: query
-      name: local_rank.lte
-      description: |-
-        Filters events with a Local Rank less than or equal to the specified value.
 
-        Example: `90`
+        Events without a Local Rank will not be returned.
       required: false
       schema:
         type: integer
-        minimum: 0
         maximum: 100
-    LocalRankLtParam:
-      in: query
-      name: local_rank.lt
-      description: |-
-        Filters events with a Local Rank less than the specified value.
-      required: false
-      schema:
-        type: integer
         minimum: 0
-        maximum: 100
     LocalRankLevelParam:
       in: query
       name: local_rank_level
@@ -869,21 +864,50 @@ components:
             - 3
             - 4
             - 5
-      style: simple
-    LocationAroundOriginParam:
+      style: form
+      explode: false
+    LocalRankLteParam:
       in: query
-      name: location_around.origin
+      name: local_rank.lte
       description: |-
-        Fuzzy location search around event location. When using `location_around.*` params, `origin` is required.
+        Filters events with a Local Rank less than or equal to the specified value.
 
-        Please note this affects the `relevance` value and does not restrict search results to the specified latitude/longitude and offset. Read more in the [Relevance guide](https://docs.predicthq.com/getting-started/guides/events-api-guides/understanding-relevance-field-in-event-results) and combine with the `within` parameter to restrict results to a specified latitude/longitude and radius.
+        Events without a Local Rank will not be returned.
 
-        Example: `40.730610,-73.935242`
+        Example: `90`
+      required: false
+      schema:
+        type: integer
+        maximum: 100
+        minimum: 0
+    LocalRankLtParam:
+      in: query
+      name: local_rank.lt
+      description: |-
+        Filters events with a Local Rank less than the specified value.
+
+        Events without a Local Rank will not be returned.
+      required: false
+      schema:
+        type: integer
+        maximum: 100
+        minimum: 0
+    LocationAroundDecayParam:
+      in: query
+      name: location_around.decay
+      description: |-
+        Score value at the `scale` distance (optional).
+
+        Example: `0.9`
+
+        Default: `0.5`
       required: false
       deprecated: true
       schema:
-        type: string
-        pattern: '^-?\d+(\.\d+)?,-?\d+(\.\d+)?$'
+        type: number
+        format: double
+        maximum: 1
+        minimum: 0
     LocationAroundOffsetParam:
       in: query
       name: location_around.offset
@@ -899,7 +923,21 @@ components:
       deprecated: true
       schema:
         type: string
-        pattern: '^\d+(m|km|ft|mi)$'
+        pattern: ^\d+(m|km|ft|mi)$
+    LocationAroundOriginParam:
+      in: query
+      name: location_around.origin
+      description: |-
+        Fuzzy location search around event location. When using `location_around.*` params, `origin` is required.
+
+        Please note this affects the `relevance` value and does not restrict search results to the specified latitude/longitude and offset. Read more in the [Relevance guide](https://docs.predicthq.com/getting-started/guides/events-api-guides/understanding-relevance-field-in-event-results) and combine with the `within` parameter to restrict results to a specified latitude/longitude and radius.
+
+        Example: `40.730610,-73.935242`
+      required: false
+      deprecated: true
+      schema:
+        type: string
+        pattern: '^-?\d+(\.\d+)?,-?\d+(\.\d+)?$'
     LocationAroundScaleParam:
       in: query
       name: location_around.scale
@@ -915,63 +953,51 @@ components:
       deprecated: true
       schema:
         type: string
-        pattern: '^\d+(m|km|ft|mi)$'
-    LocationAroundDecayParam:
-      in: query
-      name: location_around.decay
-      description: |-
-        Score value at the `scale` distance (optional).
-
-        Example: `0.9`
-
-        Default: `0.5`
-      required: false
-      deprecated: true
-      schema:
-        type: number
-        format: double
-        minimum: 0.0
-        maximum: 1.0
+        pattern: ^\d+(m|km|ft|mi)$
     LocationConfidenceScoreGteParam:
       in: query
       name: location_confidence_score.gte
-      description: |-
-        A unique attribute to Predicted Events that were generated from analyzing sets of recurring events. The score ranges from 1 to 5, representing the event’s propensity to change location with each recurrence. Higher scores indicate a higher consistency in location, while lower scores indicate the event’s location is more likely to shift once additional details become available.
+      description: 'A unique attribute to Predicted Events that were generated from analyzing sets of recurring events. The score ranges from 1 to 5, representing the event’s propensity to change location with each recurrence. Higher scores indicate a higher consistency in location, while lower scores indicate the event’s location is more likely to shift once additional details become available.'
       required: false
       schema:
         type: integer
-        minimum: 1
         maximum: 5
+        minimum: 1
     LocationConfidenceScoreGtParam:
       in: query
       name: location_confidence_score.gt
-      description: |-
-        Filters events with a location confidence score greater than the specified score (exclusive).
+      description: Filters events with a location confidence score greater than the specified score (exclusive).
       required: false
       schema:
         type: integer
-        minimum: 1
         maximum: 5
+        minimum: 1
     LocationConfidenceScoreLteParam:
       in: query
       name: location_confidence_score.lte
-      description: |-
-        Filters events with a location confidence score less than or equal to the specified score.
+      description: Filters events with a location confidence score less than or equal to the specified score.
       required: false
       schema:
         type: integer
-        minimum: 1
         maximum: 5
+        minimum: 1
     LocationConfidenceScoreLtParam:
       in: query
       name: location_confidence_score.lt
-      description: |-
-        Filters events with a location confidence score less than the specified score (exclusive).
+      description: Filters events with a location confidence score less than the specified score (exclusive).
       required: false
       schema:
         type: integer
-        minimum: 1
         maximum: 5
+        minimum: 1
+    OffsetParam:
+      name: offset
+      in: query
+      description: Offset the results.
+      required: false
+      schema:
+        type: integer
+        default: 0
     ParentIncludeParam:
       in: query
       name: parent.include
@@ -988,9 +1014,9 @@ components:
       schema:
         type: string
         enum:
-          - "true"
-          - "false"
-          - "only"
+          - 'true'
+          - 'false'
+          - only
     PHQAttendanceGteParam:
       in: query
       name: phq_attendance.gte
@@ -1005,8 +1031,7 @@ components:
     PHQAttendanceGtParam:
       in: query
       name: phq_attendance.gt
-      description: |-
-        Filters events with a Predicted Attendance greater than the specified value.
+      description: Filters events with a Predicted Attendance greater than the specified value.
       required: false
       schema:
         type: integer
@@ -1025,12 +1050,53 @@ components:
     PHQAttendanceLtParam:
       in: query
       name: phq_attendance.lt
-      description: |-
-        Filters events with a Predicted Attendance less than the specified value.
+      description: Filters events with a Predicted Attendance less than the specified value.
       required: false
       schema:
         type: integer
         minimum: 0
+    PHQLabelExcludeOpParam:
+      in: query
+      name: phq_label.exclude.op
+      description: |-
+        Whether to exclude events with `any` or `all` the specified labels.
+
+        Default: `any`
+      required: false
+      schema:
+        type: string
+        enum:
+          - all
+          - any
+    PHQLabelExcludeParam:
+      in: query
+      name: phq_label.exclude
+      description: |-
+        A comma-separated list of PHQ labels to exclude. This will filter for events that do not have the specified labels.
+
+        Please note that all event labels are lowercase and that the search is case sensitive.
+
+        Example: `lifestyle`
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+      style: form
+      explode: false
+    PHQLabelOpParam:
+      in: query
+      name: phq_label.op
+      description: |-
+        Whether to find events with `any` or `all` the specified labels.
+
+        Default: `any`
+      required: false
+      schema:
+        type: string
+        enum:
+          - all
+          - any
     PHQLabelParam:
       in: query
       name: phq_label
@@ -1049,65 +1115,8 @@ components:
         type: array
         items:
           type: string
-      style: simple
-    PHQLabelOpParam:
-      in: query
-      name: phq_label.op
-      description: |-
-        Whether to find events with `any` or `all` the specified labels.
-
-        Default: `any`
-      required: false
-      schema:
-        type: string
-        enum:
-          - "all"
-          - "any"
-    PHQLabelExcludeParam:
-      in: query
-      name: phq_label.exclude
-      description: |-
-        A comma-separated list of PHQ labels to exclude. This will filter for events that do not have the specified labels.
-
-        Please note that all event labels are lowercase and that the search is case sensitive.
-
-        Example: `lifestyle`
-      required: false
-      schema:
-        type: array
-        items:
-          type: string
-      style: simple
-    PHQLabelExcludeOpParam:
-      in: query
-      name: phq_label.exclude.op
-      description: |-
-        Whether to exclude events with `any` or `all` the specified labels.
-
-        Default: `any`
-      required: false
-      schema:
-        type: string
-        enum:
-          - "all"
-          - "any"
-    PlaceScopeParam:
-      in: query
-      name: place.scope
-      description: |-
-        A comma-separated list of Place IDs and/or IATA (3 character), ICAO (4 character), and UN/LOCODE (5 character) airport codes where the events occur.
-
-        A CSV file of all supported airport codes and their respective Place IDs is available to download.
-
-        Results will contain events that apply to the parent and children places of the specified place. E.g. National, regional and local school holidays that apply to a region.
-
-        Example: `5128638,SFO`
-      required: false
-      schema:
-        type: array
-        items:
-          type: string
-      style: simple
+      style: form
+      explode: false
     PlaceExactParam:
       in: query
       name: place.exact
@@ -1120,7 +1129,8 @@ components:
         type: array
         items:
           type: string
-      style: simple
+      style: form
+      explode: false
     PlacekeyParam:
       in: query
       name: placekey
@@ -1149,7 +1159,26 @@ components:
         type: array
         items:
           type: string
-      style: simple
+      style: form
+      explode: false
+    PlaceScopeParam:
+      in: query
+      name: place.scope
+      description: |-
+        A comma-separated list of Place IDs and/or IATA (3 character), ICAO (4 character), and UN/LOCODE (5 character) airport codes where the events occur.
+
+        A CSV file of all supported airport codes and their respective Place IDs is available to download.
+
+        Results will contain events that apply to the parent and children places of the specified place. E.g. National, regional and local school holidays that apply to a region.
+
+        Example: `5128638,SFO`
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+      style: form
+      explode: false
     PostponedGteParam:
       in: query
       name: postponed.gte
@@ -1290,28 +1319,7 @@ components:
     PredictedEventSpendGtParam:
       in: query
       name: predicted_event_spend.gt
-      description: |-
-        Filters events with a Predicted Event Spend greater than the specified value (exclusive).
-      required: false
-      schema:
-        type: integer
-        minimum: 0
-    PredictedEventSpendLteParam:
-      in: query
-      name: predicted_event_spend.lte
-      description: |-
-        Filters events with a Predicted Event Spend less than or equal to the specified value.
-
-        Example: `200000`
-      required: false
-      schema:
-        type: integer
-        minimum: 0
-    PredictedEventSpendLtParam:
-      in: query
-      name: predicted_event_spend.lt
-      description: |-
-        Filters events with a Predicted Event Spend less than the specified value (exclusive).
+      description: Filters events with a Predicted Event Spend greater than the specified value (exclusive).
       required: false
       schema:
         type: integer
@@ -1337,6 +1345,25 @@ components:
       required: false
       schema:
         type: integer
+    PredictedEventSpendLteParam:
+      in: query
+      name: predicted_event_spend.lte
+      description: |-
+        Filters events with a Predicted Event Spend less than or equal to the specified value.
+
+        Example: `200000`
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+    PredictedEventSpendLtParam:
+      in: query
+      name: predicted_event_spend.lt
+      description: Filters events with a Predicted Event Spend less than the specified value (exclusive).
+      required: false
+      schema:
+        type: integer
+        minimum: 0
     QParam:
       in: query
       name: q
@@ -1358,40 +1385,17 @@ components:
       required: false
       schema:
         type: integer
-        minimum: 0
         maximum: 100
+        minimum: 0
     RankGtParam:
       in: query
       name: rank.gt
-      description: |-
-        Filters events with a PHQ Rank greater than the specified value.
+      description: Filters events with a PHQ Rank greater than the specified value.
       required: false
       schema:
         type: integer
-        minimum: 0
         maximum: 100
-    RankLteParam:
-      in: query
-      name: rank.lte
-      description: |-
-        Filters events with a PHQ Rank less than or equal to the specified value.
-
-        Example: `90`
-      required: false
-      schema:
-        type: integer
         minimum: 0
-        maximum: 100
-    RankLtParam:
-      in: query
-      name: rank.lt
-      description: |-
-        Filters events with a PHQ Rank less than the specified value.
-      required: false
-      schema:
-        type: integer
-        minimum: 0
-        maximum: 100
     RankLevelParam:
       in: query
       name: rank_level
@@ -1418,7 +1422,29 @@ components:
             - 3
             - 4
             - 5
-      style: simple
+      style: form
+      explode: false
+    RankLteParam:
+      in: query
+      name: rank.lte
+      description: |-
+        Filters events with a PHQ Rank less than or equal to the specified value.
+
+        Example: `90`
+      required: false
+      schema:
+        type: integer
+        maximum: 100
+        minimum: 0
+    RankLtParam:
+      in: query
+      name: rank.lt
+      description: Filters events with a PHQ Rank less than the specified value.
+      required: false
+      schema:
+        type: integer
+        maximum: 100
+        minimum: 0
     RelevanceParam:
       in: query
       name: relevance
@@ -1453,7 +1479,8 @@ components:
             - location_around
             - rank
             - local_rank
-      style: simple
+      style: form
+      explode: false
     SavedLocationLocationIdParam:
       in: query
       name: saved_location.location_id
@@ -1466,7 +1493,8 @@ components:
         type: array
         items:
           type: string
-      style: simple
+      style: form
+      explode: false
     SortParam:
       in: query
       name: sort
@@ -1505,7 +1533,102 @@ components:
             - predicted_event_spend_industry.accommodation
             - predicted_event_spend_industry.hospitality
             - predicted_event_spend_industry.transportation
-      style: simple
+      style: form
+      explode: false
+    StartAroundDecayParam:
+      in: query
+      name: start_around.decay
+      description: |-
+        Score value at the scale distance (optional).
+
+        Example: `0.9`
+
+        Default: `0.5`
+      required: false
+      deprecated: true
+      schema:
+        type: number
+        format: double
+        maximum: 1
+        minimum: 0
+    StartAroundOffsetParam:
+      in: query
+      name: start_around.offset
+      description: |-
+        The number of days from the origin before the score starts to decay (optional).
+
+        Example: `5d`
+
+        Default: `0d`
+      required: false
+      deprecated: true
+      schema:
+        type: string
+        pattern: '^\d{1,3}d$'
+    StartAroundOriginParam:
+      in: query
+      name: start_around.origin
+      description: |-
+        Fuzzy date search around event start datetime. When using `start_around.*` params, `origin` is required.
+
+        Can influence `relevance`.
+
+        Example: `2025-02-01`
+      required: false
+      deprecated: true
+      schema:
+        type: string
+        format: date
+    StartAroundScaleParam:
+      in: query
+      name: start_around.scale
+      description: |-
+        Distance from origin +/- offset at which the score will equal the decay value (optional).
+
+        Example: `10d`
+
+        Default: `3d`
+      required: false
+      deprecated: true
+      schema:
+        type: string
+        pattern: '^\d{1,3}d$'
+    StartDateConfidenceScoreGteParam:
+      in: query
+      name: start_date_confidence_score.gte
+      description: 'A unique attribute to Predicted Events that were generated from analyzing sets of recurring events. The score ranges from 1 to 5, representing the event’s consistency in being held around the same date with each recurrence. Higher scores indicate the event is held at mostly the same date each year, while lower scores indicate a greater variation in start date, meaning that details are more likely to change as new details become available.'
+      required: false
+      schema:
+        type: integer
+        maximum: 5
+        minimum: 1
+    StartDateConfidenceScoreGtParam:
+      in: query
+      name: start_date_confidence_score.gt
+      description: Filters events with a start date confidence score greater than the specified score (exclusive).
+      required: false
+      schema:
+        type: integer
+        maximum: 5
+        minimum: 1
+    StartDateConfidenceScoreLteParam:
+      in: query
+      name: start_date_confidence_score.lte
+      description: Filters events with a start date confidence score less than or equal to the specified score.
+      required: false
+      schema:
+        type: integer
+        maximum: 5
+        minimum: 1
+    StartDateConfidenceScoreLtParam:
+      in: query
+      name: start_date_confidence_score.lt
+      description: Filters events with a start date confidence score less than the specified score (exclusive).
+      required: false
+      schema:
+        type: integer
+        maximum: 5
+        minimum: 1
     StartGteParam:
       in: query
       name: start.gte
@@ -1566,104 +1689,6 @@ components:
       required: false
       schema:
         type: string
-    StartAroundOriginParam:
-      in: query
-      name: start_around.origin
-      description: |-
-        Fuzzy date search around event start datetime. When using `start_around.*` params, `origin` is required.
-
-        Can influence `relevance`.
-
-        Example: `2025-02-01`
-      required: false
-      deprecated: true
-      schema:
-        type: string
-        format: date
-    StartAroundOffsetParam:
-      in: query
-      name: start_around.offset
-      description: |-
-        The number of days from the origin before the score starts to decay (optional).
-
-        Example: `5d`
-
-        Default: `0d`
-      required: false
-      deprecated: true
-      schema:
-        type: string
-        pattern: '^\d{1,3}d$'
-    StartAroundScaleParam:
-      in: query
-      name: start_around.scale
-      description: |-
-        Distance from origin +/- offset at which the score will equal the decay value (optional).
-
-        Example: `10d`
-
-        Default: `3d`
-      required: false
-      deprecated: true
-      schema:
-        type: string
-        pattern: '^\d{1,3}d$'
-    StartAroundDecayParam:
-      in: query
-      name: start_around.decay
-      description: |-
-        Score value at the scale distance (optional).
-
-        Example: `0.9`
-
-        Default: `0.5`
-      required: false
-      deprecated: true
-      schema:
-        type: number
-        format: double
-        minimum: 0.0
-        maximum: 1.0
-    StartDateConfidenceScoreGteParam:
-      in: query
-      name: start_date_confidence_score.gte
-      description: |-
-        A unique attribute to Predicted Events that were generated from analyzing sets of recurring events. The score ranges from 1 to 5, representing the event’s consistency in being held around the same date with each recurrence. Higher scores indicate the event is held at mostly the same date each year, while lower scores indicate a greater variation in start date, meaning that details are more likely to change as new details become available.
-      required: false
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 5
-    StartDateConfidenceScoreGtParam:
-      in: query
-      name: start_date_confidence_score.gt
-      description: |-
-        Filters events with a start date confidence score greater than the specified score (exclusive).
-      required: false
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 5
-    StartDateConfidenceScoreLteParam:
-      in: query
-      name: start_date_confidence_score.lte
-      description: |-
-        Filters events with a start date confidence score less than or equal to the specified score.
-      required: false
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 5
-    StartDateConfidenceScoreLtParam:
-      in: query
-      name: start_date_confidence_score.lt
-      description: |-
-        Filters events with a start date confidence score less than the specified score (exclusive).
-      required: false
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 5
     StateParam:
       in: query
       name: state
@@ -1681,10 +1706,11 @@ components:
         items:
           type: string
           enum:
-            - "active"
-            - "deleted"
-            - "predicted"
-      style: simple
+            - active
+            - deleted
+            - predicted
+      style: form
+      explode: false
     UpdatedGteParam:
       in: query
       name: updated.gte
@@ -1762,31 +1788,14 @@ components:
       required: false
       schema:
         type: string
-        pattern: ^(?:(?:[1-9]\d*(?:\.\d+)?(km|mi))|(?:[1-9]\d*(m|ft)))@-?\d+(?:\.\d+)?,\-?\d+(?:\.\d+)?$
-    LimitParam:
-      name: limit
-      in: query
-      description: Limit the number of results.
-      required: false
-      schema:
-        type: integer
-        default: 10
-    OffsetParam:
-      name: offset
-      in: query
-      description: Offset the results.
-      required: false
-      schema:
-        type: integer
-        default: 0
+        pattern: '^(?:(?:[1-9]\d*(?:\.\d+)?(km|mi))|(?:[1-9]\d*(m|ft)))@-?\d+(?:\.\d+)?,\-?\d+(?:\.\d+)?$'
   schemas:
     Event:
-      type: object
       description: An individual event object.
+      type: object
       properties:
         brand_safe:
-          description: |-
-            Indicates whether or not the event is considered "brand safe".
+          description: Indicates whether or not the event is considered "brand safe".
           type: boolean
         cancelled:
           description: |-
@@ -1797,11 +1806,10 @@ components:
             This field will only be present for events with `deleted_reason` set to `cancelled`, and will have a `null` value if `cancelled` date is not available.
           type:
             - string
-            - "null"
+            - 'null'
           format: date-time
         category:
-          description: |-
-            The category of the event.
+          description: The category of the event.
           $ref: '#/components/schemas/EventCategory'
         country:
           description: |-
@@ -1809,7 +1817,7 @@ components:
             Note that the country value will usually be present but in some cases where the event location is not within a country (e.g. an earthquake in the middle of the ocean) it can be empty.
           type: string
           examples:
-            - "US"
+            - US
         deleted_reason:
           description: |-
             The reason why the event was deleted.
@@ -1817,18 +1825,17 @@ components:
             Note that this field is only present for events with state `deleted`.
           type: string
           enum:
-            - "cancelled"
-            - "duplicate"
-            - "invalid"
-            - "postponed"
+            - cancelled
+            - duplicate
+            - invalid
+            - postponed
         description:
-          description: |-
-            A description of the event.
+          description: A description of the event.
           type:
             - string
-            - "null"
+            - 'null'
           examples:
-            - "See Katy Perry in concert [...]"
+            - 'See Katy Perry in concert [...]'
         duplicate_of_id:
           description: |-
             The `id` of the active event this event is a duplicate of.
@@ -1836,10 +1843,9 @@ components:
             Note that this field is only present for deleted events with `deleted_reason` set to `duplicate`.
           type:
             - string
-            - "null"
+            - 'null'
         duration:
-          description: |-
-            The duration of the event in seconds.
+          description: The duration of the event in seconds.
           type: integer
           examples:
             - 3600
@@ -1850,7 +1856,7 @@ components:
             All end dates are in UTC if the event time zone is provided, and in local time otherwise. For example, Independence Day falls on the 4th of July regardless of the time zone, and will have a `null` time zone.
           type:
             - string
-            - "null"
+            - 'null'
           format: date-time
         end_local:
           description: |-
@@ -1859,7 +1865,7 @@ components:
             The `end` field is in UTC and `end_local` is in the local time at the events location.
           type:
             - string
-            - "null"
+            - 'null'
           format: date-time
         entities:
           description: |-
@@ -1879,10 +1885,11 @@ components:
               type:
                 type: string
                 enum:
+                  - airport
                   - event-group
+                  - organization
                   - person
                   - venue
-                  - organisation
               labels:
                 type: array
                 items:
@@ -1899,11 +1906,11 @@ components:
                 type: string
               recurring:
                 type: object
-                required:
-                  - ical
                 properties:
                   ical:
                     type: string
+                required:
+                  - ical
             examples:
               - entity_id: 39yXYp4LvTW8TicddxHSiXw
                 type: event-group
@@ -1911,7 +1918,7 @@ components:
                   - recurring
                 name: Underwood Family Farms Fall Harvest Festival
                 recurring:
-                  ical: "DTSTART;VALUE=DATE-TIME:20170930T090000 DURATION:P31DT9H RRULE:FREQ=YEARLY;INTERVAL=1"
+                  ical: 'DTSTART;VALUE=DATE-TIME:20170930T090000 DURATION:P31DT9H RRULE:FREQ=YEARLY;INTERVAL=1'
               - entity_id: fx5IMIphsUX7yoJ9X7PktQ
                 type: event-group
                 labels:
@@ -1920,25 +1927,24 @@ components:
               - entity_id: 328DxFUbRKvaiJJGyT2gReF
                 type: venue
                 name: Spark Arena
-                formatted_address: "Mahuhu Crescent\nAuckland 1010\nNew Zealand"
+                formatted_address: |-
+                  Mahuhu Crescent
+                  Auckland 1010
+                  New Zealand
         first_seen:
-          description: |-
-            The date the event first entered our dataset in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format. Dates are in UTC. This value may be missing on some events, and should not be considered an event announcement date.
+          description: 'The date the event first entered our dataset in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format. Dates are in UTC. This value may be missing on some events, and should not be considered an event announcement date.'
           type:
             - string
-            - "null"
+            - 'null'
           format: date-time
         id:
-          description: |-
-            The unique identifier of the event.
+          description: The unique identifier of the event.
           type: string
           examples:
             - z13B3870YOgv
         impact_patterns:
           description: |-
             This field shows the Predicted Impact Patterns for leading days (days before the event), lagging days (days after an event), and the days the event occurs. See [Predicted Impact Patterns](https://docs.predicthq.com/getting-started/predicthq-data/impact-patterns) for more details.
-
-            This field will only be present if you have access to it in your subscription and you will only get the industry verticals that you are subscribed to.
 
             impact_patterns is an array of impact pattern objects. The same event can have different impact patterns for different industry verticals. It contains the following fields:
           type: array
@@ -1950,16 +1956,14 @@ components:
               - impacts
             properties:
               vertical:
-                description: |-
-                  The industry vertical the impact pattern applies to.
+                description: The industry vertical the impact pattern applies to.
                 type: string
                 enum:
                   - accommodation
                   - retail
                   - hospitality
               impact_type:
-                description: |-
-                  Indicates the type of impact shown in the impact pattern. Currently, the supported types are phq_rank and phq_attendance. If the impact_type is phq_rank then the impact values shown per day reflect phq_rank values. If impact_type is phq_attendance then the impact values per day reflect phq_attendance which is the estimated amount of people attending the event per day.
+                description: 'Indicates the type of impact shown in the impact pattern. Currently, the supported types are phq_rank and phq_attendance. If the impact_type is phq_rank then the impact values shown per day reflect phq_rank values. If impact_type is phq_attendance then the impact values per day reflect phq_attendance which is the estimated amount of people attending the event per day.'
                 type: string
                 enum:
                   - phq_rank
@@ -1974,13 +1978,11 @@ components:
                     - position
                   properties:
                     date_local:
-                      description: |-
-                        The date in the local timezone of the event.
+                      description: The date in the local timezone of the event.
                       type: string
                       format: date
                     value:
-                      description: |-
-                        The value of the `impact_type` for that given day. For example, if the `impact_type` was `phq_rank` the `value` would be the PHQ Rank value on the given day. Otherwise, it will reflect `phq_attendance`.
+                      description: 'The value of the `impact_type` for that given day. For example, if the `impact_type` was `phq_rank` the `value` would be the PHQ Rank value on the given day. Otherwise, it will reflect `phq_attendance`.'
                       type: integer
                     position:
                       description: |-
@@ -1999,35 +2001,30 @@ components:
             Similar to PHQ Rank, this is a log scale numerical value between 0 and 100 with a five-level hierarchical impact schema. It is designed to represent the potential impact of an event on its local geographical area.
 
             If `local_rank` is not intended to be available for an event, this field will be `null`.
-          type:
-            - integer
-            - "null"
-          minimum: 0
+          type: integer
           maximum: 100
+          minimum: 0
         location:
           description: |-
             A 2-tuple representing the geo location of the event. Note that the longitude/latitude coordinates use the [GeoJSON](https://geojson.org/) order [lon, lat].
 
             Please use the `geo` field instead of this field.
-          deprecated: true
           type: array
           items:
             type: number
-          minItems: 2
-          maxItems: 2
+          deprecated: true
           examples:
-            - [174.776792, -36.847319]
+            - - 174.776792
+              - -36.847319
+          maxItems: 2
+          minItems: 2
         location_confidence_score:
-          description: |-
-            The Predicted Event location confidence score.
-          type:
-            - integer
-            - "null"
-          minimum: 1
+          description: The Predicted Event location confidence score.
+          type: integer
           maximum: 5
+          minimum: 1
         geo:
-          description: |-
-            An object containing the geographic information about an event. This field will be used in future instead of the `location` field (the `location` field will remain in the current version of the API but could be removed in future versions).
+          description: An object containing the geographic information about an event. This field will be used in future instead of the `location` field (the `location` field will remain in the current version of the API but could be removed in future versions).
           oneOf:
             - type: object
               properties:
@@ -2045,8 +2042,8 @@ components:
                     Some events do not contain a Placekey.
                   type: string
                   examples:
-                    - "222-229@8t2-fgc-z2k"
-                    - "@7f7-mcy-ndv"
+                    - 222-229@8t2-fgc-z2k
+                    - '@7f7-mcy-ndv'
                 address:
                   oneOf:
                     - type: object
@@ -2056,23 +2053,23 @@ components:
                         country_code:
                           type: string
                           examples:
-                            - "US"
+                            - US
                         formatted_address:
                           type: string
                           examples:
-                            - "2350 Beach Blvd, Biloxi, MS 39531, USA"
+                            - '2350 Beach Blvd, Biloxi, MS 39531, USA'
                         locality:
                           type: string
                           examples:
-                            - "Biloxi"
+                            - Biloxi
                         region:
                           type: string
                           examples:
-                            - "Mississippi"
+                            - Mississippi
                         postcode:
                           type: string
                           examples:
-                            - "39531"
+                            - '39531'
                     - type: 'null'
             - type: 'null'
         parent_event:
@@ -2083,15 +2080,14 @@ components:
 
             Note that this field shows if a child event has a parent id. It does not indicate if a parent event has child events.
           type: object
-          required:
-            - parent_event_id
           properties:
             parent_event_id:
-              description: |-
-                The parent_event_id refers to the id of the event that is the parent for the current event.
+              description: The parent_event_id refers to the id of the event that is the parent for the current event.
               type: string
               examples:
                 - w7dYyrFwTUQGYE6euv
+          required:
+            - parent_event_id
         phq_attendance:
           description: |-
             A numerical value that reflects the predicted attendance for supported attendance-based categories.
@@ -2099,9 +2095,7 @@ components:
             This reflects the entire attendance for multi-day events (the number of people attending across the full duration of the event) except for some categories like conferences where it is the daily attendance.
 
             See [Handling multi-day and Umbrella events](https://docs.predicthq.com/getting-started/guides/date-and-time-guides/working-with-multi-day-and-umbrella-events) for more details.
-          type:
-            - integer
-            - "null"
+          type: integer
           examples:
             - 2511
         phq_labels:
@@ -2122,8 +2116,8 @@ components:
                 type: string
               weight:
                 type: number
-                minimum: 0.0
-                maximum: 1.0
+                maximum: 1
+                minimum: 0
           examples:
             - - label: agriculture-forestry-and-fisheries
                 weight: 0.376
@@ -2146,12 +2140,12 @@ components:
             items:
               type: string
           examples:
-            - - - "6295630"
-                - "6255148"
-                - "2635167"
-                - "6269131"
-                - "3333178"
-                - "2641170"
+            - - - '6295630'
+                - '6255148'
+                - '2635167'
+                - '6269131'
+                - '3333178'
+                - '2641170'
         postponed:
           description: |-
             The date the event was set to postponed in the system in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format. Dates are in UTC.
@@ -2178,42 +2172,36 @@ components:
           type: string
           format: date-time
         predicted_event_spend:
-          description: |-
-            The total Predicted Event Spend across all supported industries for an event in USD. This figure represents the consumer spend impact on local businesses that the event is predicted to generate.
+          description: The total Predicted Event Spend across all supported industries for an event in USD. This figure represents the consumer spend impact on local businesses that the event is predicted to generate.
           type: integer
           examples:
             - 11806680
         predicted_event_spend_industries:
-          description: |-
-            The Predicted Event Spend for each supported industry in USD.
+          description: The Predicted Event Spend for each supported industry in USD.
           type: object
           properties:
             accommodation:
-              description: |-
-                The consumer spend predicted to be attributed to hotels and hosts.
+              description: The consumer spend predicted to be attributed to hotels and hosts.
               type: integer
               examples:
                 - 5016960
             hospitality:
-              description: |-
-                The consumer spend predicted to be attributed to food and beverage.
+              description: The consumer spend predicted to be attributed to food and beverage.
               type: integer
               examples:
                 - 4924000
             transportation:
-              description: |-
-                The consumer spend predicted to be attributed to ground-based transportation as a means of getting to and from the event.
+              description: The consumer spend predicted to be attributed to ground-based transportation as a means of getting to and from the event.
               type: integer
               examples:
                 - 1865720
         rank:
-          description: |-
-            A log scale numerical value between 0 and 100 with a five-level hierarchical impact schema. It is designed to represent the potential impact of an event independent of its geographical location.
+          description: A log scale numerical value between 0 and 100 with a five-level hierarchical impact schema. It is designed to represent the potential impact of an event independent of its geographical location.
           type: integer
-          minimum: 0
-          maximum: 100
           examples:
             - 83
+          maximum: 100
+          minimum: 0
         relevance:
           description: |-
             Relative relevance of the event to the event search.
@@ -2225,12 +2213,11 @@ components:
             If storing a copy of events, do not store this field.
           type:
             - number
-            - "null"
+            - 'null'
           examples:
             - 2.9654586
         scope:
-          description: |-
-            The geographical scope the events apply to.
+          description: The geographical scope the events apply to.
           type: string
           enum:
             - locality
@@ -2247,7 +2234,7 @@ components:
             If an event has a start time of midnight (in the event time zone) this is an indication that the actual time may be unknown. You may wish to omit the time when displaying these events.
           type:
             - string
-            - "null"
+            - 'null'
           format: date-time
         start_local:
           description: |-
@@ -2256,16 +2243,13 @@ components:
             The `start` field is in UTC and `start_local` is in the local time in the timezone at the event location.
           type:
             - string
-            - "null"
+            - 'null'
           format: date-time
         start_date_confidence_score:
-          description: |-
-            The Predicted Event start date confidence score.
-          type:
-            - integer
-            - "null"
-          minimum: 1
+          description: The Predicted Event start date confidence score.
+          type: integer
           maximum: 5
+          minimum: 1
         state:
           description: |-
             The publication state of the event.
@@ -2288,16 +2272,152 @@ components:
           examples:
             - Pacific/Auckland
         title:
-          description: |-
-            The title of the event.
+          description: The title of the event.
           type: string
           examples:
             - Katy Perry
         updated:
-          description: |-
-            The last modification date of the event in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format. All dates are in UTC.
+          description: 'The last modification date of the event in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format. All dates are in UTC.'
           type: string
           format: date-time
+      examples:
+        - id: 3B9mLBbp36VUL4GbAu
+          title: Katy Perry
+          description: 'See Katy Perry in concert [...]'
+          category: concerts
+          labels:
+            - concert
+            - music
+          rank: 73
+          local_rank: 87
+          phq_attendance: 13833
+          entities:
+            - entity_id: 354add2meC5mfCk6Q9sRMVi
+              name: Katy Perry
+              type: person
+            - entity_id: ZDkhAS6ubGAjZzFphDtt3Z
+              name: Qudos Bank Arena
+              type: venue
+              formatted_address: '19 Edwin Flack Ave, Sydney Olympic Park NSW 2127, Australia'
+            - entity_id: usnx1_aOE2-4augMtjxCKQ
+              name: Katy Perry at Qudos Bank Arena
+              type: event-group
+              category: concerts
+              labels:
+                - concert
+                - residency
+          start: '2025-06-10T09:30:00Z'
+          start_local: '2025-06-10T19:30:00'
+          end: '2025-06-10T09:30:00Z'
+          end_local: '2025-06-10T19:30:00'
+          predicted_end: '2025-06-10T13:40:00Z'
+          predicted_end_local: '2025-06-10T23:40:00'
+          updated: '2025-11-08T06:52:08Z'
+          first_seen: '2024-11-19T05:32:46Z'
+          timezone: Australia/Sydney
+          duration: 0
+          location:
+            - 151.0621
+            - -33.8443
+          geo:
+            geometry:
+              coordinates:
+                - 151.0621
+                - -33.8443
+              type: Point
+            placekey: '@nh3-xwb-k9f'
+            address:
+              country_code: AU
+              formatted_address: '19 Edwin Flack Ave, Sydney Olympic Park NSW 2127, Australia'
+              postcode: '2127'
+              locality: Sydney Olympic Park
+              region: New South Wales
+          impact_patterns:
+            - vertical: accommodation
+              impact_type: phq_attendance
+              impacts:
+                - date_local: '2025-06-07'
+                  value: 1384
+                  position: leading
+                - date_local: '2025-06-08'
+                  value: 7609
+                  position: leading
+                - date_local: '2025-06-09'
+                  value: 8300
+                  position: leading
+                - date_local: '2025-06-10'
+                  value: 13833
+                  position: event_day
+                - date_local: '2025-06-11'
+                  value: 2075
+                  position: lagging
+                - date_local: '2025-06-12'
+                  value: 1384
+                  position: lagging
+            - vertical: hospitality
+              impact_type: phq_attendance
+              impacts:
+                - date_local: '2025-06-08'
+                  value: 277
+                  position: leading
+                - date_local: '2025-06-09'
+                  value: 3459
+                  position: leading
+                - date_local: '2025-06-10'
+                  value: 13833
+                  position: event_day
+                - date_local: '2025-06-11'
+                  value: 415
+                  position: lagging
+            - vertical: retail
+              impact_type: phq_attendance
+              impacts:
+                - date_local: '2025-06-07'
+                  value: 2767
+                  position: leading
+                - date_local: '2025-06-08'
+                  value: 3459
+                  position: leading
+                - date_local: '2025-06-09'
+                  value: 4150
+                  position: leading
+                - date_local: '2025-06-10'
+                  value: 13833
+                  position: event_day
+                - date_local: '2025-06-11'
+                  value: 4150
+                  position: lagging
+                - date_local: '2025-06-12'
+                  value: 4150
+                  position: lagging
+                - date_local: '2025-06-13'
+                  value: 3459
+                  position: lagging
+          country: AU
+          place_hierarchies:
+            - - '6295630'
+              - '6255151'
+              - '2077456'
+              - '2155400'
+              - '7839763'
+              - '7281840'
+          state: active
+          private: false
+          predicted_event_spend: 1076085
+          predicted_event_spend_industries:
+            accommodation: 178616
+            hospitality: 679576
+            transportation: 217892
+          phq_labels:
+            - label: pop
+              weight: 0.53
+            - label: electronic
+              weight: 0.29
+            - label: rock
+              weight: 0.18
+          relevance: 0
+          scope: locality
+          brand_safe: true
       required:
         - category
         - country
@@ -2318,47 +2438,40 @@ components:
         - title
         - updated
     EventsResponse:
-      title: Events Response
-      type: object
       description: Paginated response containing events.
+      type: object
+      properties:
+        count:
+          description: The total number of results.
+          type: integer
+          minimum: 0
+        overflow:
+          description: Indicates if there are more results than the subscription allows.
+          type: boolean
+          default: false
+        previous:
+          type: string
+          examples:
+            - 'https://api.predicthq.com/v1/events/?limit=10&offset=10'
+        next:
+          type: string
+          examples:
+            - 'https://api.predicthq.com/v1/events/?limit=10&offset=20'
+        results:
+          description: List of event records.
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
       required:
         - count
         - next
         - previous
         - overflow
         - results
-      properties:
-        count:
-          type: integer
-          description: The total number of results.
-          minimum: 0
-        overflow:
-          type: boolean
-          description: Indicates if there are more results than the subscription allows.
-          default: false
-        previous:
-          anyOf:
-            - type: string
-            - type: 'null'
-          description: URL to the previous page of results.
-          examples:
-            - 'https://api.predicthq.com/v1/events/?limit=10&offset=10'
-        next:
-          anyOf:
-            - type: string
-            - type: 'null'
-          description: URL to the next page of results.
-          examples:
-            - 'https://api.predicthq.com/v1/events/?limit=10&offset=20'
-        results:
-          type: array
-          description: List of event records.
-          items:
-            $ref: '#/components/schemas/Event'
+      title: Events Response
     EventsCountResponse:
-      title: Events Count Response
-      type: object
       description: The aggregated counts of events matching your filters.
+      type: object
       properties:
         count:
           description: The total count of events matching the filters.
@@ -2366,26 +2479,20 @@ components:
           minimum: 0
         top_rank:
           description: The PHQ Rank of the highest PHQ Ranked event.
-          type:
-            - integer
-            - "null"
-          minimum: 0
+          type: integer
           maximum: 100
+          minimum: 0
         top_local_rank:
           description: The Local Rank of the highest Local Ranked event.
-          type:
-            - integer
-            - "null"
-          minimum: 0
+          type: integer
           maximum: 100
+          minimum: 0
         top_aviation_rank:
           description: The Aviation Rank of the highest Aviation Ranked event.
-          type:
-            - integer
-            - "null"
+          type: integer
           deprecated: true
-          minimum: 0
           maximum: 100
+          minimum: 0
         rank_levels:
           description: The count of events per PHQ Rank Level.
           $ref: '#/components/schemas/RankLevelCounts'
@@ -2399,105 +2506,99 @@ components:
         categories:
           description: The count of events per category.
           type: object
-          propertyNames:
-            enum:
-              - "academic"
-              - "school-holidays"
-              - "public-holidays"
-              - "observances"
-              - "politics"
-              - "conferences"
-              - "expos"
-              - "concerts"
-              - "festivals"
-              - "performing-arts"
-              - "sports"
-              - "community"
-              - "daylight-savings"
-              - "airport-delays"
-              - "severe-weather"
-              - "disasters"
-              - "terror"
-              - "health-warnings"
           additionalProperties:
             type: integer
             minimum: 1
+          propertyNames:
+            enum:
+              - academic
+              - school-holidays
+              - public-holidays
+              - observances
+              - politics
+              - conferences
+              - expos
+              - concerts
+              - festivals
+              - performing-arts
+              - sports
+              - community
+              - daylight-savings
+              - airport-delays
+              - severe-weather
+              - disasters
+              - terror
+              - health-warnings
         labels:
           description: The count of events broken down by label. As events can have any number of labels these counts are not expected to sum to the total count of events.
           type: object
-          deprecated: true
           additionalProperties:
             type: integer
             minimum: 1
+          deprecated: true
         phq_labels:
           description: The count of events broken down by PHQ Label. As events can have any number of PHQ Labels these counts are not expected to sum to the total count of events.
           type: object
           additionalProperties:
             type: integer
             minimum: 1
+      title: Events Count Response
     EventCategory:
-      title: Event Category
       description: Event categories.
       type: string
       enum:
-        - "academic"
-        - "school-holidays"
-        - "public-holidays"
-        - "observances"
-        - "politics"
-        - "conferences"
-        - "expos"
-        - "concerts"
-        - "festivals"
-        - "performing-arts"
-        - "sports"
-        - "community"
-        - "daylight-savings"
-        - "airport-delays"
-        - "severe-weather"
-        - "disasters"
-        - "terror"
-        - "health-warnings"
+        - academic
+        - school-holidays
+        - public-holidays
+        - observances
+        - politics
+        - conferences
+        - expos
+        - concerts
+        - festivals
+        - performing-arts
+        - sports
+        - community
+        - daylight-savings
+        - airport-delays
+        - severe-weather
+        - disasters
+        - terror
+        - health-warnings
+      title: Event Category
     RankLevelCounts:
-      title: Rank Level Counts
       description: The count of events broken down by rank level.
       type: object
-      required:
-        - "1"
-        - "2"
-        - "3"
-        - "4"
-        - "5"
       properties:
-        "1":
-          type: integer
+        '1':
           description: Minor (rank between 0 and 20).
-          minimum: 0
-        "2":
           type: integer
+          minimum: 0
+        '2':
           description: Moderate (rank between 21 and 40).
-          minimum: 0
-        "3":
           type: integer
+          minimum: 0
+        '3':
           description: Important (rank between 41 and 60).
-          minimum: 0
-        "4":
           type: integer
+          minimum: 0
+        '4':
           description: Significant (rank between 61 and 80).
-          minimum: 0
-        "5":
           type: integer
-          description: Major (rank between 81 and 100).
           minimum: 0
+        '5':
+          description: Major (rank between 81 and 100).
+          type: integer
+          minimum: 0
+      required:
+        - '1'
+        - '2'
+        - '3'
+        - '4'
+        - '5'
+      title: Rank Level Counts
     LegacyLabels:
-      title: Legacy Labels
-      description: |-
-            Legacy labels to further categorise the event.
-
-            New accounts from April 2025 will not have access to the legacy labels field.
-
-            `phq_labels` should be used instead. See [PHQ Labels](https://docs.predicthq.com/getting-started/predicthq-data/labels#phq-labels) for more information.
-      deprecated: true
+      description: Legacy labels to further categorise the event.
       type: array
       items:
         type: string
@@ -2744,11 +2845,12 @@ components:
           - wrestling
           - wwe
           - youth-sport
+      deprecated: true
       examples:
-        - - "entertainment"
-          - "family"
+        - - entertainment
+          - family
+      title: Legacy Labels
     Geometry:
-      title: GeoJSON Geometry
       oneOf:
         - title: GeoJSON Point
           type: object
@@ -2758,16 +2860,15 @@ components:
           properties:
             type:
               type: string
-              enum:
-                - Point
+              const: Point
             coordinates:
               type: array
-              minItems: 2
               items:
                 type: number
               examples:
                 - - 174.776792
                   - -36.847319
+              minItems: 2
         - title: GeoJSON MultiPoint
           type: object
           required:
@@ -2776,8 +2877,7 @@ components:
           properties:
             type:
               type: string
-              enum:
-                - MultiPoint
+              const: MultiPoint
             coordinates:
               type: array
               items:
@@ -2793,16 +2893,15 @@ components:
           properties:
             type:
               type: string
-              enum:
-                - LineString
+              const: LineString
             coordinates:
               type: array
-              minItems: 2
               items:
                 type: array
                 minItems: 2
                 items:
                   type: number
+              minItems: 2
         - title: GeoJSON MultiLineString
           type: object
           required:
@@ -2811,8 +2910,7 @@ components:
           properties:
             type:
               type: string
-              enum:
-                - MultiLineString
+              const: MultiLineString
             coordinates:
               type: array
               items:
@@ -2831,8 +2929,7 @@ components:
           properties:
             type:
               type: string
-              enum:
-                - Polygon
+              const: Polygon
             coordinates:
               type: array
               items:
@@ -2851,8 +2948,7 @@ components:
           properties:
             type:
               type: string
-              enum:
-                - MultiPolygon
+              const: MultiPolygon
             coordinates:
               type: array
               items:
@@ -2865,8 +2961,12 @@ components:
                     minItems: 2
                     items:
                       type: number
+      title: GeoJSON Geometry
   securitySchemes:
     BearerAuth:
       type: http
       scheme: bearer
-      bearerFormat: "$API_KEY"
+      bearerFormat: $API_KEY
+      description: |
+        Use 'Authorization: Bearer <YOUR_API_KEY>' as documented at https://docs.predicthq.com/authentication
+
