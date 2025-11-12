@@ -1887,6 +1887,7 @@ components:
                 enum:
                   - airport
                   - event-group
+                  - organization
                   - person
                   - venue
               labels:
@@ -1946,51 +1947,53 @@ components:
             This field shows the Predicted Impact Patterns for leading days (days before the event), lagging days (days after an event), and the days the event occurs. See [Predicted Impact Patterns](https://docs.predicthq.com/getting-started/predicthq-data/impact-patterns) for more details.
 
             impact_patterns is an array of impact pattern objects. The same event can have different impact patterns for different industry verticals. It contains the following fields:
-          type: object
-          properties:
-            vertical:
-              description: The industry vertical the impact pattern applies to.
-              type: string
-              enum:
-                - accommodation
-                - retail
-                - hospitality
-            impact_type:
-              description: 'Indicates the type of impact shown in the impact pattern. Currently, the supported types are phq_rank and phq_attendance. If the impact_type is phq_rank then the impact values shown per day reflect phq_rank values. If impact_type is phq_attendance then the impact values per day reflect phq_attendance which is the estimated amount of people attending the event per day.'
-              type: string
-              enum:
-                - phq_rank
-                - phq_attendance
-            impacts:
-              type: array
-              items:
-                type: object
-                required:
-                  - date_local
-                  - value
-                  - position
-                properties:
-                  date_local:
-                    description: The date in the local timezone of the event.
-                    type: string
-                    format: date
-                  value:
-                    description: 'The value of the `impact_type` for that given day. For example, if the `impact_type` was `phq_rank` the `value` would be the PHQ Rank value on the given day. Otherwise, it will reflect `phq_attendance`.'
-                    type: integer
-                  position:
-                    description: |-
-                      - `leading` are the days before the event occurs.
-                      - `event_day` are the days the event occurs.
-                      - `lagging` are the days after the event has occurred.
-                    type: string
-                    enum:
-                      - leading
-                      - event_day
-                      - lagging
-          required:
-            - vertical
-            - impact_type
-            - impacts
+          type: array
+          items:
+            type: object
+            required:
+              - vertical
+              - impact_type
+              - impacts
+            properties:
+              vertical:
+                description: The industry vertical the impact pattern applies to.
+                type: string
+                enum:
+                  - accommodation
+                  - retail
+                  - hospitality
+              impact_type:
+                description: 'Indicates the type of impact shown in the impact pattern. Currently, the supported types are phq_rank and phq_attendance. If the impact_type is phq_rank then the impact values shown per day reflect phq_rank values. If impact_type is phq_attendance then the impact values per day reflect phq_attendance which is the estimated amount of people attending the event per day.'
+                type: string
+                enum:
+                  - phq_rank
+                  - phq_attendance
+              impacts:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - date_local
+                    - value
+                    - position
+                  properties:
+                    date_local:
+                      description: The date in the local timezone of the event.
+                      type: string
+                      format: date
+                    value:
+                      description: 'The value of the `impact_type` for that given day. For example, if the `impact_type` was `phq_rank` the `value` would be the PHQ Rank value on the given day. Otherwise, it will reflect `phq_attendance`.'
+                      type: integer
+                    position:
+                      description: |-
+                        - `leading` are the days before the event occurs.
+                        - `event_day` are the days the event occurs.
+                        - `lagging` are the days after the event has occurred.
+                      type: string
+                      enum:
+                        - leading
+                        - event_day
+                        - lagging
         labels:
           $ref: '#/components/schemas/LegacyLabels'
         local_rank:
@@ -2447,17 +2450,11 @@ components:
           type: boolean
           default: false
         previous:
-          description: URL to the previous page of results.
-          anyOf:
-            - type: string
-            - type: 'null'
+          type: string
           examples:
             - 'https://api.predicthq.com/v1/events/?limit=10&offset=10'
         next:
-          description: URL to the next page of results.
-          anyOf:
-            - type: string
-            - type: 'null'
+          type: string
           examples:
             - 'https://api.predicthq.com/v1/events/?limit=10&offset=20'
         results:
