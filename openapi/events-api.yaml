@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: PredictHQ Events API
-  description: Access events data enriched by PredictHQ to power your applications and analyses.
+  description: The largest and most accurate source of global real-world event data.
   version: 1.0.0
   license:
     name: MIT
@@ -1932,10 +1932,9 @@ components:
                   Auckland 1010
                   New Zealand
         first_seen:
-          description: 'The date the event first entered our dataset in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format. Dates are in UTC. This value may be missing on some events, and should not be considered an event announcement date.'
+          description: 'The date the event first entered our dataset in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format. Dates are in UTC. This value should not be considered an event announcement date.'
           type:
             - string
-            - 'null'
           format: date-time
         id:
           description: The unique identifier of the event.
@@ -2214,6 +2213,7 @@ components:
           type:
             - number
             - 'null'
+          deprecated: true
           examples:
             - 2.9654586
         scope:
@@ -2868,6 +2868,7 @@ components:
               examples:
                 - - 174.776792
                   - -36.847319
+              maxItems: 2
               minItems: 2
         - title: GeoJSON MultiPoint
           type: object
