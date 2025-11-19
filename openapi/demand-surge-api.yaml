@@ -72,7 +72,7 @@ paths:
         - name: location.origin
           in: query
           description: |-
-            A comma-separated coordinate (`<lat>,<lon>`) representing the centroid of a location. It must be used with `radius` suffix and cannot be used with `location.place_id`
+            A comma-separated coordinate (`<lat>,<lon>`) representing the centroid of a location. It must be used with `radius` suffix and cannot be used with `location.place_id`.
 
 
             E.g. `?location.origin=40.7128,74.0060`

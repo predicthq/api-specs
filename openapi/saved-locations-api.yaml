@@ -330,7 +330,8 @@ components:
 
             E.g. `My Location`
           type: string
-          examples: My Location
+          examples:
+            - My Location
           title: Name
         description:
           description: Description of the location.
@@ -732,7 +733,8 @@ components:
 
             E.g. `4t855453234t5623`
           type: string
-          examples: 4t855453234t5623
+          examples:
+            - 4t855453234t5623
           title: Location Code
         name:
           description: |-
@@ -741,7 +743,8 @@ components:
 
             E.g. `My Parking Building`
           type: string
-          examples: My Parking Building
+          examples:
+            - My Parking Building
           title: Name
         labels:
           description: |-
@@ -779,7 +782,7 @@ components:
           items:
             type: integer
           examples:
-            - 2750405
+            - - 2750405
           title: Place Ids
         formatted_address:
           description: |-
@@ -794,7 +797,8 @@ components:
                 }
               ```
           type: string
-          examples: '666 Mission St, San Francisco, CA 94105, USA'
+          examples:
+            - '666 Mission St, San Francisco, CA 94105, USA'
           title: Formatted Address
         create_dt:
           description: |-
@@ -804,7 +808,8 @@ components:
             E.g. `2022-04-26T11:46:24+00:00`
           type: string
           format: date-time
-          examples: '2022-04-26T11:46:24+00:00'
+          examples:
+            - '2022-04-26T11:46:24+00:00'
           title: Create Dt
         update_dt:
           description: |-
@@ -814,7 +819,8 @@ components:
             E.g. `2022-04-26T11:46:24+00:00`
           type: string
           format: date-time
-          examples: '2022-04-26T11:46:24+00:00'
+          examples:
+            - '2022-04-26T11:46:24+00:00'
           title: Update Dt
         enrich_dt:
           description: |-
@@ -824,7 +830,8 @@ components:
             E.g. `2022-04-26T11:46:25+00:00`
           type: string
           format: date-time
-          examples: '2022-04-26T11:46:25+00:00'
+          examples:
+            - '2022-04-26T11:46:25+00:00'
           title: Enrich Dt
         insights_dt:
           description: |-
@@ -845,7 +852,8 @@ components:
 
             E.g. `hjqkKozgS8mm`
           type: string
-          examples: hjqkKozgS8mm
+          examples:
+            - hjqkKozgS8mm
           title: User Id
         subscription_valid_types:
           description: |-
@@ -857,7 +865,7 @@ components:
             In this case this field will be empty and you will not be able to view events for the location
 
 
-            E.g. `["events"]
+            E.g. `["events"]`
           type: array
           items:
             $ref: '#/components/schemas/SubscriptionValidType'
@@ -877,8 +885,8 @@ components:
                   
                   
             E.g. `active`
+          example: active
           $ref: '#/components/schemas/SavedLocationStatus'
-          examples: active
         summary_insights:
           description: |-
             This object contains the saved locations stats. 
@@ -903,7 +911,8 @@ components:
 
             E.g. `8gZ2rn8BRcTjM_3SWdjP`
           type: string
-          examples: 8gZ2rn8BRcTjM_3SWdjP
+          examples:
+            - 8gZ2rn8BRcTjM_3SWdjP
           title: Location Id
       examples:
         - location_id: 7sdevIveOuIQmP0EL1lZoQ

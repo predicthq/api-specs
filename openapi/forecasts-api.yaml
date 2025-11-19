@@ -276,7 +276,6 @@ paths:
             schema:
               description: 'CSV with lowercase headers date,demand and multiple rows of values.'
               type: string
-              schema: null
             example: |-
               date,demand
               2025-01-01,100
