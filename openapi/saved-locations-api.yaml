@@ -742,7 +742,7 @@ components:
           $ref: '#/components/schemas/GeoJson-Output'
         place_ids:
           description: |-
-            An array of place ids (see the Places API) for locations that are defined as covering an area (see City, State, Country locations) rather than a point and radius.
+            An array of place ids (see the [Places API](https://docs.predicthq.com/api/places/search-places)) for locations that are defined as covering an area (see City, State, Country locations) rather than a point and radius.
 
 
             E.g. `[2750405]`
@@ -850,7 +850,7 @@ components:
             $ref: '#/components/schemas/SummaryInsights'
           title: Summary Insights
         places:
-          description: 'This is a list of (geonames) Places. It is based on the lowest level place_id in the [place_hierarchies](https://github.com/predicthq/gitbook-tech-docs/blob/main/docs/getting-started/guides/geolocation-guides/understanding-place-hierarchies.md). It will usually only contain 1 item in the list but will always be a list.'
+          description: 'This is a list of (geonames) Places. It is based on the lowest level place_id in the [place_hierarchies](https://docs.predicthq.com/getting-started/guides/geolocation-guides/understanding-place-hierarchies). It will usually only contain 1 item in the list but will always be a list.'
           type: array
           items:
             $ref: '#/components/schemas/Place'

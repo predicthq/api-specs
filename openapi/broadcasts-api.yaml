@@ -925,7 +925,7 @@ components:
           $ref: '#/components/schemas/PublicBroadcastLocation'
         phq_viewership:
           description: |-
-            The estimated number of people in the broadcast’s location that will watch the broadcast.
+            The estimated number of people in the broadcast's location that will watch the broadcast.
 
 
             E.g. `300000`
@@ -949,7 +949,7 @@ components:
             The schedule status of the broadcast.
 
 
-            Our guide on [different sport](https://github.com/predicthq/gitbook-tech-docs/blob/main/docs/getting-started/guides/live-tv-event-guides/find-broadcasts-for-specific-sport-types.md) types in the API explains when the `scheduled` and `predicted` statuses are used.
+            Our guide on [different sport](https://docs.predicthq.com/getting-started/guides/live-tv-event-guides/find-broadcasts-for-specific-sport-types) types in the API explains when the `scheduled` and `predicted` statuses are used.
 
 
             E.g. 'scheduled'
@@ -976,7 +976,7 @@ components:
           title: Start
         start_local:
           description: |-
-            The time the broadcast is scheduled to start in the time zone of the broadcast’s location. In YYYY-MM-DDThh:mm:ss format.
+            The time the broadcast is scheduled to start in the time zone of the broadcast's location. In YYYY-MM-DDThh:mm:ss format.
 
 
             E.g. `2018-01-01T12:00:00`
@@ -985,7 +985,7 @@ components:
           title: Start Local
         timezone:
           description: |-
-            The time zone of the broadcast’s location. In TZ Database name format.
+            The time zone of the broadcast's location. In TZ Database name format.
 
 
             E.g. `America/New_York`
@@ -1278,7 +1278,7 @@ components:
           title: Phq Attendance
         phq_rank:
           description: |-
-            The PHQ Rank number of the physical event. PHQ Rank represents the physical event’s impact independent of its geographical location.
+            The PHQ Rank number of the physical event. PHQ Rank represents the physical event's impact independent of its geographical location.
 
 
             E.g. `100`
@@ -1286,7 +1286,7 @@ components:
           title: Phq Rank
         local_rank:
           description: |-
-            The Local Rank number of the physical event. Local Rank represents the physical event’s impact on its local geographical location.
+            The Local Rank number of the physical event. Local Rank represents the physical event's impact on its local geographical location.
 
 
             E.g. `100`
@@ -1294,7 +1294,7 @@ components:
           title: Local Rank
         aviation_rank:
           description: |-
-            The [Aviation Rank](https://github.com/predicthq/gitbook-tech-docs/blob/main/docs/getting-started/predicthq-data/ranks/aviation-rank.md) number of the physical event. Aviation Rank represents the physical event’s impact on flight bookings by considering both domestic and international travel.
+            The Aviation Rank number of the physical event. Aviation Rank represents the physical event's impact on flight bookings by considering both domestic and international travel.
 
 
             E.g. `100`
@@ -1323,12 +1323,12 @@ components:
           format: date-time
           title: End
         start_local:
-          description: The start time in the physical event’s time zone.
+          description: The start time in the physical event's time zone.
           type: string
           format: date-time
           title: Start Local
         end_local:
-          description: The end time in the physical event’s time zone.
+          description: The end time in the physical event's time zone.
           type: string
           format: date-time
           title: End Local
@@ -1384,11 +1384,11 @@ components:
           type: string
           title: Name
         county:
-          description: The name of the Place’s county. This is the same as the name if the Place is a county.
+          description: The name of the Place's county. This is the same as the name if the Place is a county.
           type: string
           title: County
         region:
-          description: 'The name of the Place’s region. In the US, regions represent states or federal districts.'
+          description: 'The name of the Place''s region. In the US, regions represent states or federal districts.'
           type: string
           title: Region
         country:
