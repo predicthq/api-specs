@@ -247,12 +247,40 @@ paths:
           schema:
             type: string
             title: Model Id
+        - name: Content-Type
+          in: header
+          description: Content type of the uploaded payload.
+          required: true
+          schema:
+            type: string
+            enum:
+              - text/csv
+              - application/x-ndjson
+              - application/json
+            examples:
+              - application/json
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateModelDemandRequest'
+          application/x-ndjson:
+            schema:
+              description: Newline-delimited JSON where each line is an object with date and demand.
+              type: string
+            example: |-
+              {"date": "2025-01-01", "demand": 100}
+              {"date": "2025-01-02", "demand": 150}
+          text/csv:
+            schema:
+              description: 'CSV with lowercase headers date,demand and multiple rows of values.'
+              type: string
+              schema: null
+            example: |-
+              date,demand
+              2025-01-01,100
+              2025-01-02,150
       responses:
         '201':
           description: Successful Response
