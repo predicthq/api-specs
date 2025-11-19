@@ -1912,5 +1912,7 @@ components:
       scheme: bearer
       bearerFormat: $API_KEY
       description: |
-        Use 'Authorization: Bearer <YOUR_API_KEY>' as documented at https://docs.predicthq.com/authentication
+        Enter your PredictHQ API key. The Bearer prefix is added automatically.
+
+        When calling the API directly, send: 'Authorization: Bearer <YOUR_API_KEY>' as documented at [https://docs.predicthq.com/authentication](https://docs.predicthq.com/authentication)
 

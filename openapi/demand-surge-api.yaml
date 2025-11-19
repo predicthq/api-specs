@@ -72,7 +72,7 @@ paths:
         - name: location.origin
           in: query
           description: |-
-            A comma-separated coordinate (`<lat>,<lon>`) representing the centroid of a location. It must be used with `location.radius` and cannot be used with `location.place_id`.
+            A comma-separated coordinate (`<lat>,<lon>`) representing the centroid of a location. It must be used with `radius` suffix and cannot be used with `location.place_id`
 
 
             E.g. `?location.origin=40.7128,74.0060`
@@ -195,5 +195,7 @@ components:
       scheme: bearer
       bearerFormat: $API_KEY
       description: |
-        Use 'Authorization: Bearer <YOUR_API_KEY>' as documented at https://docs.predicthq.com/authentication
+        Enter your PredictHQ API key. The Bearer prefix is added automatically.
+
+        When calling the API directly, send: 'Authorization: Bearer <YOUR_API_KEY>' as documented at [https://docs.predicthq.com/authentication](https://docs.predicthq.com/authentication)
 
