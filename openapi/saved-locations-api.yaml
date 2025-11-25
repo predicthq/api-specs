@@ -885,8 +885,9 @@ components:
                   
                   
             E.g. `active`
-          example: active
           $ref: '#/components/schemas/SavedLocationStatus'
+          examples:
+            - active
         summary_insights:
           description: |-
             This object contains the saved locations stats. 

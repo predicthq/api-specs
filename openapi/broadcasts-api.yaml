@@ -1299,6 +1299,7 @@ components:
 
             E.g. `100`
           type: integer
+          deprecated: true
           title: Aviation Rank
       required:
         - event_id
