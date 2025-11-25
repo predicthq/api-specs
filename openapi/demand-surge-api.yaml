@@ -60,7 +60,6 @@ paths:
             E.g. `?location.place_id=2643743,2643744`
           required: false
           schema:
-            description: A comma-separated list of place ids
             type: array
             items:
               type: string
@@ -78,7 +77,6 @@ paths:
             E.g. `?location.origin=40.7128,74.0060`
           required: false
           schema:
-            description: A comma-separated coordinate representing the centroid of a location
             type: array
             items:
               type: string
@@ -195,5 +193,7 @@ components:
       scheme: bearer
       bearerFormat: $API_KEY
       description: |
-        Use 'Authorization: Bearer <YOUR_API_KEY>' as documented at https://docs.predicthq.com/authentication
+        Enter your PredictHQ API key. The Bearer prefix is added automatically.
+
+        When calling the API directly, send: 'Authorization: Bearer <YOUR_API_KEY>' as documented at [https://docs.predicthq.com/authentication](https://docs.predicthq.com/authentication)
 

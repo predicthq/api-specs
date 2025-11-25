@@ -330,6 +330,8 @@ components:
 
             E.g. `My Location`
           type: string
+          examples:
+            - My Location
           title: Name
         description:
           description: Description of the location.
@@ -350,6 +352,9 @@ components:
           type: array
           items:
             type: string
+          examples:
+            - test
+            - retail
           title: Labels
         geojson:
           description: |-
@@ -364,6 +369,16 @@ components:
 
             Note: For Point geometry type, we strongly recommend using our [Suggested Radius API](https://docs.predicthq.com/api/suggested-radius/get-suggested-radius) to find a suitable radius value for your location and industry.
           $ref: '#/components/schemas/GeoJson-Input'
+          examples:
+            - type: Feature
+              properties:
+                radius: 3.17
+                radius_unit: mi
+              geometry:
+                type: Point
+                coordinates:
+                  - -122.3816274
+                  - 37.61911449999999
         place_ids:
           description: |-
             You can define the geolocation of the Saved Location either by GeoJSON or Place IDs.
@@ -718,6 +733,8 @@ components:
 
             E.g. `4t855453234t5623`
           type: string
+          examples:
+            - 4t855453234t5623
           title: Location Code
         name:
           description: |-
@@ -726,6 +743,8 @@ components:
 
             E.g. `My Parking Building`
           type: string
+          examples:
+            - My Parking Building
           title: Name
         labels:
           description: |-
@@ -736,19 +755,34 @@ components:
           type: array
           items:
             type: string
+          examples:
+            - test
+            - retail
           title: Labels
         geojson:
           description: 'An object containing the geographic information about a location. Represents the geometry associated with the event in the [GeoJSON format](https://geojson.org/).'
           $ref: '#/components/schemas/GeoJson-Output'
+          examples:
+            - type: Feature
+              properties:
+                radius: 3.17
+                radius_unit: mi
+              geometry:
+                type: Point
+                coordinates:
+                  - -122.3816274
+                  - 37.61911449999999
         place_ids:
           description: |-
-            An array of place ids (see the Places API) for locations that are defined as covering an area (see City, State, Country locations) rather than a point and radius.
+            An array of place ids (see the [Places API](https://docs.predicthq.com/api/places/search-places)) for locations that are defined as covering an area (see City, State, Country locations) rather than a point and radius.
 
 
             E.g. `[2750405]`
           type: array
           items:
             type: integer
+          examples:
+            - - 2750405
           title: Place Ids
         formatted_address:
           description: |-
@@ -763,6 +797,8 @@ components:
                 }
               ```
           type: string
+          examples:
+            - '666 Mission St, San Francisco, CA 94105, USA'
           title: Formatted Address
         create_dt:
           description: |-
@@ -772,6 +808,8 @@ components:
             E.g. `2022-04-26T11:46:24+00:00`
           type: string
           format: date-time
+          examples:
+            - '2022-04-26T11:46:24+00:00'
           title: Create Dt
         update_dt:
           description: |-
@@ -781,6 +819,8 @@ components:
             E.g. `2022-04-26T11:46:24+00:00`
           type: string
           format: date-time
+          examples:
+            - '2022-04-26T11:46:24+00:00'
           title: Update Dt
         enrich_dt:
           description: |-
@@ -790,6 +830,8 @@ components:
             E.g. `2022-04-26T11:46:25+00:00`
           type: string
           format: date-time
+          examples:
+            - '2022-04-26T11:46:25+00:00'
           title: Enrich Dt
         insights_dt:
           description: |-
@@ -799,6 +841,7 @@ components:
             E.g. `2022-04-26T11:46:25+00:00`
           type: string
           format: date-time
+          examples: '2022-04-26T11:46:25+00:00'
           title: Insights Dt
         user_id:
           description: |-
@@ -809,6 +852,8 @@ components:
 
             E.g. `hjqkKozgS8mm`
           type: string
+          examples:
+            - hjqkKozgS8mm
           title: User Id
         subscription_valid_types:
           description: |-
@@ -824,6 +869,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SubscriptionValidType'
+          examples:
+            - events
+            - features_api
           title: Subscription Valid Types
         status:
           description: |-
@@ -838,6 +886,8 @@ components:
                   
             E.g. `active`
           $ref: '#/components/schemas/SavedLocationStatus'
+          examples:
+            - active
         summary_insights:
           description: |-
             This object contains the saved locations stats. 
@@ -850,7 +900,7 @@ components:
             $ref: '#/components/schemas/SummaryInsights'
           title: Summary Insights
         places:
-          description: 'This is a list of (geonames) Places. It is based on the lowest level place_id in the [place_hierarchies](https://github.com/predicthq/gitbook-tech-docs/blob/main/docs/getting-started/guides/geolocation-guides/understanding-place-hierarchies.md). It will usually only contain 1 item in the list but will always be a list.'
+          description: 'This is a list of (geonames) Places. It is based on the lowest level place_id in the [place_hierarchies](https://docs.predicthq.com/getting-started/guides/geolocation-guides/understanding-place-hierarchies). It will usually only contain 1 item in the list but will always be a list.'
           type: array
           items:
             $ref: '#/components/schemas/Place'
@@ -862,7 +912,50 @@ components:
 
             E.g. `8gZ2rn8BRcTjM_3SWdjP`
           type: string
+          examples:
+            - 8gZ2rn8BRcTjM_3SWdjP
           title: Location Id
+      examples:
+        - location_id: 7sdevIveOuIQmP0EL1lZoQ
+          create_dt: '2025-11-17T19:11:43+00:00'
+          update_dt: '2025-11-17T19:11:43+00:00'
+          enrich_dt: '2025-11-17T19:11:45+00:00'
+          insights_dt: '2025-11-17T19:11:46+00:00'
+          name: San Francisco
+          place_ids:
+            - 5391959
+          formatted_address: 'San Francisco, San Francisco County, California, United States [Locality]'
+          places:
+            - place_id: 5391959
+              type: locality
+              name: San Francisco
+              county: San Francisco County
+              region: California
+              country: US
+              geojson:
+                type: Feature
+                geometry:
+                  type: Point
+                  coordinates:
+                    - -122.41942
+                    - 37.77493
+          summary_insights:
+            - date_range:
+                type: next_90d
+                start_dt: '2025-11-17T19:11:46+00:00'
+                end_dt: '2026-02-15T19:11:46+00:00'
+              phq_attendance_sum: 2670581
+              attended_event_count: 2568
+              non_attended_event_count: 113
+              unscheduled_event_count: 2
+              pes_total_sum: 232505682
+              pes_accommodation_sum: 88335769
+              pes_hospitality_sum: 108671383
+              pes_transportation_sum: 35496672
+          subscription_valid_types:
+            - events
+            - features_api
+          status: active
       required:
         - create_dt
         - update_dt
@@ -970,5 +1063,7 @@ components:
       scheme: bearer
       bearerFormat: $API_KEY
       description: |
-        Use 'Authorization: Bearer <YOUR_API_KEY>' as documented at https://docs.predicthq.com/authentication
+        Enter your PredictHQ API key. The Bearer prefix is added automatically.
+
+        When calling the API directly, send: 'Authorization: Bearer <YOUR_API_KEY>' as documented at [https://docs.predicthq.com/authentication](https://docs.predicthq.com/authentication)
 
