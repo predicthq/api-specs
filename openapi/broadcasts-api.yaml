@@ -1433,5 +1433,5 @@ components:
       description: |
         Enter your PredictHQ API key. The Bearer prefix is added automatically.
 
-        When calling the API directly, send: 'Authorization: Bearer <YOUR_API_KEY>' as documented at [https://docs.predicthq.com/authentication](https://docs.predicthq.com/authentication)
+        When calling the API directly, send: 'Authorization: Bearer <YOUR_API_KEY>' as documented at [https://docs.predicthq.com/api/overview/authenticating](https://docs.predicthq.com/api/overview/authenticating)
 
