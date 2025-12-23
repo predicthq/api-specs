@@ -33,9 +33,9 @@ paths:
         - name: location.place_id
           in: query
           description: |-
-            A list of place_id in the form {place_id1},{place_id2},....
+            A comma-separated list of place_id in the form `{place_id1},{place_id2}`,....
 
-            Please note that you must specify either location.origin or location.place_id in your request.
+            Please note that you must specify either `location.origin` or `location.place_id` in your request.
 
 
             E.g. `?location.place_id=5809844,6252001`
@@ -156,7 +156,7 @@ paths:
         - name: country
           in: query
           description: |-
-            A comma-separated list of ISO 3166-1 alpha-2 country code.
+            A comma-separated list of [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code.
 
 
             E.g. `?country=US`
@@ -177,7 +177,6 @@ paths:
             E.g. `?location=@40.66677,-73.88236`
           required: false
           schema:
-            description: 'lat,lon'
             type: string
             title: Location
           explode: false
@@ -196,10 +195,10 @@ paths:
         - name: type
           in: query
           description: |-
-            A comma-separated list of place types..
+            A comma-separated list of place types.
 
 
-            E.g. '?type=country'
+            E.g. `?type=country`
           required: false
           schema:
             type: array
