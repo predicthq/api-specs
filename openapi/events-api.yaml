@@ -2427,7 +2427,6 @@ components:
         - entities
         - first_seen
         - id
-        - phq_labels
         - place_hierarchies
         - rank
         - geo
