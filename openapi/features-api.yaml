@@ -500,6 +500,9 @@ components:
         phq_impact_public_holidays_retail:
           description: 'Public Holidays (Industry: Retail)'
           $ref: '#/components/schemas/StatsField'
+        phq_impact_school_holidays_retail:
+          description: 'School Holidays (Industry: Retail)'
+          $ref: '#/components/schemas/StatsField'
         phq_impact_severe_weather_air_quality_retail:
           description: 'Severe Weather - Air Quality (Industry: Retail)'
           $ref: '#/components/schemas/StatsField'
