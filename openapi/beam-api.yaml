@@ -1497,11 +1497,10 @@ components:
           exclusiveMinimum: 0
           title: Unit Currency Multiplier
       examples:
-        - demand_type:
-            industry: restaurants
-            currency_code: USD
-            unit_currency_multiplier: 1
-            unit_descriptor: Sales
+        - industry: restaurants
+          currency_code: USD
+          unit_currency_multiplier: 1
+          unit_descriptor: Sales
       title: DemandType
     DemandTypeResponse:
       description: |-
@@ -2082,11 +2081,10 @@ components:
         levels:
           $ref: '#/components/schemas/RankLevels'
       examples:
-        - rank:
-            type: phq
-            levels:
-              phq:
-                min: 51
+        - type: phq
+          levels:
+            phq:
+              min: 51
       required:
         - type
       title: Rank
