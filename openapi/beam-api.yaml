@@ -1285,7 +1285,7 @@ components:
           description: 'External identifier associated with the Analysis (optional, user-defined).'
           type: string
           examples:
-            - external_id: abc123
+            - abc123
           title: External Id
         label:
           description: Comma-separated list of labels that can be used to search and filter analyses.
@@ -1930,7 +1930,7 @@ components:
           description: 'External identifier associated with the Analysis (optional, user-defined).'
           type: string
           examples:
-            - external_id: abc123
+            - abc123
           minLength: 1
           title: External Id
         label:
@@ -2035,7 +2035,7 @@ components:
           description: 'External identifier associated with the Analysis (optional, user-defined).'
           type: string
           examples:
-            - external_id: abc123
+            - abc123
           minLength: 1
           title: External Id
         label:
