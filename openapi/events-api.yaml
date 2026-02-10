@@ -1967,6 +1967,7 @@ components:
                 enum:
                   - phq_rank
                   - phq_attendance
+                  - phq_impact
               impacts:
                 type: array
                 items:
