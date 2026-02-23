@@ -48,10 +48,6 @@ paths:
         - $ref: '#/components/parameters/EndLteParam'
         - $ref: '#/components/parameters/EndLtParam'
         - $ref: '#/components/parameters/EndTzParam'
-        - $ref: '#/components/parameters/EndAroundOriginParam'
-        - $ref: '#/components/parameters/EndAroundOffsetParam'
-        - $ref: '#/components/parameters/EndAroundScaleParam'
-        - $ref: '#/components/parameters/EndAroundDecayParam'
         - $ref: '#/components/parameters/EntityIdParam'
         - $ref: '#/components/parameters/FirstSeenGteParam'
         - $ref: '#/components/parameters/FirstSeenGtParam'
@@ -71,10 +67,6 @@ paths:
         - $ref: '#/components/parameters/LocalRankLteParam'
         - $ref: '#/components/parameters/LocalRankLtParam'
         - $ref: '#/components/parameters/LocalRankLevelParam'
-        - $ref: '#/components/parameters/LocationAroundOriginParam'
-        - $ref: '#/components/parameters/LocationAroundOffsetParam'
-        - $ref: '#/components/parameters/LocationAroundScaleParam'
-        - $ref: '#/components/parameters/LocationAroundDecayParam'
         - $ref: '#/components/parameters/LocationConfidenceScoreGteParam'
         - $ref: '#/components/parameters/LocationConfidenceScoreGtParam'
         - $ref: '#/components/parameters/LocationConfidenceScoreLteParam'
@@ -106,13 +98,15 @@ paths:
         - $ref: '#/components/parameters/PredictedEventSpendLteParam'
         - $ref: '#/components/parameters/PredictedEventSpendLtParam'
         - $ref: '#/components/parameters/PredictedEventSpendIndustryParam'
+        - $ref: '#/components/parameters/PrivateIncludeParam'
+        - $ref: '#/components/parameters/PrivateUserIdParam'
+        - $ref: '#/components/parameters/PrivateOrgReviewParam'
         - $ref: '#/components/parameters/QParam'
         - $ref: '#/components/parameters/RankGteParam'
         - $ref: '#/components/parameters/RankGtParam'
         - $ref: '#/components/parameters/RankLteParam'
         - $ref: '#/components/parameters/RankLtParam'
         - $ref: '#/components/parameters/RankLevelParam'
-        - $ref: '#/components/parameters/RelevanceParam'
         - $ref: '#/components/parameters/SavedLocationLocationIdParam'
         - $ref: '#/components/parameters/SortParam'
         - $ref: '#/components/parameters/StartGteParam'
@@ -120,10 +114,6 @@ paths:
         - $ref: '#/components/parameters/StartLteParam'
         - $ref: '#/components/parameters/StartLtParam'
         - $ref: '#/components/parameters/StartTzParam'
-        - $ref: '#/components/parameters/StartAroundOriginParam'
-        - $ref: '#/components/parameters/StartAroundOffsetParam'
-        - $ref: '#/components/parameters/StartAroundScaleParam'
-        - $ref: '#/components/parameters/StartAroundDecayParam'
         - $ref: '#/components/parameters/StartDateConfidenceScoreGteParam'
         - $ref: '#/components/parameters/StartDateConfidenceScoreGtParam'
         - $ref: '#/components/parameters/StartDateConfidenceScoreLteParam'
@@ -173,10 +163,6 @@ paths:
         - $ref: '#/components/parameters/EndLteParam'
         - $ref: '#/components/parameters/EndLtParam'
         - $ref: '#/components/parameters/EndTzParam'
-        - $ref: '#/components/parameters/EndAroundOriginParam'
-        - $ref: '#/components/parameters/EndAroundOffsetParam'
-        - $ref: '#/components/parameters/EndAroundScaleParam'
-        - $ref: '#/components/parameters/EndAroundDecayParam'
         - $ref: '#/components/parameters/EntityIdParam'
         - $ref: '#/components/parameters/FirstSeenGteParam'
         - $ref: '#/components/parameters/FirstSeenGtParam'
@@ -196,10 +182,6 @@ paths:
         - $ref: '#/components/parameters/LocalRankLteParam'
         - $ref: '#/components/parameters/LocalRankLtParam'
         - $ref: '#/components/parameters/LocalRankLevelParam'
-        - $ref: '#/components/parameters/LocationAroundOriginParam'
-        - $ref: '#/components/parameters/LocationAroundOffsetParam'
-        - $ref: '#/components/parameters/LocationAroundScaleParam'
-        - $ref: '#/components/parameters/LocationAroundDecayParam'
         - $ref: '#/components/parameters/LocationConfidenceScoreGteParam'
         - $ref: '#/components/parameters/LocationConfidenceScoreGtParam'
         - $ref: '#/components/parameters/LocationConfidenceScoreLteParam'
@@ -231,13 +213,15 @@ paths:
         - $ref: '#/components/parameters/PredictedEventSpendLteParam'
         - $ref: '#/components/parameters/PredictedEventSpendLtParam'
         - $ref: '#/components/parameters/PredictedEventSpendIndustryParam'
+        - $ref: '#/components/parameters/PrivateIncludeParam'
+        - $ref: '#/components/parameters/PrivateUserIdParam'
+        - $ref: '#/components/parameters/PrivateOrgReviewParam'
         - $ref: '#/components/parameters/QParam'
         - $ref: '#/components/parameters/RankGteParam'
         - $ref: '#/components/parameters/RankGtParam'
         - $ref: '#/components/parameters/RankLteParam'
         - $ref: '#/components/parameters/RankLtParam'
         - $ref: '#/components/parameters/RankLevelParam'
-        - $ref: '#/components/parameters/RelevanceParam'
         - $ref: '#/components/parameters/SavedLocationLocationIdParam'
         - $ref: '#/components/parameters/SortParam'
         - $ref: '#/components/parameters/StartGteParam'
@@ -245,10 +229,6 @@ paths:
         - $ref: '#/components/parameters/StartLteParam'
         - $ref: '#/components/parameters/StartLtParam'
         - $ref: '#/components/parameters/StartTzParam'
-        - $ref: '#/components/parameters/StartAroundOriginParam'
-        - $ref: '#/components/parameters/StartAroundOffsetParam'
-        - $ref: '#/components/parameters/StartAroundScaleParam'
-        - $ref: '#/components/parameters/StartAroundDecayParam'
         - $ref: '#/components/parameters/StartDateConfidenceScoreGteParam'
         - $ref: '#/components/parameters/StartDateConfidenceScoreGtParam'
         - $ref: '#/components/parameters/StartDateConfidenceScoreLteParam'
@@ -494,64 +474,6 @@ components:
             - postponed
       style: form
       explode: false
-    EndAroundDecayParam:
-      in: query
-      name: end_around.decay
-      description: |-
-        Score value at the scale distance (optional).
-
-        Example: `0.9`
-
-        Default: `0.5`
-      required: false
-      deprecated: true
-      schema:
-        type: number
-        format: double
-        maximum: 1
-        minimum: 0
-    EndAroundOffsetParam:
-      in: query
-      name: end_around.offset
-      description: |-
-        The number of days from the origin before the score starts to decay (optional).
-
-        Example: `5d`
-
-        Default: `0d`
-      required: false
-      deprecated: true
-      schema:
-        type: string
-        pattern: '^\d{1,3}d$'
-    EndAroundOriginParam:
-      in: query
-      name: end_around.origin
-      description: |-
-        Fuzzy date search around event end datetime. When using `end_around.*` params, `origin` is required.
-
-        Can influence `relevance`.
-
-        Example: `2025-02-01`
-      required: false
-      deprecated: true
-      schema:
-        type: string
-        format: date
-    EndAroundScaleParam:
-      in: query
-      name: end_around.scale
-      description: |-
-        Distance from origin +/- offset at which the score will equal the decay value (optional).
-
-        Example: `10d`
-
-        Default: `3d`
-      required: false
-      deprecated: true
-      schema:
-        type: string
-        pattern: '^\d{1,3}d$'
     EndGteParam:
       in: query
       name: end.gte
@@ -892,68 +814,6 @@ components:
         type: integer
         maximum: 100
         minimum: 0
-    LocationAroundDecayParam:
-      in: query
-      name: location_around.decay
-      description: |-
-        Score value at the `scale` distance (optional).
-
-        Example: `0.9`
-
-        Default: `0.5`
-      required: false
-      deprecated: true
-      schema:
-        type: number
-        format: double
-        maximum: 1
-        minimum: 0
-    LocationAroundOffsetParam:
-      in: query
-      name: location_around.offset
-      description: |-
-        The distance before decay is applied (optional).
-
-        Distance unit can be one of `m`, `km`, `ft`, `mi`.
-
-        Example: `2mi`
-
-        Default: `0km`
-      required: false
-      deprecated: true
-      schema:
-        type: string
-        pattern: ^\d+(m|km|ft|mi)$
-    LocationAroundOriginParam:
-      in: query
-      name: location_around.origin
-      description: |-
-        Fuzzy location search around event location. When using `location_around.*` params, `origin` is required.
-
-        Please note this affects the `relevance` value and does not restrict search results to the specified latitude/longitude and offset. Read more in the [Relevance guide](https://docs.predicthq.com/getting-started/guides/events-api-guides/understanding-relevance-field-in-event-results) and combine with the `within` parameter to restrict results to a specified latitude/longitude and radius.
-
-        Example: `40.730610,-73.935242`
-      required: false
-      deprecated: true
-      schema:
-        type: string
-        pattern: '^-?\d+(\.\d+)?,-?\d+(\.\d+)?$'
-    LocationAroundScaleParam:
-      in: query
-      name: location_around.scale
-      description: |-
-        Distance from origin + offset at which the score will equal decay value (optional).
-
-        Distance unit can be one of `m`, `km`, `ft`, `mi`.
-
-        Example: `4mi`
-
-        Default: `2km`
-      required: false
-      deprecated: true
-      schema:
-        type: string
-        pattern: ^\d+(m|km|ft|mi)$
     LocationConfidenceScoreGteParam:
       in: query
       name: location_confidence_score.gte
@@ -1364,13 +1224,62 @@ components:
       schema:
         type: integer
         minimum: 0
+    PrivateIncludeParam:
+      in: query
+      name: private.include
+      description: |-
+        Whether or not to include private events. Private events are excluded by default.
+
+        Private events are those that have the `private` field set to `true`. These events are typically not publicly advertised and may have limited information available. They may be included in the API for specific use cases, but are generally not included in search results by default.
+
+        Default: `false`
+      required: false
+      schema:
+        type: string
+        enum:
+          - 'true'
+          - 'false'
+          - only
+    PrivateOrgReviewParam:
+      in: query
+      name: private.org_review
+      description: |-
+        A comma-separated list of review statuses for private events. This filters the events returned to private events that have been reviewed by the specified organizations.
+        The `private.org_review` filter must be used in conjunction with `private.include=true` or `private.include=only`.
+
+        Example: `approved,pending`
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+            - approved
+            - pending
+            - rejected
+      style: form
+      explode: false
+    PrivateUserIdParam:
+      in: query
+      name: private.user_id
+      description: |-
+        A comma-separated list of user identifiers. This filters the events returned to private events that are associated with the specified users.
+
+        The `private.user_id` filter must be used in conjunction with `private.include=true` or `private.include=only`.
+
+        Example: `12345,67890`
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+      style: form
+      explode: false
     QParam:
       in: query
       name: q
       description: |-
         A full-text search query.
-
-        Can influence `relevance`.
 
         Example: `katy perry`
       schema:
@@ -1445,42 +1354,6 @@ components:
         type: integer
         maximum: 100
         minimum: 0
-    RelevanceParam:
-      in: query
-      name: relevance
-      description: |-
-        A comma-separated list of components to include when calculating the `relevance` field of an event. The relevance components are multiplied together to produce the overall relevance.
-
-        Parameter Components:
-        These components correspond to search parameters that can influence relevance. If the parameter isn't provided as part of a search its component will be ignored. By default, relevance includes the components of each relevance-influencing parameter in a search.
-
-        - q
-        - start_around
-        - end_around
-        - location_around
-
-        Field Components:
-        These components correspond to event fields that can be included in relevance. They are not included in relevance by default.
-
-        - rank
-        - local_rank
-
-        Example: `q,rank,location_around`
-      required: false
-      deprecated: true
-      schema:
-        type: array
-        items:
-          type: string
-          enum:
-            - q
-            - start_around
-            - end_around
-            - location_around
-            - rank
-            - local_rank
-      style: form
-      explode: false
     SavedLocationLocationIdParam:
       in: query
       name: saved_location.location_id
@@ -1499,13 +1372,11 @@ components:
       in: query
       name: sort
       description: |-
-        A comma-separated list of fields to sort results by. The default is `relevance,-start`.
+        A comma-separated list of fields to sort results by. The default is `-start`.
 
         Prefix the field name with `-` for reverse order.
 
         Note when sorting on `predicted_end` or `local_rank` (regardless of sort order), events that do not have a `predicted_end`, `local_rank` will be placed last.
-
-        When sorting by `relevance` the most relevant results are sorted first, regardless of sort order.
 
         Example: `country,-start`
       required: false
@@ -1528,71 +1399,12 @@ components:
             - duration
             - country
             - labels
-            - relevance
             - predicted_event_spend
             - predicted_event_spend_industry.accommodation
             - predicted_event_spend_industry.hospitality
             - predicted_event_spend_industry.transportation
       style: form
       explode: false
-    StartAroundDecayParam:
-      in: query
-      name: start_around.decay
-      description: |-
-        Score value at the scale distance (optional).
-
-        Example: `0.9`
-
-        Default: `0.5`
-      required: false
-      deprecated: true
-      schema:
-        type: number
-        format: double
-        maximum: 1
-        minimum: 0
-    StartAroundOffsetParam:
-      in: query
-      name: start_around.offset
-      description: |-
-        The number of days from the origin before the score starts to decay (optional).
-
-        Example: `5d`
-
-        Default: `0d`
-      required: false
-      deprecated: true
-      schema:
-        type: string
-        pattern: '^\d{1,3}d$'
-    StartAroundOriginParam:
-      in: query
-      name: start_around.origin
-      description: |-
-        Fuzzy date search around event start datetime. When using `start_around.*` params, `origin` is required.
-
-        Can influence `relevance`.
-
-        Example: `2025-02-01`
-      required: false
-      deprecated: true
-      schema:
-        type: string
-        format: date
-    StartAroundScaleParam:
-      in: query
-      name: start_around.scale
-      description: |-
-        Distance from origin +/- offset at which the score will equal the decay value (optional).
-
-        Example: `10d`
-
-        Default: `3d`
-      required: false
-      deprecated: true
-      schema:
-        type: string
-        pattern: '^\d{1,3}d$'
     StartDateConfidenceScoreGteParam:
       in: query
       name: start_date_confidence_score.gte
@@ -2202,21 +2014,6 @@ components:
             - 83
           maximum: 100
           minimum: 0
-        relevance:
-          description: |-
-            Relative relevance of the event to the event search.
-
-            See the relevance parameter for information on how relevance is calculated.
-
-            This value is used purely for sorting and will be different per event depending on your request parameters.
-
-            If storing a copy of events, do not store this field.
-          type:
-            - number
-            - 'null'
-          deprecated: true
-          examples:
-            - 2.9654586
         scope:
           description: The geographical scope the events apply to.
           type: string
@@ -2416,7 +2213,6 @@ components:
               weight: 0.29
             - label: rock
               weight: 0.18
-          relevance: 0
           scope: locality
           brand_safe: true
       required:
@@ -2431,7 +2227,6 @@ components:
         - place_hierarchies
         - rank
         - geo
-        - relevance
         - start
         - state
         - timezone
