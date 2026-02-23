@@ -11,10 +11,6 @@ We use the OpenAPI 3.1.0 specification format to describe our APIs. This repo in
 - `data/airport-codes.csv`: Mapping of IATA/ICAO/UNLOCODE airport codes and their corresponding PredictHQ Place IDs.
 - `data/broadcast-county-place-mapping.csv`: Mapping of USA county names to PredictHQ Place IDs.
 
-## Limitations
-
-- The OpenAPI specs do not yet cover all our APIs. We are working on adding more endpoints.
-
 ## Contributing
 
 If you've identified a mismatch between PredictHQ APIs behavior and these specs, or found an issue with the format of a schema, please open an issue.
