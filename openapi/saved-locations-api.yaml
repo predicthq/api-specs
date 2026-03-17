@@ -134,8 +134,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SavedLocationsResponse'
-        '422':
-          description: Validation Error
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
@@ -163,8 +163,8 @@ paths:
                     type: string
                 required:
                   - location_id
-        '422':
-          description: Validation Error
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
@@ -190,8 +190,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SavedLocationResponse'
-        '422':
-          description: Validation Error
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
@@ -218,8 +218,8 @@ paths:
       responses:
         '204':
           description: Successful Response
-        '422':
-          description: Validation Error
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
@@ -240,8 +240,8 @@ paths:
       responses:
         '204':
           description: Successful Response
-        '422':
-          description: Validation Error
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
@@ -284,8 +284,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PhqEvents'
-        '422':
-          description: Validation Error
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
@@ -316,8 +316,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateOpeningHoursResponse'
-        '422':
-          description: Validation Error
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
@@ -357,8 +357,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OpeningHoursSearchResponse'
-        '422':
-          description: Validation Error
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
@@ -389,8 +389,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OpeningHoursResponse'
-        '422':
-          description: Validation Error
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
@@ -426,8 +426,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OpeningHours'
-        '422':
-          description: Validation Error
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
@@ -453,8 +453,8 @@ paths:
       responses:
         '204':
           description: Successful Response
-        '422':
-          description: Validation Error
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
@@ -485,8 +485,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateClosureResponse'
-        '422':
-          description: Validation Error
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
@@ -526,8 +526,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClosuresSearchResponse'
-        '422':
-          description: Validation Error
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
@@ -558,8 +558,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Closure'
-        '422':
-          description: Validation Error
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
@@ -585,8 +585,8 @@ paths:
       responses:
         '204':
           description: Successful Response
-        '422':
-          description: Validation Error
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
@@ -1011,11 +1011,12 @@ components:
     HTTPValidationError:
       type: object
       properties:
-        detail:
+        error:
+          type: string
+        details:
           type: array
           items:
             $ref: '#/components/schemas/ValidationError'
-          title: Detail
       title: HTTPValidationError
     Industry:
       type: string
@@ -1551,7 +1552,8 @@ components:
             E.g. `2022-04-26T11:46:25+00:00`
           type: string
           format: date-time
-          examples: '2022-04-26T11:46:25+00:00'
+          examples:
+            - '2022-04-26T11:46:25+00:00'
           title: Insights Dt
         user_id:
           description: |-
@@ -1829,23 +1831,14 @@ components:
     ValidationError:
       type: object
       properties:
-        loc:
-          type: array
-          items:
-            anyOf:
-              - type: string
-              - type: integer
-          title: Location
+        field:
+          type: string
         msg:
           type: string
           title: Message
         type:
           type: string
           title: Error Type
-      required:
-        - loc
-        - msg
-        - type
       title: ValidationError
   securitySchemes:
     BearerAuth:
