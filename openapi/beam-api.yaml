@@ -46,12 +46,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AnalysisIdResponse'
-        '422':
-          description: Validation Error
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                anyOf:
+                  - $ref: '#/components/schemas/ValidationError'
+                  - $ref: '#/components/schemas/HTTPError'
       tags:
         - Analyses
     get:
@@ -183,12 +185,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MultiAnalysisResponse'
-        '422':
-          description: Validation Error
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                anyOf:
+                  - $ref: '#/components/schemas/ValidationError'
+                  - $ref: '#/components/schemas/HTTPError'
       tags:
         - Analyses
   '/v1/beam/analyses/{analysis_id}':
@@ -211,17 +215,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/AnalysisResponse'
         '400':
-          description: Analysis is not ready
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
         '403':
           description: Bearer token scope insufficient
         '404':
           description: Analysis not found
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
       tags:
         - Analyses
     put:
@@ -255,19 +257,19 @@ paths:
         '204':
           description: Successful Response
         '400':
-          description: Invalid request or Saved Location not found
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/HTTPError'
+                  - $ref: '#/components/schemas/ValidationError'
         '403':
           description: Bearer token scope insufficient
         '404':
           description: Analysis not found
         '409':
           description: A data conflict has occurred due to the analysis being modified elsewhere. Please retry your call later.
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
       tags:
         - Analyses
     patch:
@@ -291,19 +293,19 @@ paths:
         '204':
           description: Successful Response
         '400':
-          description: Invalid request or Saved Location not found
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/HTTPError'
+                  - $ref: '#/components/schemas/ValidationError'
         '403':
           description: Bearer token scope insufficient
         '404':
           description: Analysis not found
         '409':
           description: A data conflict has occurred due to the analysis being modified elsewhere. Please retry your call later.
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
       tags:
         - Analyses
     delete:
@@ -319,18 +321,18 @@ paths:
       responses:
         '202':
           description: Successful Response
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
         '403':
           description: Bearer token scope insufficient
         '404':
           description: Analysis not found
         '409':
           description: A data conflict has occurred due to the analysis being modified elsewhere. Please retry your call later.
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
       tags:
         - Analyses
   '/v1/beam/analyses/{analysis_id}/feature-importance':
@@ -362,17 +364,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/FeatureImportanceResponse'
         '400':
-          description: Feature Importance results are not ready
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
         '403':
           description: Bearer token scope insufficient
         '404':
           description: Analysis not found or no feature importance data
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
       tags:
         - Analyses
   '/v1/beam/analyses/{analysis_id}/sink':
@@ -428,23 +428,19 @@ paths:
         '202':
           description: Successful Response
         '400':
-          description: Invalid request body or demand data
+          description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UploadErrorResponse'
+                anyOf:
+                  - $ref: '#/components/schemas/HTTPError'
+                  - $ref: '#/components/schemas/UploadErrorResponse'
         '403':
           description: Bearer token scope insufficient
         '404':
           description: Analysis not found
         '409':
           description: A data conflict has occurred due to the analysis being modified elsewhere. Please retry your call later.
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
       tags:
         - Analyses
   '/v1/beam/analyses/{analysis_id}/refresh':
@@ -463,19 +459,17 @@ paths:
         '202':
           description: Successful Response
         '400':
-          description: Analysis is already in the process of refreshing
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
         '403':
           description: Bearer token scope insufficient
         '404':
           description: Analysis not found
         '409':
           description: A data conflict has occurred due to the analysis being modified elsewhere. Please retry your call later.
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
       tags:
         - Analyses
   '/v1/beam/analyses/{analysis_id}/correlate':
@@ -536,17 +530,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/MultiDerivativeResponse'
         '400':
-          description: Missing/invalid date parameters or Feature impact is outdated. Analysis needs to be refreshed
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/ValidationError'
+                  - $ref: '#/components/schemas/HTTPError'
         '403':
           description: Bearer token scope insufficient
         '404':
           description: Analysis or Derivative not found
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
         '500':
           description: Internal inconsistency detected. Please refresh the analysis
       tags:
@@ -641,12 +635,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MultiAnalysisGroupResponse'
-        '422':
-          description: Validation Error
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                anyOf:
+                  - $ref: '#/components/schemas/ValidationError'
+                  - $ref: '#/components/schemas/HTTPError'
       tags:
         - Analysis Groups
     post:
@@ -667,15 +663,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/AnalysisGroupIdResponse'
         '400':
-          description: Invalid analysis_ids
-        '403':
-          description: Bearer token scope insufficient
-        '422':
-          description: Validation Error
+          description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                anyOf:
+                  - $ref: '#/components/schemas/ValidationError'
+                  - $ref: '#/components/schemas/HTTPError'
+        '403':
+          description: Bearer token scope insufficient
       tags:
         - Analysis Groups
   '/v1/beam/analysis-groups/{group_id}':
@@ -699,16 +695,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AnalysisGroupResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
         '403':
           description: Bearer token scope insufficient
         '404':
           description: Analysis Group not found
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
       tags:
         - Analysis Groups
     put:
@@ -742,19 +738,19 @@ paths:
         '202':
           description: Successful Response
         '400':
-          description: Invalid analysis_ids
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/HTTPError'
+                  - $ref: '#/components/schemas/ValidationError'
         '403':
           description: Bearer token scope insufficient
         '404':
           description: Analysis Group not found
         '409':
           description: A data conflict has occurred due to the analysis group being modified elsewhere. Please retry your call later.
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
       tags:
         - Analysis Groups
     patch:
@@ -787,19 +783,19 @@ paths:
         '202':
           description: Successful Response
         '400':
-          description: Invalid analysis_ids
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/HTTPError'
+                  - $ref: '#/components/schemas/ValidationError'
         '403':
           description: Bearer token scope insufficient
         '404':
           description: Analysis Group not found
         '409':
           description: A data conflict has occurred due to the analysis group being modified elsewhere. Please retry your call later.
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
       tags:
         - Analysis Groups
     delete:
@@ -818,18 +814,18 @@ paths:
       responses:
         '202':
           description: Successful Response
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
         '403':
           description: Bearer token scope insufficient
         '404':
           description: Analysis Group not found
         '409':
           description: A data conflict has occurred due to the analysis group being modified elsewhere. Please retry your call later.
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
       tags:
         - Analysis Groups
   '/v1/beam/analysis-groups/{group_id}/refresh':
@@ -850,19 +846,17 @@ paths:
         '202':
           description: Successful Response
         '400':
-          description: Analysis group is already in the process of refreshing
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
         '403':
           description: Bearer token scope insufficient
         '404':
           description: Analysis Group not found
         '409':
           description: A data conflict has occurred due to the analysis group being modified elsewhere. Please retry your call later.
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
       tags:
         - Analysis Groups
   '/v1/beam/analysis-groups/{group_id}/feature-importance':
@@ -887,17 +881,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/FeatureImportanceResponse'
         '400':
-          description: Feature importance data is not ready or not found
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
         '403':
           description: Bearer token scope insufficient
         '404':
           description: Analysis Group not found
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
       tags:
         - Analysis Groups
 components:
@@ -1693,15 +1685,6 @@ components:
         - lat
         - lon
       title: GeoPointResponse
-    HTTPValidationError:
-      type: object
-      properties:
-        detail:
-          type: array
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          title: Detail
-      title: HTTPValidationError
     Industry:
       description: |-
         The industry of the demand data being analysed by Beam. Choosing the right industry is important as this will
@@ -2244,7 +2227,7 @@ components:
     ValidationError:
       type: object
       properties:
-        loc:
+        field:
           type: array
           items:
             anyOf:
@@ -2258,7 +2241,7 @@ components:
           type: string
           title: Error Type
       required:
-        - loc
+        - field
         - msg
         - type
       title: ValidationError
@@ -2570,6 +2553,15 @@ components:
       required:
         - date
         - demand
+    HTTPError:
+      type: object
+      properties:
+        error:
+          type: string
+          title: Error
+      required:
+        - error
+      title: HTTPError
   requestBodies:
     UploadDemandData:
       description: 'Upload demand data in CSV, newline-delimited JSON (NDJSON), or JSON formats.'
