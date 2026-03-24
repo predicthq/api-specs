@@ -23,9 +23,9 @@ x-hideTryItPanel: true
 paths:
   /v1/impact-area/:
     get:
-      operationId: get_impact_area_impact_area_get
+      operationId: get_impact_area
       summary: Get Impact Area
-      description: Returns an impact area (isochrone polygon or radius) for the given location and industry.
+      description: Returns an impact area GeoJSON (Polygon or Point with radius) for the given location and industry.
       parameters:
         - name: industry
           in: query
@@ -51,7 +51,7 @@ paths:
             pattern: '^-?\d{1,3}(?:\.\d+)?,\-?\d{1,3}(?:\.\d+)?$'
         - name: area_type
           in: query
-          description: The type of area to be returned. This can be either `polygon` or `radius`. A radius will return a circular area around the location with a radius that encompasses the impact area. A polygon will return a more complex shape that more accurately represents the impact area.
+          description: 'The shape used to represent the returned impact area. Defaults to `polygon`, which returns a GeoJSON Polygon that precisely follows the boundaries of the impact area. Use `radius` for a simpler representation - a GeoJSON Point with a radius property defining a circular impact area.'
           required: false
           schema:
             default: polygon
