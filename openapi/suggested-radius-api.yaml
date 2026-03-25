@@ -23,7 +23,7 @@ x-hideTryItPanel: true
 paths:
   /v1/suggested-radius/:
     get:
-      operationId: get_suggested_radius_public_suggested_radius__get
+      operationId: get_suggested_radius
       summary: Get Suggested Radius
       description: Returns a suggested radius for the given location and industry.
       parameters:
