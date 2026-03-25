@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: PredictHQ Suggested Radius API
-  description: Take the guesswork out of working out a suitable radius around your business when searching for events.
+  description: 'Predicted Impact Area is the successor to this API, providing a more accurate representation of event impact than a radius. Suggested Radius remains available and existing implementations are unaffected.'
   version: 1.0.0
   license:
     name: MIT
@@ -23,8 +23,9 @@ x-hideTryItPanel: true
 paths:
   /v1/suggested-radius/:
     get:
-      operationId: get_suggested_radius_public_suggested_radius__get
+      operationId: get_suggested_radius
       summary: Get Suggested Radius
+      description: Returns a suggested radius for the given location and industry.
       parameters:
         - name: radius_unit
           in: query
@@ -33,10 +34,10 @@ paths:
             The default unit is m
 
             Possible values:
-            - `m` - meters (default)     
-            - `km` - kilometers      
-            - `ft` - feet       
-            - `mi` - miles    
+            - `m` - meters (default)
+            - `km` - kilometers
+            - `ft` - feet
+            - `mi` - miles
 
 
             E.g. `?radius_unit=km`
@@ -78,7 +79,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuggestedRadiusResponse'
-        '422':
+        '400':
           description: Validation Error
           content:
             application/json:
@@ -91,11 +92,17 @@ components:
     HTTPValidationError:
       type: object
       properties:
-        detail:
+        error:
+          type: string
+          title: Error
+        details:
           type: array
           items:
-            $ref: '#/components/schemas/ValidationError'
-          title: Detail
+            $ref: '#/components/schemas/ValidationErrorDetail'
+          title: Details
+      required:
+        - error
+        - details
       title: HTTPValidationError
     Industry:
       type: string
@@ -110,7 +117,7 @@ components:
         - transportation
         - other
       title: Industry
-    Location:
+    LocationResponse:
       description: |-
         A json object representing the geo location of the event.
 
@@ -118,8 +125,8 @@ components:
         E.g.:
         ```json
         {
-          "lat": 37.747767,
-          "lon": -122.455320
+          "lat": "37.747767",
+          "lon": "-122.455320"
         }
         ```
       type: object
@@ -135,7 +142,10 @@ components:
         - lon
       title: Location
     RadiusUnit:
-      description: The unit of the radius returned. This will be the unit specified in the radius_unit parameter in the call made.
+      description: |-
+        The unit of the radius returned.
+
+        This will be the unit specified in the radius_unit parameter in the call made.
       type: string
       enum:
         - m
@@ -144,6 +154,7 @@ components:
         - mi
       title: RadiusUnit
     SuggestedRadiusResponse:
+      description: Response model for the backwards-compatible Suggested Radius API.
       type: object
       properties:
         radius:
@@ -153,22 +164,18 @@ components:
         radius_unit:
           $ref: '#/components/schemas/RadiusUnit'
         location:
-          $ref: '#/components/schemas/Location'
+          $ref: '#/components/schemas/LocationResponse'
       required:
         - radius
         - radius_unit
         - location
       title: SuggestedRadiusResponse
-    ValidationError:
+    ValidationErrorDetail:
       type: object
       properties:
-        loc:
-          type: array
-          items:
-            anyOf:
-              - type: string
-              - type: integer
-          title: Location
+        field:
+          type: string
+          title: Field
         msg:
           type: string
           title: Message
@@ -176,10 +183,10 @@ components:
           type: string
           title: Error Type
       required:
-        - loc
+        - field
         - msg
         - type
-      title: ValidationError
+      title: ValidationErrorDetail
   securitySchemes:
     BearerAuth:
       type: http
