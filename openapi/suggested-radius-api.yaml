@@ -132,10 +132,10 @@ components:
       type: object
       properties:
         lat:
-          type: string
+          type: number
           title: Lat
         lon:
-          type: string
+          type: number
           title: Lon
       required:
         - lat
