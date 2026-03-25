@@ -125,17 +125,17 @@ components:
         E.g.:
         ```json
         {
-          "lat": 37.747767,
-          "lon": -122.455320
+          "lat": "37.747767",
+          "lon": "-122.455320"
         }
         ```
       type: object
       properties:
         lat:
-          type: number
+          type: string
           title: Lat
         lon:
-          type: number
+          type: string
           title: Lon
       required:
         - lat
