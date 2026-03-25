@@ -853,16 +853,15 @@ components:
           title: Labels
         geojson:
           description: |-
-            You can define the geolocation of the Saved Location either by GeoJSON or Place IDs.
+            We recommend omitting this parameter and providing only the `origin_geojson` field instead.
+            This allows PredictHQ to automatically calculate and store a Predicted Impact Area for the location,
+            which provides a more accurate representation of event impact than a manually specified area.
 
+            Only use `geojson` if you need to define a specific area.
+            For Point geometry types, a radius is required using the `radius` and `radius_unit` properties.
+            The radius must be an integer or a float up to 2 decimal places.
 
-            For the Point geometry type, we require a radius to be defined using a special set of properties on the GeoJSON record. As in the example below, these are `radius` and `radius_unit`. The radius property must be an integer or a float number up to 2 decimal places.
-
-
-            Remember that GeoJSON coordinates are ordered longitude then latitude.
-
-
-            Note: For Point geometry type, we strongly recommend using our [Suggested Radius API](https://docs.predicthq.com/api/suggested-radius/get-suggested-radius) to find a suitable radius value for your location and industry.
+            Note: GeoJSON coordinates are ordered longitude then latitude.
           $ref: '#/components/schemas/GeoJson-Input'
           examples:
             - type: Feature
@@ -895,18 +894,15 @@ components:
           $ref: '#/components/schemas/Industry'
         origin_geojson:
           description: |-
-            The `origin_geojson` field is used to define the geolocation of your business.
+            Defines the exact location of your business. This is different from `geojson`,
+            which defines the area around your business used to scope event searches.
 
-            The difference between `origin_geojson` and `geojson` is that `origin_geojson` defines the exact location of
-            your business while `geojson` defines the area around your business that impacts your business demand and
-            you want to search events for.
+            We recommend providing `origin_geojson` without specifying `geojson` or `place_ids`.
+            PredictHQ will automatically calculate a Predicted Impact Area for the location and store it
+            in the `geojson` field.
 
-            If you only define the `origin_geojson` field for the Saved Location and don't specify `geojson` or `place_ids`
-            an Impact Area will be automatically calculated as an Isochrone Polygon and will be stored in the `geojson` field.
-
-            Remember that GeoJSON coordinates are ordered longitude then latitude.
-
-            Note: Refer to our [Impact Area](https://docs.predicthq.com/api/impact-area/get-impact-area)
+            Note: GeoJSON coordinates are ordered longitude then latitude.
+            Refer to our [Predicted Impact Area](https://docs.predicthq.com/api/impact-area/get-impact-area)
             documentation for more details.
           $ref: '#/components/schemas/OriginGeoJson'
           examples:
