@@ -1774,7 +1774,12 @@ components:
                   - retail
                   - hospitality
               impact_type:
-                description: 'Indicates the type of impact shown in the impact pattern. Currently, the supported types are phq_rank and phq_attendance. If the impact_type is phq_rank then the impact values shown per day reflect phq_rank values. If impact_type is phq_attendance then the impact values per day reflect phq_attendance which is the estimated amount of people attending the event per day.'
+                description: |-
+                  Indicates the type of impact shown in the impact pattern. Currently, the supported types are phq_rank,  phq_attendance, and phq_impact. 
+
+                  If the impact_type is phq_rank then the impact values shown per day reflect phq_rank values. If impact_type is phq_attendance then the impact values per day reflect phq_attendance which is the estimated amount of people attending the event per day. 
+
+                  If impact_type is phq_impact then the impact values per day reflect phq_impact which represents the predicted impact and demand changes on specific verticals (accommodation, hospitality, retail).
                 type: string
                 enum:
                   - phq_rank
