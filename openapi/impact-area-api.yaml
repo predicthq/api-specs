@@ -48,6 +48,8 @@ paths:
           required: true
           schema:
             type: string
+            examples:
+              - '37.7749,-122.4194'
             pattern: '^-?\d{1,3}(?:\.\d+)?,\-?\d{1,3}(?:\.\d+)?$'
         - name: area_type
           in: query
@@ -70,56 +72,80 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PredictedAreaResponse'
+              examples:
+                polygon:
+                  summary: 'Polygon response (area_type=polygon, default)'
+                  value:
+                    geojson:
+                      type: Feature
+                      geometry:
+                        type: Polygon
+                        coordinates:
+                          - - - -122.4194
+                              - 37.7649
+                            - - -122.4095
+                              - 37.7649
+                            - - -122.4035
+                              - 37.771
+                            - - -122.4095
+                              - 37.781
+                            - - -122.4194
+                              - 37.781
+                            - - -122.4254
+                              - 37.771
+                            - - -122.4194
+                              - 37.7649
+                    location:
+                      lat: '37.7749'
+                      lon: '-122.4194'
+                    warnings: []
+                radius:
+                  summary: Radius response (area_type=radius)
+                  value:
+                    geojson:
+                      type: Feature
+                      properties:
+                        radius: 1500
+                        radius_unit: m
+                      geometry:
+                        type: Point
+                        coordinates:
+                          - -122.4194
+                          - 37.7749
+                    location:
+                      lat: '37.7749'
+                      lon: '-122.4194'
+                    warnings: []
         '400':
           description: Validation Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-        '429':
-          description: Rate limited by upstream provider
+        '401':
+          description: Unauthorized
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Authorization required
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Insufficient permissions
+        '429':
+          description: 'Rate limit exceeded. See [Rate Limiting](https://docs.predicthq.com/api/overview/rate-limits) for details on limits and retry guidance.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
               example:
                 error: 'Rate limited by upstream provider, please retry later.'
-        '500':
-          description: Impact area service error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-              example:
-                error: Impact area service failure.
-        '503':
-          description: Upstream provider temporarily unavailable
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-              example:
-                error: Upstream provider is temporarily unavailable.
-        '504':
-          description: Upstream provider timed out
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-              example:
-                error: Upstream provider timed out.
       tags:
         - Impact Area API
 components:
@@ -134,15 +160,18 @@ components:
       type: object
       properties:
         type:
+          description: GeoJSON type identifier
           type: string
           default: Feature
           const: Feature
           title: Type
         properties:
+          description: 'Feature properties, including radius details for Point geometries'
           anyOf:
             - $ref: '#/components/schemas/RadiusProperties'
             - type: 'null'
         geometry:
+          description: 'The GeoJSON geometry (Point, Polygon, or MultiPolygon)'
           discriminator:
             propertyName: type
             mapping:
@@ -161,9 +190,11 @@ components:
       type: object
       properties:
         error:
+          description: Error summary message
           type: string
           title: Error
         details:
+          description: List of validation error details
           type: array
           items:
             $ref: '#/components/schemas/ValidationErrorDetail'
@@ -199,9 +230,11 @@ components:
       type: object
       properties:
         lat:
+          description: Latitude of the location
           type: string
           title: Lat
         lon:
+          description: Longitude of the location
           type: string
           title: Lon
       required:
@@ -212,11 +245,13 @@ components:
       type: object
       properties:
         type:
+          description: GeoJSON geometry type
           type: string
           default: MultiPolygon
           const: MultiPolygon
           title: Type
         coordinates:
+          description: Array of polygon coordinate arrays
           type: array
           items:
             items:
@@ -245,11 +280,13 @@ components:
       type: object
       properties:
         type:
+          description: GeoJSON geometry type
           type: string
           default: Point
           const: Point
           title: Type
         coordinates:
+          description: 'GeoJSON position as [longitude, latitude]'
           anyOf:
             - prefixItems:
                 - type: number
@@ -272,11 +309,13 @@ components:
       type: object
       properties:
         type:
+          description: GeoJSON geometry type
           type: string
           default: Polygon
           const: Polygon
           title: Type
         coordinates:
+          description: 'Array of linear rings, each being an array of [longitude, latitude] positions'
           type: array
           items:
             items:
@@ -322,11 +361,13 @@ components:
       type: object
       properties:
         radius:
+          description: The radius value in the specified radius_unit
           anyOf:
             - type: number
             - type: 'null'
           title: Radius
         radius_unit:
+          description: The unit of measurement for the radius
           anyOf:
             - $ref: '#/components/schemas/RadiusUnit'
             - type: 'null'
@@ -347,12 +388,15 @@ components:
       type: object
       properties:
         field:
+          description: The field that failed validation
           type: string
           title: Field
         msg:
+          description: The validation error message
           type: string
           title: Message
         type:
+          description: The type of validation error
           type: string
           title: Error Type
       required:
@@ -360,6 +404,16 @@ components:
         - msg
         - type
       title: ValidationErrorDetail
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          description: Error message
+          type: string
+          title: Error
+      required:
+        - error
+      title: ErrorResponse
   securitySchemes:
     BearerAuth:
       type: http
