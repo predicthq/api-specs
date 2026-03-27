@@ -145,7 +145,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               example:
-                error: 'Rate limited by upstream provider, please retry later.'
+                error: Too many requests. Please retry later.
       tags:
         - Impact Area API
 components:
