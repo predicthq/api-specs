@@ -178,6 +178,50 @@ paths:
           style: form
         - $ref: '#/components/parameters/LimitParam'
         - $ref: '#/components/parameters/OffsetParam'
+        - name: updated.gt
+          in: query
+          description: Return analyses last updated after this date (exclusive).
+          required: false
+          schema:
+            type: string
+            format: date
+            examples:
+              - '2017-01-01'
+        - name: updated.gte
+          in: query
+          description: Return analyses last updated on or after this date (inclusive).
+          required: false
+          schema:
+            type: string
+            format: date
+            examples:
+              - '2017-01-01'
+        - name: updated.lt
+          in: query
+          description: Return analyses last updated before this date (exclusive).
+          required: false
+          schema:
+            type: string
+            format: date
+            examples:
+              - '2025-01-07'
+        - name: updated.lte
+          in: query
+          description: Return analyses last updated on or before this date (inclusive).
+          required: false
+          schema:
+            type: string
+            format: date
+            examples:
+              - '2025-01-07'
+        - name: q
+          in: query
+          description: 'Filter analyses by name using a text search. Supports partial and prefix matching (e.g., `downt` will match `Downtown Store`).'
+          required: false
+          schema:
+            type: string
+            examples:
+              - downt
       responses:
         '200':
           description: Successful Response
@@ -551,6 +595,42 @@ paths:
       summary: Search Analysis Groups
       description: Search for an existing Analysis Group.
       parameters:
+        - name: updated.gt
+          in: query
+          description: Filters analysis groups updated after the specified date (exclusive).
+          required: false
+          schema:
+            type: string
+            format: date
+            examples:
+              - '2017-01-01'
+        - name: updated.gte
+          in: query
+          description: Filters analysis groups updated on or after the specified date.
+          required: false
+          schema:
+            type: string
+            format: date
+            examples:
+              - '2017-01-01'
+        - name: updated.lt
+          in: query
+          description: Filters analysis groups updated before the specified date (exclusive).
+          required: false
+          schema:
+            type: string
+            format: date
+            examples:
+              - '2025-01-07'
+        - name: updated.lte
+          in: query
+          description: Filters analysis groups updated on or before the specified date.
+          required: false
+          schema:
+            type: string
+            format: date
+            examples:
+              - '2025-01-07'
         - name: q
           in: query
           description: Query string to be matched against Group name.
