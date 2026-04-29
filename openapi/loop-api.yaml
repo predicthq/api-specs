@@ -5,37 +5,37 @@ info:
   version: 1.0.0
   license:
     name: MIT
-    url: 'https://opensource.org/licenses/MIT'
-  termsOfService: 'https://www.predicthq.com/legal/terms'
+    url: https://opensource.org/licenses/MIT
+  termsOfService: https://www.predicthq.com/legal/terms
 security:
   - BearerAuth: []
 tags:
   - name: Loop Links
     externalDocs:
-      url: 'https://docs.predicthq.com/api/loop/loop-links'
+      url: https://docs.predicthq.com/api/loop/loop-links
       description: Loop Links Docs
   - name: Loop Submissions
     externalDocs:
-      url: 'https://docs.predicthq.com/api/loop/loop-submissions'
+      url: https://docs.predicthq.com/api/loop/loop-submissions
       description: Loop Submissions Docs
   - name: Loop Feedback
     externalDocs:
-      url: 'https://docs.predicthq.com/api/loop/loop-feedback/search-feedback'
+      url: https://docs.predicthq.com/api/loop/loop-feedback/search-feedback
       description: Loop Feedback Docs
   - name: Loop Settings
     externalDocs:
-      url: 'https://docs.predicthq.com/api/loop/loop-feedback'
+      url: https://docs.predicthq.com/api/loop/loop-feedback
       description: Loop Feedback Docs
 servers:
-  - url: 'https://api.predicthq.com'
+  - url: https://api.predicthq.com
 externalDocs:
-  url: 'https://docs.predicthq.com'
+  url: https://docs.predicthq.com
   description: PredictHQ Tech Docs
 x-hideTryItPanel: true
 paths:
   /v1/loop/events:
     get:
-      operationId: search_submission_events_get
+      operationId: list_submissions
       summary: Search Submitted Events
       parameters:
         - name: q
@@ -453,13 +453,13 @@ paths:
                 - updated
                 - version
                 - relevance
-                - '-created'
-                - '-updated'
-                - '-version'
-                - '-relevance'
+                - -created
+                - -updated
+                - -version
+                - -relevance
             default:
               - relevance
-              - '-updated'
+              - -updated
           explode: false
           style: form
         - $ref: '#/components/parameters/LimitParam'
@@ -796,7 +796,7 @@ paths:
                               description: Postcode of the event.
                               type: string
                             country:
-                              description: 'Country code in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format.'
+                              description: Country code in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format.
                               type: string
                             geometry:
                               description: |-
@@ -839,7 +839,7 @@ paths:
         - Loop Submissions
   /v1/loop/feedback/conversations:
     get:
-      operationId: search_feedback_conversations_feedback_conversations_get
+      operationId: list_feedback_conversations
       summary: Search Feedback
       parameters:
         - name: conversation_id
@@ -1071,11 +1071,11 @@ paths:
               type: string
               enum:
                 - created
-                - '-created'
+                - -created
                 - updated
-                - '-updated'
+                - -updated
                 - relevance
-                - '-relevance'
+                - -relevance
             default:
               - relevance
               - created
@@ -1211,7 +1211,7 @@ paths:
                                 type: object
                                 properties:
                                   type:
-                                    description: 'Type of action, e.g. comment.'
+                                    description: Type of action, e.g. comment.
                                     type: string
                                 required:
                                   - type
@@ -1223,7 +1223,7 @@ paths:
                                 type: object
                                 properties:
                                   type:
-                                    description: 'Type of creator, e.g. user.'
+                                    description: Type of creator, e.g. user.
                                     type: string
                                   user_id:
                                     description: User ID of the creator.
@@ -1272,7 +1272,7 @@ paths:
         - Loop Feedback
   /v1/loop/links:
     get:
-      operationId: search_links_links_get
+      operationId: list_links
       summary: Search Loop Links
       parameters:
         - $ref: '#/components/parameters/OffsetParam'
@@ -1289,7 +1289,7 @@ paths:
             type: string
             maxLength: 120
             minLength: 1
-            pattern: '^[a-zA-Z0-9 _-]+$'
+            pattern: ^[a-zA-Z0-9 _-]+$
             title: Q
         - name: link_id
           in: query
@@ -1305,7 +1305,7 @@ paths:
             items:
               type: string
               examples:
-                - 'value1,value2'
+                - value1,value2
             title: Link Id
           explode: false
           style: form
@@ -1323,7 +1323,7 @@ paths:
             items:
               type: string
               examples:
-                - 'value1,value2'
+                - value1,value2
             title: User Id
           explode: false
           style: form
@@ -1342,13 +1342,13 @@ paths:
               type: string
               enum:
                 - created
-                - '-created'
+                - -created
                 - expires
-                - '-expires'
+                - -expires
                 - name
-                - '-name'
+                - -name
                 - updated
-                - '-updated'
+                - -updated
             title: Sort
           explode: false
           style: form
@@ -1368,7 +1368,7 @@ paths:
       tags:
         - Loop Links
     post:
-      operationId: create_link_links_post
+      operationId: create_link
       summary: Create a Loop Link
       requestBody:
         required: true
@@ -1391,9 +1391,9 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       tags:
         - Loop Links
-  '/v1/loop/links/{link_id}':
+  /v1/loop/links/{link_id}:
     get:
-      operationId: get_link_by_id_links__link_id__get
+      operationId: get_link
       summary: Get a Loop Link
       parameters:
         - name: link_id
@@ -1419,7 +1419,7 @@ paths:
       tags:
         - Loop Links
     put:
-      operationId: update_link_links__link_id__put
+      operationId: update_link
       summary: Update (replace) a Loop Link
       parameters:
         - name: link_id
@@ -1447,7 +1447,7 @@ paths:
       tags:
         - Loop Links
     delete:
-      operationId: delete_link_links__link_id__delete
+      operationId: delete_link
       summary: Delete a Loop Link
       parameters:
         - name: link_id
@@ -1470,7 +1470,7 @@ paths:
         - Loop Links
   /v1/loop/settings:
     get:
-      operationId: get_setting_settings_get
+      operationId: get_settings
       summary: Get Loop Settings
       responses:
         '200':
@@ -1488,7 +1488,7 @@ paths:
       tags:
         - Loop Settings
     put:
-      operationId: create_or_update_setting_settings_put
+      operationId: create_or_update_settings
       summary: Update Loop Settings
       requestBody:
         required: true
@@ -1583,7 +1583,7 @@ components:
           type: string
           maxLength: 120
           minLength: 1
-          pattern: '^[a-zA-Z0-9 _-]+$'
+          pattern: ^[a-zA-Z0-9 _-]+$
           title: Name
         status:
           description: Status of the loop link.
@@ -1705,7 +1705,7 @@ components:
             - Hotel ABC
           maxLength: 120
           minLength: 1
-          pattern: '^[a-zA-Z0-9 _-]+$'
+          pattern: ^[a-zA-Z0-9 _-]+$
           title: Name
       title: PublicLinkBody
     PublicSearchLinkResponse:

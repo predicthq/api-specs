@@ -5,25 +5,25 @@ info:
   version: 1.0.0
   license:
     name: MIT
-    url: 'https://opensource.org/licenses/MIT'
-  termsOfService: 'https://www.predicthq.com/legal/terms'
+    url: https://opensource.org/licenses/MIT
+  termsOfService: https://www.predicthq.com/legal/terms
 security:
   - BearerAuth: []
 tags:
   - name: Demand Surge API
     externalDocs:
-      url: 'https://docs.predicthq.com/api/demand-surge/get-demand-surges'
+      url: https://docs.predicthq.com/api/demand-surge/get-demand-surges
       description: Demand Surge Docs
 servers:
-  - url: 'https://api.predicthq.com'
+  - url: https://api.predicthq.com
 externalDocs:
-  url: 'https://docs.predicthq.com'
+  url: https://docs.predicthq.com
   description: PredictHQ Tech Docs
 x-hideTryItPanel: true
 paths:
   /v1/demand-surge/:
     get:
-      operationId: get_demand_surge_demand_surge_get
+      operationId: get_demand_surges
       summary: Get Demand Surges
       parameters:
         - name: min_surge_intensity
@@ -64,7 +64,7 @@ paths:
             items:
               type: string
               examples:
-                - 'value1,value2'
+                - value1,value2
             title: Location.Place Id
           explode: false
           style: form
@@ -81,7 +81,7 @@ paths:
             items:
               type: string
               examples:
-                - 'value1,value2'
+                - value1,value2
             title: Location.Origin
           explode: false
           style: form

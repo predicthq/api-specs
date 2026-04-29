@@ -5,25 +5,25 @@ info:
   version: 1.0.0
   license:
     name: MIT
-    url: 'https://opensource.org/licenses/MIT'
-  termsOfService: 'https://www.predicthq.com/legal/terms'
+    url: https://opensource.org/licenses/MIT
+  termsOfService: https://www.predicthq.com/legal/terms
 security:
   - BearerAuth: []
 tags:
   - name: Events API
     externalDocs:
-      url: 'https://docs.predicthq.com/api/events'
+      url: https://docs.predicthq.com/api/events
       description: Events API Docs
 servers:
-  - url: 'https://api.predicthq.com'
+  - url: https://api.predicthq.com
 externalDocs:
-  url: 'https://docs.predicthq.com'
+  url: https://docs.predicthq.com
   description: PredictHQ Tech Docs
 x-hideTryItPanel: true
 paths:
   /v1/events/:
     get:
-      operationId: searchEvents
+      operationId: list_events
       summary: Search Events
       description: Search for events happening in a location and date range. Use our extensive filters to narrow down your results.
       parameters:
@@ -138,9 +138,9 @@ paths:
         - Events API
   /v1/events/count/:
     get:
-      operationId: countEvents
+      operationId: count_events
       summary: Get Event Counts
-      description: 'Get the count of events by category, PHQ Label and more. The Count endpoint supports the same query parameters as the Search Events endpoint.'
+      description: Get the count of events by category, PHQ Label and more. The Count endpoint supports the same query parameters as the Search Events endpoint.
       parameters:
         - $ref: '#/components/parameters/ActiveGteParam'
         - $ref: '#/components/parameters/ActiveGtParam'
@@ -817,7 +817,7 @@ components:
     LocationConfidenceScoreGteParam:
       in: query
       name: location_confidence_score.gte
-      description: 'A unique attribute to Predicted Events that were generated from analyzing sets of recurring events. The score ranges from 1 to 5, representing the event’s propensity to change location with each recurrence. Higher scores indicate a higher consistency in location, while lower scores indicate the event’s location is more likely to shift once additional details become available.'
+      description: A unique attribute to Predicted Events that were generated from analyzing sets of recurring events. The score ranges from 1 to 5, representing the event’s propensity to change location with each recurrence. Higher scores indicate a higher consistency in location, while lower scores indicate the event’s location is more likely to shift once additional details become available.
       required: false
       schema:
         type: integer
@@ -1408,7 +1408,7 @@ components:
     StartDateConfidenceScoreGteParam:
       in: query
       name: start_date_confidence_score.gte
-      description: 'A unique attribute to Predicted Events that were generated from analyzing sets of recurring events. The score ranges from 1 to 5, representing the event’s consistency in being held around the same date with each recurrence. Higher scores indicate the event is held at mostly the same date each year, while lower scores indicate a greater variation in start date, meaning that details are more likely to change as new details become available.'
+      description: A unique attribute to Predicted Events that were generated from analyzing sets of recurring events. The score ranges from 1 to 5, representing the event’s consistency in being held around the same date with each recurrence. Higher scores indicate the event is held at mostly the same date each year, while lower scores indicate a greater variation in start date, meaning that details are more likely to change as new details become available.
       required: false
       schema:
         type: integer
@@ -1600,7 +1600,7 @@ components:
       required: false
       schema:
         type: string
-        pattern: '^(?:(?:[1-9]\d*(?:\.\d+)?(km|mi))|(?:[1-9]\d*(m|ft)))@-?\d+(?:\.\d+)?,\-?\d+(?:\.\d+)?$'
+        pattern: ^(?:(?:[1-9]\d*(?:\.\d+)?(km|mi))|(?:[1-9]\d*(m|ft)))@-?\d+(?:\.\d+)?,\-?\d+(?:\.\d+)?$
   schemas:
     Event:
       description: An individual event object.
@@ -1647,7 +1647,7 @@ components:
             - string
             - 'null'
           examples:
-            - 'See Katy Perry in concert [...]'
+            - See Katy Perry in concert [...]
         duplicate_of_id:
           description: |-
             The `id` of the active event this event is a duplicate of.
@@ -1730,7 +1730,7 @@ components:
                   - recurring
                 name: Underwood Family Farms Fall Harvest Festival
                 recurring:
-                  ical: 'DTSTART;VALUE=DATE-TIME:20170930T090000 DURATION:P31DT9H RRULE:FREQ=YEARLY;INTERVAL=1'
+                  ical: DTSTART;VALUE=DATE-TIME:20170930T090000 DURATION:P31DT9H RRULE:FREQ=YEARLY;INTERVAL=1
               - entity_id: fx5IMIphsUX7yoJ9X7PktQ
                 type: event-group
                 labels:
@@ -1744,7 +1744,7 @@ components:
                   Auckland 1010
                   New Zealand
         first_seen:
-          description: 'The date the event first entered our dataset in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format. Dates are in UTC. This value should not be considered an event announcement date.'
+          description: The date the event first entered our dataset in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format. Dates are in UTC. This value should not be considered an event announcement date.
           type:
             - string
           format: date-time
@@ -1799,7 +1799,7 @@ components:
                       type: string
                       format: date
                     value:
-                      description: 'The value of the `impact_type` for that given day. For example, if the `impact_type` was `phq_rank` the `value` would be the PHQ Rank value on the given day. Otherwise, it will reflect `phq_attendance`.'
+                      description: The value of the `impact_type` for that given day. For example, if the `impact_type` was `phq_rank` the `value` would be the PHQ Rank value on the given day. Otherwise, it will reflect `phq_attendance`.
                       type: integer
                     position:
                       description: |-
@@ -1874,7 +1874,7 @@ components:
                         formatted_address:
                           type: string
                           examples:
-                            - '2350 Beach Blvd, Biloxi, MS 39531, USA'
+                            - 2350 Beach Blvd, Biloxi, MS 39531, USA
                         locality:
                           type: string
                           examples:
@@ -2080,13 +2080,13 @@ components:
           examples:
             - Katy Perry
         updated:
-          description: 'The last modification date of the event in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format. All dates are in UTC.'
+          description: The last modification date of the event in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format. All dates are in UTC.
           type: string
           format: date-time
       examples:
         - id: 3B9mLBbp36VUL4GbAu
           title: Katy Perry
-          description: 'See Katy Perry in concert [...]'
+          description: See Katy Perry in concert [...]
           category: concerts
           labels:
             - concert
@@ -2101,7 +2101,7 @@ components:
             - entity_id: ZDkhAS6ubGAjZzFphDtt3Z
               name: Qudos Bank Arena
               type: venue
-              formatted_address: '19 Edwin Flack Ave, Sydney Olympic Park NSW 2127, Australia'
+              formatted_address: 19 Edwin Flack Ave, Sydney Olympic Park NSW 2127, Australia
             - entity_id: usnx1_aOE2-4augMtjxCKQ
               name: Katy Perry at Qudos Bank Arena
               type: event-group
@@ -2109,14 +2109,14 @@ components:
               labels:
                 - concert
                 - residency
-          start: '2025-06-10T09:30:00Z'
-          start_local: '2025-06-10T19:30:00'
-          end: '2025-06-10T09:30:00Z'
-          end_local: '2025-06-10T19:30:00'
-          predicted_end: '2025-06-10T13:40:00Z'
-          predicted_end_local: '2025-06-10T23:40:00'
-          updated: '2025-11-08T06:52:08Z'
-          first_seen: '2024-11-19T05:32:46Z'
+          start: 2025-06-10T09:30:00Z
+          start_local: 2025-06-10T19:30:00
+          end: 2025-06-10T09:30:00Z
+          end_local: 2025-06-10T19:30:00
+          predicted_end: 2025-06-10T13:40:00Z
+          predicted_end_local: 2025-06-10T23:40:00
+          updated: 2025-11-08T06:52:08Z
+          first_seen: 2024-11-19T05:32:46Z
           timezone: Australia/Sydney
           duration: 0
           location:
@@ -2131,7 +2131,7 @@ components:
             placekey: '@nh3-xwb-k9f'
             address:
               country_code: AU
-              formatted_address: '19 Edwin Flack Ave, Sydney Olympic Park NSW 2127, Australia'
+              formatted_address: 19 Edwin Flack Ave, Sydney Olympic Park NSW 2127, Australia
               postcode: '2127'
               locality: Sydney Olympic Park
               region: New South Wales
@@ -2139,61 +2139,61 @@ components:
             - vertical: accommodation
               impact_type: phq_attendance
               impacts:
-                - date_local: '2025-06-07'
+                - date_local: 2025-06-07
                   value: 1384
                   position: leading
-                - date_local: '2025-06-08'
+                - date_local: 2025-06-08
                   value: 7609
                   position: leading
-                - date_local: '2025-06-09'
+                - date_local: 2025-06-09
                   value: 8300
                   position: leading
-                - date_local: '2025-06-10'
+                - date_local: 2025-06-10
                   value: 13833
                   position: event_day
-                - date_local: '2025-06-11'
+                - date_local: 2025-06-11
                   value: 2075
                   position: lagging
-                - date_local: '2025-06-12'
+                - date_local: 2025-06-12
                   value: 1384
                   position: lagging
             - vertical: hospitality
               impact_type: phq_attendance
               impacts:
-                - date_local: '2025-06-08'
+                - date_local: 2025-06-08
                   value: 277
                   position: leading
-                - date_local: '2025-06-09'
+                - date_local: 2025-06-09
                   value: 3459
                   position: leading
-                - date_local: '2025-06-10'
+                - date_local: 2025-06-10
                   value: 13833
                   position: event_day
-                - date_local: '2025-06-11'
+                - date_local: 2025-06-11
                   value: 415
                   position: lagging
             - vertical: retail
               impact_type: phq_attendance
               impacts:
-                - date_local: '2025-06-07'
+                - date_local: 2025-06-07
                   value: 2767
                   position: leading
-                - date_local: '2025-06-08'
+                - date_local: 2025-06-08
                   value: 3459
                   position: leading
-                - date_local: '2025-06-09'
+                - date_local: 2025-06-09
                   value: 4150
                   position: leading
-                - date_local: '2025-06-10'
+                - date_local: 2025-06-10
                   value: 13833
                   position: event_day
-                - date_local: '2025-06-11'
+                - date_local: 2025-06-11
                   value: 4150
                   position: lagging
-                - date_local: '2025-06-12'
+                - date_local: 2025-06-12
                   value: 4150
                   position: lagging
-                - date_local: '2025-06-13'
+                - date_local: 2025-06-13
                   value: 3459
                   position: lagging
           country: AU
@@ -2252,11 +2252,11 @@ components:
         previous:
           type: string
           examples:
-            - 'https://api.predicthq.com/v1/events/?limit=10&offset=10'
+            - https://api.predicthq.com/v1/events/?limit=10&offset=10
         next:
           type: string
           examples:
-            - 'https://api.predicthq.com/v1/events/?limit=10&offset=20'
+            - https://api.predicthq.com/v1/events/?limit=10&offset=20
         results:
           description: List of event records.
           type: array

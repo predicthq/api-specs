@@ -4,26 +4,26 @@ info:
   version: 1.0.0
   license:
     name: MIT
-    url: 'https://opensource.org/licenses/MIT'
-  termsOfService: 'https://www.predicthq.com/legal/terms'
-  description: 'Access prebuilt Machine Learning features that will take your forecast models and results to the next level, fast. Gain access to over 100 ML-ready features that are guaranteed to improve your forecasting accuracy.'
+    url: https://opensource.org/licenses/MIT
+  termsOfService: https://www.predicthq.com/legal/terms
+  description: Access prebuilt Machine Learning features that will take your forecast models and results to the next level, fast. Gain access to over 100 ML-ready features that are guaranteed to improve your forecasting accuracy.
 security:
   - BearerAuth: []
 tags:
   - externalDocs:
       description: Features API Docs
-      url: 'https://docs.predicthq.com/api/features/get-features'
+      url: https://docs.predicthq.com/api/features/get-features
     name: Features API
 servers:
-  - url: 'https://api.predicthq.com'
+  - url: https://api.predicthq.com
 externalDocs:
-  url: 'https://docs.predicthq.com'
+  url: https://docs.predicthq.com
   description: PredictHQ Tech Docs
 x-hideTryItPanel: true
 paths:
   /v1/features/:
     post:
-      operationId: obtain_features_given_criteria_features__post
+      operationId: get_features
       summary: Get ML Features
       parameters:
         - $ref: '#/components/parameters/OffsetParam'

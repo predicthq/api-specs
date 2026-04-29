@@ -4,8 +4,8 @@ info:
   version: 1.0.0
   license:
     name: MIT
-    url: 'https://opensource.org/licenses/MIT'
-  termsOfService: 'https://www.predicthq.com/legal/terms'
+    url: https://opensource.org/licenses/MIT
+  termsOfService: https://www.predicthq.com/legal/terms
   description: |-
     PredictHQ's Beam helps you identify what events have impacted your demand in the past, to help you make 
     better decisions in the future. Beam is our relevancy engine.
@@ -14,22 +14,22 @@ security:
 tags:
   - name: Analyses
     externalDocs:
-      url: 'https://docs.predicthq.com/api/beam/analyses'
+      url: https://docs.predicthq.com/api/beam/analyses
       description: Analyses Docs
   - name: Analysis Groups
     externalDocs:
-      url: 'https://docs.predicthq.com/api/beam/analysis-groups'
+      url: https://docs.predicthq.com/api/beam/analysis-groups
       description: Analysis Groups Docs
 servers:
-  - url: 'https://api.predicthq.com'
+  - url: https://api.predicthq.com
 externalDocs:
-  url: 'https://docs.predicthq.com'
+  url: https://docs.predicthq.com
   description: PredictHQ Tech Docs
 x-hideTryItPanel: true
 paths:
   /v1/beam/analyses:
     post:
-      operationId: create_analysis_public_analyses_post
+      operationId: create_analysis
       summary: Create an Analysis
       description: Creating an Analysis is the first step in understanding which types of events impact your demand.
       parameters: []
@@ -57,7 +57,7 @@ paths:
       tags:
         - Analyses
     get:
-      operationId: search_analyses_public_analyses_get
+      operationId: list_analyses
       summary: Search Analyses
       description: Search for an existing Analysis.
       parameters:
@@ -170,7 +170,7 @@ paths:
             items:
               $ref: '#/components/schemas/AnalysisSortField'
             default:
-              - '-updated'
+              - -updated
             examples:
               - - name
                 - created
@@ -186,7 +186,7 @@ paths:
             type: string
             format: date
             examples:
-              - '2017-01-01'
+              - 2017-01-01
         - name: updated.gte
           in: query
           description: Return analyses last updated on or after this date (inclusive).
@@ -195,7 +195,7 @@ paths:
             type: string
             format: date
             examples:
-              - '2017-01-01'
+              - 2017-01-01
         - name: updated.lt
           in: query
           description: Return analyses last updated before this date (exclusive).
@@ -204,7 +204,7 @@ paths:
             type: string
             format: date
             examples:
-              - '2025-01-07'
+              - 2025-01-07
         - name: updated.lte
           in: query
           description: Return analyses last updated on or before this date (inclusive).
@@ -213,10 +213,10 @@ paths:
             type: string
             format: date
             examples:
-              - '2025-01-07'
+              - 2025-01-07
         - name: q
           in: query
-          description: 'Filter analyses by name using a text search. Supports partial and prefix matching (e.g., `downt` will match `Downtown Store`).'
+          description: Filter analyses by name using a text search. Supports partial and prefix matching (e.g., `downt` will match `Downtown Store`).
           required: false
           schema:
             type: string
@@ -239,9 +239,9 @@ paths:
                   - $ref: '#/components/schemas/HTTPError'
       tags:
         - Analyses
-  '/v1/beam/analyses/{analysis_id}':
+  /v1/beam/analyses/{analysis_id}:
     get:
-      operationId: get_analysis_public_analyses__analysis_id__get
+      operationId: get_analysis
       summary: Get an Analysis
       description: Get an existing Analysis.
       parameters:
@@ -271,7 +271,7 @@ paths:
       tags:
         - Analyses
     put:
-      operationId: put_analysis_public_analyses__analysis_id__put
+      operationId: update_analysis
       summary: Update an Analysis
       description: |-
         Update (replace) an existing Analysis.
@@ -317,7 +317,7 @@ paths:
       tags:
         - Analyses
     patch:
-      operationId: patch_analysis_public_analyses__analysis_id__patch
+      operationId: patch_analysis
       summary: Partially Update an Analysis
       description: Partially update an existing Analysis.
       parameters:
@@ -353,7 +353,7 @@ paths:
       tags:
         - Analyses
     delete:
-      operationId: delete_analysis_public_analyses__analysis_id__delete
+      operationId: delete_analysis
       summary: Delete Analysis
       parameters:
         - name: analysis_id
@@ -379,9 +379,9 @@ paths:
           description: A data conflict has occurred due to the analysis being modified elsewhere. Please retry your call later.
       tags:
         - Analyses
-  '/v1/beam/analyses/{analysis_id}/feature-importance':
+  /v1/beam/analyses/{analysis_id}/feature-importance:
     get:
-      operationId: feature_importance_public_analyses__analysis_id__feature_importance_get
+      operationId: get_analysis_feature_importance
       summary: Get Feature Importance
       description: |-
         This endpoint provides the relevant ML features (based on feature importance testing) that are shown to impact 
@@ -419,9 +419,9 @@ paths:
           description: Analysis not found or no feature importance data
       tags:
         - Analyses
-  '/v1/beam/analyses/{analysis_id}/sink':
+  /v1/beam/analyses/{analysis_id}/sink:
     post:
-      operationId: upload_demand_public_analyses__analysis_id__sink_post
+      operationId: upload_analysis_demand
       summary: Upload Demand Data
       description: |-
         Beam Analyses support daily or weekly demand data. The type of data is detected automatically on upload.
@@ -487,9 +487,9 @@ paths:
           description: A data conflict has occurred due to the analysis being modified elsewhere. Please retry your call later.
       tags:
         - Analyses
-  '/v1/beam/analyses/{analysis_id}/refresh':
+  /v1/beam/analyses/{analysis_id}/refresh:
     post:
-      operationId: refresh_public_analyses__analysis_id__refresh_post
+      operationId: refresh_analysis
       summary: Refresh an Analysis
       description: Rerun the Beam correlation and analysis process.
       parameters:
@@ -516,9 +516,9 @@ paths:
           description: A data conflict has occurred due to the analysis being modified elsewhere. Please retry your call later.
       tags:
         - Analyses
-  '/v1/beam/analyses/{analysis_id}/correlate':
+  /v1/beam/analyses/{analysis_id}/correlate:
     get:
-      operationId: correlate_public_analyses__analysis_id__correlate_get
+      operationId: get_analysis_correlation
       summary: Get Correlation Results
       description: Retrieve results of the correlation of our event data with your transactional demand data.
       parameters:
@@ -536,7 +536,7 @@ paths:
             type: string
             format: date
             examples:
-              - '2017-01-01'
+              - 2017-01-01
         - name: date.gte
           in: query
           description: Filters results on or after the specified date.
@@ -545,7 +545,7 @@ paths:
             type: string
             format: date
             examples:
-              - '2017-01-01'
+              - 2017-01-01
         - name: date.lt
           in: query
           description: Filters results before the specified date (exclusive).
@@ -554,7 +554,7 @@ paths:
             type: string
             format: date
             examples:
-              - '2025-01-07'
+              - 2025-01-07
         - name: date.lte
           in: query
           description: Filters results on or before the specified date.
@@ -563,7 +563,7 @@ paths:
             type: string
             format: date
             examples:
-              - '2025-01-07'
+              - 2025-01-07
         - $ref: '#/components/parameters/OffsetParam'
         - $ref: '#/components/parameters/LimitParam'
       responses:
@@ -591,7 +591,7 @@ paths:
         - Analyses
   /v1/beam/analysis-groups:
     get:
-      operationId: search_analysis_groups_public_analysis_groups_get
+      operationId: list_analysis_groups
       summary: Search Analysis Groups
       description: Search for an existing Analysis Group.
       parameters:
@@ -603,7 +603,7 @@ paths:
             type: string
             format: date
             examples:
-              - '2017-01-01'
+              - 2017-01-01
         - name: updated.gte
           in: query
           description: Filters analysis groups updated on or after the specified date.
@@ -612,7 +612,7 @@ paths:
             type: string
             format: date
             examples:
-              - '2017-01-01'
+              - 2017-01-01
         - name: updated.lt
           in: query
           description: Filters analysis groups updated before the specified date (exclusive).
@@ -621,7 +621,7 @@ paths:
             type: string
             format: date
             examples:
-              - '2025-01-07'
+              - 2025-01-07
         - name: updated.lte
           in: query
           description: Filters analysis groups updated on or before the specified date.
@@ -630,7 +630,7 @@ paths:
             type: string
             format: date
             examples:
-              - '2025-01-07'
+              - 2025-01-07
         - name: q
           in: query
           description: Query string to be matched against Group name.
@@ -700,7 +700,7 @@ paths:
             items:
               $ref: '#/components/schemas/AnalysisGroupSortField'
             default:
-              - '-updated'
+              - -updated
             examples:
               - - name
                 - created
@@ -726,7 +726,7 @@ paths:
       tags:
         - Analysis Groups
     post:
-      operationId: create_analysis_group_public_analysis_groups_post
+      operationId: create_analysis_group
       summary: Create an Analysis Group
       description: Creating an Analysis Group allows to aggregate Feature Importance for a number of Analyses
       requestBody:
@@ -754,9 +754,9 @@ paths:
           description: Bearer token scope insufficient
       tags:
         - Analysis Groups
-  '/v1/beam/analysis-groups/{group_id}':
+  /v1/beam/analysis-groups/{group_id}:
     get:
-      operationId: get_analysis_group_public_analysis_groups__group_id__get
+      operationId: get_analysis_group
       summary: Get an Analysis Group
       description: Get an existing Analysis Group.
       parameters:
@@ -788,7 +788,7 @@ paths:
       tags:
         - Analysis Groups
     put:
-      operationId: update_analysis_group_public_analysis_groups__group_id__put
+      operationId: update_analysis_group
       summary: Update an Analysis Group
       description: |-
         Update (replace) an existing Analysis Group.
@@ -834,7 +834,7 @@ paths:
       tags:
         - Analysis Groups
     patch:
-      operationId: patch_analysis_group_public_analysis_groups__group_id__patch
+      operationId: patch_analysis_group
       summary: Partially Update an Analysis Group
       description: |-
         Partially update an existing Analysis Group.
@@ -879,7 +879,7 @@ paths:
       tags:
         - Analysis Groups
     delete:
-      operationId: delete_analysis_group_public_analysis_groups__group_id__delete
+      operationId: delete_analysis_group
       summary: Delete an Analysis Group
       description: Delete an existing Analysis Group.
       parameters:
@@ -908,9 +908,9 @@ paths:
           description: A data conflict has occurred due to the analysis group being modified elsewhere. Please retry your call later.
       tags:
         - Analysis Groups
-  '/v1/beam/analysis-groups/{group_id}/refresh':
+  /v1/beam/analysis-groups/{group_id}/refresh:
     post:
-      operationId: refresh_analysis_group_public_analysis_groups__group_id__refresh_post
+      operationId: refresh_analysis_group
       summary: Refresh an Analysis Group
       description: Rerun the Beam Analysis Group aggregation process.
       parameters:
@@ -939,9 +939,9 @@ paths:
           description: A data conflict has occurred due to the analysis group being modified elsewhere. Please retry your call later.
       tags:
         - Analysis Groups
-  '/v1/beam/analysis-groups/{group_id}/feature-importance':
+  /v1/beam/analysis-groups/{group_id}/feature-importance:
     get:
-      operationId: feature_importance_for_analysis_group_public_analysis_groups__group_id__feature_importance_get
+      operationId: get_analysis_group_feature_importance
       summary: Get Feature Importance for an Analysis Group
       description: Get Feature Importance data for an Analysis Group.
       parameters:
@@ -1062,7 +1062,7 @@ components:
             - true
           title: Value Quant
         excluded_analyses:
-          description: 'A list of Analyses that were excluded from processing, with reasons.'
+          description: A list of Analyses that were excluded from processing, with reasons.
           type: array
           items:
             $ref: '#/components/schemas/ExcludedAnalysis'
@@ -1136,26 +1136,26 @@ components:
           type: string
           format: date-time
           examples:
-            - '2022-04-26T11:46:24+00:00'
+            - 2022-04-26T11:46:24+00:00
           title: Create Dt
         update_dt:
           description: The last update date time for the Analysis Group in ISO 8601 format.
           type: string
           format: date-time
           examples:
-            - '2022-04-26T11:46:24+00:00'
+            - 2022-04-26T11:46:24+00:00
           title: Update Dt
         processed_dt:
           description: Date and time when the Analysis processing completed (ISO 8601).
           type: string
           format: date-time
           examples:
-            - '2022-04-26T11:46:25+00:00'
+            - 2022-04-26T11:46:25+00:00
           title: Processed Dt
       examples:
         - name: My Analysis Group 1
-          create_dt: '2024-02-23T01:37:34.784468+00:00'
-          update_dt: '2024-02-23T01:37:34.784468+00:00'
+          create_dt: 2024-02-23T01:37:34.784468+00:00
+          update_dt: 2024-02-23T01:37:34.784468+00:00
           analysis_ids:
             - 0GTpLZ522Bc
             - 6OK88wZ_Pv0
@@ -1171,7 +1171,7 @@ components:
           user_id: MT_KIk17j-w
           demand_type:
             interval: day
-          processed_dt: '2024-02-23T01:37:37.181042+00:00'
+          processed_dt: 2024-02-23T01:37:37.181042+00:00
       required:
         - name
       title: AnalysisGroupResponse
@@ -1181,9 +1181,9 @@ components:
         - name
         - created
         - updated
-        - '-name'
-        - '-created'
-        - '-updated'
+        - -name
+        - -created
+        - -updated
       title: AnalysisGroupSortField
     AnalysisGroupStatus:
       description: Status of the Analysis Group.
@@ -1251,8 +1251,8 @@ components:
           $ref: '#/components/schemas/BestPracticeChecks'
       examples:
         - date_range:
-            start: '2017-01-01'
-            end: '2017-12-31'
+            start: 2017-01-01
+            end: 2017-12-31
           validation_response:
             missing_data_percentage: 0
             consecutive_nan: 0
@@ -1354,7 +1354,7 @@ components:
           format: date-time
           title: Processed Dt
         external_id:
-          description: 'External identifier associated with the Analysis (optional, user-defined).'
+          description: External identifier associated with the Analysis (optional, user-defined).
           type: string
           examples:
             - abc123
@@ -1375,9 +1375,9 @@ components:
           $ref: '#/components/schemas/SavedLocationResponse'
       examples:
         - name: Analysis 1
-          create_dt: '2023-03-01T23:03:19.403859+00:00'
-          update_dt: '2023-03-01T23:49:39.464011+00:00'
-          processed_dt: '2023-03-01T23:43:52.253150+00:00'
+          create_dt: 2023-03-01T23:03:19.403859+00:00
+          update_dt: 2023-03-01T23:49:39.464011+00:00
+          processed_dt: 2023-03-01T23:43:52.253150+00:00
           user_id: null
           external_id: id1
           label:
@@ -1403,8 +1403,8 @@ components:
           readiness_status: ready
           readiness_checks:
             date_range:
-              start: '2017-01-01'
-              end: '2017-12-31'
+              start: 2017-01-01
+              end: 2017-12-31
             validation_response:
               missing_data_percentage: 0
               consecutive_nan: 0
@@ -1422,9 +1422,9 @@ components:
         - name
         - created
         - updated
-        - '-name'
-        - '-created'
-        - '-updated'
+        - -name
+        - -created
+        - -updated
       title: AnalysisSortField
     AnalysisStatus:
       type: string
@@ -1471,7 +1471,7 @@ components:
           description: The date of the Beam decomposition.
           type: string
           examples:
-            - '2021-01-01'
+            - 2021-01-01
           title: Date
         baseline_demand:
           description: The expected demand for a given date.
@@ -1587,7 +1587,7 @@ components:
           default: day
           $ref: '#/components/schemas/Interval'
         week_start_day:
-          description: 'Week start day (e.g. sunday, monday). Only present for weekly Analysis Groups.'
+          description: Week start day (e.g. sunday, monday). Only present for weekly Analysis Groups.
           $ref: '#/components/schemas/Weekday'
         unit_descriptor:
           description: |-
@@ -1740,11 +1740,11 @@ components:
       properties:
         lat:
           type: string
-          pattern: '^[-+]?(90(\.0+)?|([1-8]\d|[1-9])(\.\d+)?|0+\.(\d+)?[1-9]+(\d+)?)$'
+          pattern: ^[-+]?(90(\.0+)?|([1-8]\d|[1-9])(\.\d+)?|0+\.(\d+)?[1-9]+(\d+)?)$
           title: Lat
         lon:
           type: string
-          pattern: '^[-+]?(180(\.0+)?|(1[0-7]\d|\d\d|[1-9])(\.\d+)?|0+\.(\d+)?[1-9]+(\d+)?)$'
+          pattern: ^[-+]?(180(\.0+)?|(1[0-7]\d|\d\d|[1-9])(\.\d+)?|0+\.(\d+)?[1-9]+(\d+)?)$
           title: Lon
       required:
         - lat
@@ -1755,11 +1755,11 @@ components:
       properties:
         lat:
           type: string
-          pattern: '^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$'
+          pattern: ^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$
           title: Lat
         lon:
           type: string
-          pattern: '^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$'
+          pattern: ^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$
           title: Lon
       required:
         - lat
@@ -1990,7 +1990,7 @@ components:
         demand_type:
           $ref: '#/components/schemas/DemandType'
         external_id:
-          description: 'External identifier associated with the Analysis (optional, user-defined).'
+          description: External identifier associated with the Analysis (optional, user-defined).
           type: string
           examples:
             - abc123
@@ -2095,7 +2095,7 @@ components:
         demand_type:
           $ref: '#/components/schemas/DemandType'
         external_id:
-          description: 'External identifier associated with the Analysis (optional, user-defined).'
+          description: External identifier associated with the Analysis (optional, user-defined).
           type: string
           examples:
             - abc123
@@ -2223,7 +2223,7 @@ components:
             If it's not supplied it will be populated by a reverse geocode.
           type: string
           examples:
-            - '666 Mission St, San Francisco, CA 94105, USA'
+            - 666 Mission St, San Francisco, CA 94105, USA
           title: Formatted Address
         geojson:
           description: |-
@@ -2265,7 +2265,7 @@ components:
             type: string
           title: Place Hierarchies
         places:
-          description: 'A list of Geonames Places corresponding to the saved location. Usually a single item, but always a list.'
+          description: A list of Geonames Places corresponding to the saved location. Usually a single item, but always a list.
           type: array
           items:
             $ref: '#/components/schemas/PlaceResponse'
@@ -2447,7 +2447,7 @@ components:
           examples:
             - The uploaded CSV has an invalid row.
     csv_invalid_header:
-      description: 'The uploaded CSV headers are incorrect. Please use `date,demand`.'
+      description: The uploaded CSV headers are incorrect. Please use `date,demand`.
       type: object
       properties:
         code:
@@ -2457,7 +2457,7 @@ components:
         message:
           type: string
           examples:
-            - 'The uploaded CSV headers are incorrect. Please use `date,demand`.'
+            - The uploaded CSV headers are incorrect. Please use `date,demand`.
     csv_no_data:
       description: The uploaded CSV is empty or only has headers set.
       type: object
@@ -2623,9 +2623,9 @@ components:
           type: string
           format: date
           examples:
-            - '2023-01-01'
+            - 2023-01-01
         demand:
-          description: 'Number value (float or integer, must be a positive number).'
+          description: Number value (float or integer, must be a positive number).
           type: number
           examples:
             - 12.235
@@ -2644,14 +2644,14 @@ components:
       title: HTTPError
   requestBodies:
     UploadDemandData:
-      description: 'Upload demand data in CSV, newline-delimited JSON (NDJSON), or JSON formats.'
+      description: Upload demand data in CSV, newline-delimited JSON (NDJSON), or JSON formats.
       required: true
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/DemandDataPoint'
           example:
-            date: '2023-01-01'
+            date: 2023-01-01
             demand: 12.235
         application/x-ldjson:
           schema:
@@ -2671,7 +2671,7 @@ components:
             {"date": "2023-01-03", "demand": 12.14}
         text/csv:
           schema:
-            description: 'CSV with lowercase headers date,demand and multiple rows of values.'
+            description: CSV with lowercase headers date,demand and multiple rows of values.
             type: string
           example: |-
             date,demand
