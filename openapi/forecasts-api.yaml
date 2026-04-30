@@ -550,6 +550,10 @@ components:
         forecast_window:
           description: Number of days into the future to forecast.
           $ref: '#/components/schemas/ForecastWindowDay'
+        generate_baseline:
+          type: boolean
+          default: false
+          title: Generate Baseline
         label:
           description: Set of labels you can use to better identify or group your forecast models.
           type: array
