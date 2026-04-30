@@ -1,34 +1,60 @@
 openapi: 3.1.0
 info:
   title: PredictHQ Places API
-  description: 'The Places API gives you a read-only interface to PredictHQ''s places data. A place represents a [Geonames](http://www.geonames.org/) Feature, which can be either an Area, an Administrative Feature, or a Populated Place.'
+  description: The Places API gives you a read-only interface to PredictHQ's places data. A place represents a [Geonames](http://www.geonames.org/) Feature, which can be either an Area, an Administrative Feature, or a Populated Place.
   version: 1.0.0
   license:
     name: MIT
-    url: 'https://opensource.org/licenses/MIT'
-  termsOfService: 'https://www.predicthq.com/legal/terms'
+    url: https://opensource.org/licenses/MIT
+  termsOfService: https://www.predicthq.com/legal/terms
 security:
   - BearerAuth: []
 tags:
   - name: Places
     externalDocs:
-      url: 'https://docs.predicthq.com/api/places/search-places'
+      url: https://docs.predicthq.com/api/places/search-places
       description: Places Docs
   - name: Hierarchies
     externalDocs:
-      url: 'https://docs.predicthq.com/api/places/get-place-hierarchies'
+      url: https://docs.predicthq.com/api/places/get-place-hierarchies
       description: Hierarchies Docs
 servers:
-  - url: 'https://api.predicthq.com'
+  - url: https://api.predicthq.com
 externalDocs:
-  url: 'https://docs.predicthq.com'
+  url: https://docs.predicthq.com
   description: PredictHQ Tech Docs
 x-hideTryItPanel: true
 paths:
   /v1/places/hierarchies:
     get:
-      operationId: get_hierarchies_places_hierarchies_get
+      operationId: list_place_hierarchies
       summary: Get Place Hierarchies
+      description: |-
+        Return the administrative hierarchy chain for one or more places.
+
+        Exactly one of `location.place_id` or `location.origin` must be provided — supplying both
+        or neither returns `400`.
+
+        **By place ID** (`location.place_id`):
+        Returns stored hierarchies for the given place IDs. Results are paginated over the matched
+        places. The `country` filter is not applied in this mode.
+
+        **By coordinates** (`location.origin`):
+        Finds the nearest locality to the given `lat,lon` and returns its hierarchy chain.
+
+        - When `level` is `region` or above (`planet`, `continent`, `country`, `region`),
+          only nearby localities are considered.
+        - When `level` is more granular than `region` (`county`, `localadmin`, `locality`,
+          `neighbourhood`) or not specified, the search is extended to include major and metro
+          areas within the same region as the nearest locality.
+        - If no locality is found at the exact coordinates, a **500 km fallback radius** is
+          applied before giving up.
+        - Use `country` (comma-separated ISO 3166-1 alpha-2 codes) to restrict the coordinate
+          lookup to specific countries.
+
+        Use `level` to scope which hierarchy levels are returned.
+
+        Results are paginated with `offset` and `limit`.
       parameters:
         - name: location.place_id
           in: query
@@ -63,13 +89,16 @@ paths:
         - name: level
           in: query
           description: |-
-            A place level.
+            Administrative level at which to return hierarchy results. Defaults to `locality`.
 
-
-            Defaults to `locality`.
-
-
-            E.g. `?level=county`
+            - `planet` — Earth (top level)
+            - `continent` — Continent (e.g. North America, Europe)
+            - `country` — Sovereign nation
+            - `region` — Administrative level 1 (e.g. US state, Australian state)
+            - `county` — Administrative level 2 (e.g. US county)
+            - `localadmin` — Local administrative area (e.g. a municipality)
+            - `locality` — Populated place (e.g. a city or town)
+            - `neighbourhood` — Subdivision of a locality
           required: false
           schema:
             $ref: '#/components/schemas/BaseLevel'
@@ -90,20 +119,8 @@ paths:
             title: Location.Origin
           explode: false
           style: form
-        - name: offset
-          in: query
-          required: false
-          schema:
-            type: integer
-            minimum: 0
-            title: Offset
-        - name: limit
-          in: query
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            title: Limit
+        - $ref: '#/components/parameters/OffsetParam'
+        - $ref: '#/components/parameters/LimitParam'
       responses:
         '200':
           description: Successful Response
@@ -111,33 +128,77 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HierarchiesResponse'
-        '422':
-          description: Validation Error
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                oneOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+                  - $ref: '#/components/schemas/HTTPValidationError'
+                  - $ref: '#/components/schemas/QueryValidationError'
+              examples:
+                missingLocation:
+                  summary: Missing hierarchy lookup input
+                  value:
+                    error: Either location.origin or location.place_id is required
+                invalidRequest:
+                  summary: Invalid query parameter
+                  value:
+                    error: Request contains invalid data
+                    details:
+                      - field: query.limit
+                        msg: Input should be less than or equal to 10000
+                        type: less_than_equal
+                invalidQueryValue:
+                  summary: Invalid query parameter value
+                  value:
+                    error:
+                      - field: limit
+                        msg: Input should be greater than or equal to 1
+                        type: greater_than_equal
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Authorization required
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Bearer token scope insufficient
       tags:
         - Hierarchies
   /v1/places:
     get:
-      operationId: search_geonames_places_get
+      operationId: list_places
       summary: Search Places
+      description: |-
+        Search for places by text query, country, geographic coordinates, or place IDs.
+
+        At least one of `q`, `country`, `location`, or `id` must be provided — otherwise
+        a `400` is returned.
+
+        **Filtering:**
+        - `q` — free-text search on place name.
+        - `country` — comma-separated ISO 3166-1 alpha-2 country codes.
+        - `location` — coordinates in `lat,lon` or `@lat,lon` format.
+          Lat must be between −90 and 90, lon between −180 and 180.
+        - `id` — comma-separated place IDs. When `id` is the only filter and no pagination
+          parameters are set, an optimised multi-get is used instead of a search query.
+        - `type` — comma-separated place types. Accepts admin level values as well as aliases
+          (e.g. `local` expands to `neighbourhood`, `locality`, and `localadmin`).
+
+        Results are paginated with `offset` and `limit`.
       parameters:
-        - name: offset
-          in: query
-          required: false
-          schema:
-            type: integer
-            minimum: 0
-            title: Offset
-        - name: limit
-          in: query
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            title: Limit
+        - $ref: '#/components/parameters/OffsetParam'
+        - $ref: '#/components/parameters/LimitParam'
         - name: id
           in: query
           description: |-
@@ -195,10 +256,19 @@ paths:
         - name: type
           in: query
           description: |-
-            A comma-separated list of place types.
+            Comma-separated list of place types to filter results. Accepts administrative levels and aliases.
 
-
-            E.g. `?type=country`
+            - `planet` — Earth (top level)
+            - `continent` — Continent (e.g. North America, Europe)
+            - `country` — Sovereign nation
+            - `region` — Administrative level 1 (e.g. US state, Australian state)
+            - `county` — Administrative level 2 (e.g. US county)
+            - `localadmin` — Local administrative area (e.g. a municipality)
+            - `locality` — Populated place (e.g. a city or town)
+            - `neighbourhood` — Subdivision of a locality
+            - `major` — Major populated place
+            - `metro` — Metropolitan area
+            - `local` — Alias expanding to `neighbourhood`, `locality`, and `localadmin` combined
           required: false
           schema:
             type: array
@@ -226,17 +296,77 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PublicGeonamesPlacesResponse'
-        '422':
-          description: Validation Error
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                oneOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+                  - $ref: '#/components/schemas/HTTPValidationError'
+                  - $ref: '#/components/schemas/QueryValidationError'
+              examples:
+                missingQuery:
+                  summary: Missing search criteria
+                  value:
+                    error: You must provide a text, country, location or id query.
+                invalidRequest:
+                  summary: Invalid query parameter
+                  value:
+                    error: Request contains invalid data
+                    details:
+                      - field: query.limit
+                        msg: Input should be less than or equal to 10000
+                        type: less_than_equal
+                invalidQueryValue:
+                  summary: Invalid query parameter value
+                  value:
+                    error:
+                      - field: limit
+                        msg: Input should be greater than or equal to 1
+                        type: greater_than_equal
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Authorization required
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Bearer token scope insufficient
       tags:
         - Places
 components:
+  parameters:
+    LimitParam:
+      name: limit
+      in: query
+      description: Maximum number of results to return per page.
+      required: false
+      schema:
+        type: integer
+        default: 10
+        maximum: 10000
+        minimum: 1
+    OffsetParam:
+      name: offset
+      in: query
+      description: Zero-based index of the first result to return.
+      required: false
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
   schemas:
     BaseLevel:
+      description: Administrative level of a place in the Geonames hierarchy.
       type: string
       enum:
         - planet
@@ -248,19 +378,20 @@ components:
         - locality
         - neighbourhood
       title: BaseLevel
-    HTTPValidationError:
-      type: object
-      properties:
-        detail:
-          type: array
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          title: Detail
-      title: HTTPValidationError
+      x-enumDescriptions:
+        planet: Earth (top level)
+        continent: Continent (e.g. North America, Europe)
+        country: Sovereign nation
+        region: Administrative level 1 (e.g. US state, Australian state)
+        county: Administrative level 2 (e.g. US county)
+        localadmin: Local administrative area (e.g. a municipality)
+        locality: Populated place (e.g. a city or town)
+        neighbourhood: Subdivision of a locality
     HierarchiesResponse:
       type: object
       properties:
         count:
+          description: Total number of hierarchy chains matching the query
           type: integer
           title: Count
         next:
@@ -274,6 +405,7 @@ components:
             - type: string
             - type: 'null'
         place_hierarchies:
+          description: Array of hierarchy chains, each an ordered list from broadest to most specific administrative level
           type: array
           items:
             items:
@@ -288,8 +420,10 @@ components:
       type: object
       properties:
         type:
+          description: Administrative level of this hierarchy entry, e.g. `country`, `region`, `locality`
           $ref: '#/components/schemas/BaseLevel'
         place_id:
+          description: Unique PredictHQ place identifier for this hierarchy entry
           type: string
           title: Place Id
       required:
@@ -309,7 +443,7 @@ components:
           title: Id
         type:
           description: |-
-            The administrative level of the place..
+            The administrative level of the place.
 
 
             E.g. `locality`
@@ -386,6 +520,7 @@ components:
       type: object
       properties:
         count:
+          description: Total number of places matching the query
           type: integer
           title: Count
         next:
@@ -399,6 +534,7 @@ components:
             - type: string
             - type: 'null'
         results:
+          description: Array of place objects for the current page
           type: array
           items:
             $ref: '#/components/schemas/PublicGeonamesPlaceResponse'
@@ -407,27 +543,65 @@ components:
         - count
         - results
       title: PublicGeonamesPlacesResponse
-    ValidationError:
+    ErrorResponse:
       type: object
       properties:
-        loc:
-          type: array
-          items:
-            anyOf:
-              - type: string
-              - type: integer
-          title: Location
+        error:
+          description: Error message
+          type: string
+          title: Error
+      required:
+        - error
+      title: ErrorResponse
+    ValidationErrorDetail:
+      type: object
+      properties:
+        field:
+          description: The field that failed validation
+          type: string
+          title: Field
         msg:
+          description: The validation error message
           type: string
           title: Message
         type:
+          description: The type of validation error
           type: string
           title: Error Type
       required:
-        - loc
+        - field
         - msg
         - type
-      title: ValidationError
+      title: ValidationErrorDetail
+    HTTPValidationError:
+      type: object
+      properties:
+        error:
+          description: Error summary message
+          type: string
+          title: Error
+        details:
+          description: List of validation error details
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationErrorDetail'
+          title: Details
+      required:
+        - error
+        - details
+      title: HTTPValidationError
+    QueryValidationError:
+      type: object
+      properties:
+        error:
+          description: List of query parameter validation errors
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationErrorDetail'
+          title: Error
+      required:
+        - error
+      title: QueryValidationError
   securitySchemes:
     BearerAuth:
       type: http

@@ -9,25 +9,25 @@ info:
   version: 1.0.0
   license:
     name: MIT
-    url: 'https://opensource.org/licenses/MIT'
-  termsOfService: 'https://www.predicthq.com/legal/terms'
+    url: https://opensource.org/licenses/MIT
+  termsOfService: https://www.predicthq.com/legal/terms
 security:
   - BearerAuth: []
 tags:
   - name: Saved Locations API
     externalDocs:
-      url: 'https://docs.predicthq.com/api/saved-locations/overview'
+      url: https://docs.predicthq.com/api/saved-locations/overview
       description: Saved Locations API Docs
 servers:
-  - url: 'https://api.predicthq.com'
+  - url: https://api.predicthq.com
 externalDocs:
-  url: 'https://docs.predicthq.com'
+  url: https://docs.predicthq.com
   description: PredictHQ Tech Docs
 x-hideTryItPanel: true
 paths:
   /v1/saved-locations:
     get:
-      operationId: get_locations_public_locations_get
+      operationId: list_saved_locations
       summary: Search Saved Locations
       parameters:
         - name: q
@@ -62,53 +62,53 @@ paths:
               type: string
               enum:
                 - created
-                - '-created'
+                - -created
                 - address
-                - '-address'
+                - -address
                 - name
-                - '-name'
+                - -name
                 - updated
-                - '-updated'
+                - -updated
                 - attended_event_count
-                - '-attended_event_count'
+                - -attended_event_count
                 - non_attended_event_count
-                - '-non_attended_event_count'
+                - -non_attended_event_count
                 - phq_attendance_sum
-                - '-phq_attendance_sum'
+                - -phq_attendance_sum
                 - pes_accommodation_sum
-                - '-pes_accommodation_sum'
+                - -pes_accommodation_sum
                 - pes_hospitality_sum
-                - '-pes_hospitality_sum'
+                - -pes_hospitality_sum
                 - pes_total_sum
-                - '-pes_total_sum'
+                - -pes_total_sum
                 - pes_transportation_sum
-                - '-pes_transportation_sum'
+                - -pes_transportation_sum
                 - unscheduled_event_count
-                - '-unscheduled_event_count'
+                - -unscheduled_event_count
                 - next_90d.attended_event_count
-                - '-next_90d.attended_event_count'
+                - -next_90d.attended_event_count
                 - next_90d.non_attended_event_count
-                - '-next_90d.non_attended_event_count'
+                - -next_90d.non_attended_event_count
                 - next_90d.pes_accommodation_sum
-                - '-next_90d.pes_accommodation_sum'
+                - -next_90d.pes_accommodation_sum
                 - next_90d.pes_hospitality_sum
-                - '-next_90d.pes_hospitality_sum'
+                - -next_90d.pes_hospitality_sum
                 - next_90d.pes_total_sum
-                - '-next_90d.pes_total_sum'
+                - -next_90d.pes_total_sum
                 - next_90d.pes_transportation_sum
-                - '-next_90d.pes_transportation_sum'
+                - -next_90d.pes_transportation_sum
                 - next_90d.phq_attendance_sum
-                - '-next_90d.phq_attendance_sum'
+                - -next_90d.phq_attendance_sum
                 - next_90d.unscheduled_event_count
-                - '-next_90d.unscheduled_event_count'
+                - -next_90d.unscheduled_event_count
                 - attended_events
-                - '-attended_events'
+                - -attended_events
                 - non_attended_events
-                - '-non_attended_events'
+                - -non_attended_events
                 - attendance
-                - '-attendance'
+                - -attendance
                 - unscheduled_events
-                - '-unscheduled_events'
+                - -unscheduled_events
             default:
               - created
           explode: false
@@ -143,7 +143,7 @@ paths:
       tags:
         - Saved Locations API
     post:
-      operationId: save_location_public_locations_post
+      operationId: create_saved_location
       summary: Create a Saved Location
       requestBody:
         required: true
@@ -171,9 +171,9 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       tags:
         - Saved Locations API
-  '/v1/saved-locations/{location_id}':
+  /v1/saved-locations/{location_id}:
     get:
-      operationId: get_location_public_locations__location_id__get
+      operationId: get_saved_location
       summary: Get a Saved Location
       parameters:
         - name: location_id
@@ -199,7 +199,7 @@ paths:
       tags:
         - Saved Locations API
     put:
-      operationId: replace_location_data_public_locations__location_id__put
+      operationId: update_saved_location
       summary: Update (replace) a Saved Location
       parameters:
         - name: location_id
@@ -227,7 +227,7 @@ paths:
       tags:
         - Saved Locations API
     delete:
-      operationId: delete_location_public_locations__location_id__delete
+      operationId: delete_saved_location
       summary: Delete a Saved Location
       parameters:
         - name: location_id
@@ -248,11 +248,11 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       tags:
         - Saved Locations API
-  '/v1/saved-locations/{location_id}/insights/events':
+  /v1/saved-locations/{location_id}/insights/events:
     get:
-      operationId: get_location_events_public_locations__location_id__insights_events_get
+      operationId: list_saved_location_insight_events
       summary: Search Events for a Saved Location
-      description: 'Please refer to the [Events API](https://docs.predicthq.com/api/events/search-events) docs for the available query parameters in addition to those listed below.'
+      description: Please refer to the [Events API](https://docs.predicthq.com/api/events/search-events) docs for the available query parameters in addition to those listed below.
       parameters:
         - name: location_id
           in: path
@@ -292,9 +292,9 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       tags:
         - Saved Locations API
-  '/v1/saved-locations/{location_id}/opening-hours':
+  /v1/saved-locations/{location_id}/opening-hours:
     post:
-      operationId: create_opening_hours_public_locations__location_id__opening_hours_post
+      operationId: create_opening_hours
       summary: Create opening hours for a location
       parameters:
         - name: location_id
@@ -325,7 +325,7 @@ paths:
       tags:
         - Saved Locations API
     get:
-      operationId: search_opening_hours_public_locations__location_id__opening_hours_get
+      operationId: list_opening_hours
       summary: List opening hours for a location
       parameters:
         - name: location_id
@@ -365,9 +365,9 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       tags:
         - Saved Locations API
-  '/v1/saved-locations/{location_id}/opening-hours/{opening_hours_id}':
+  /v1/saved-locations/{location_id}/opening-hours/{opening_hours_id}:
     get:
-      operationId: get_opening_hours_public_locations__location_id__opening_hours__opening_hours_id__get
+      operationId: get_opening_hours
       summary: Get specific opening hours
       parameters:
         - name: location_id
@@ -398,7 +398,7 @@ paths:
       tags:
         - Saved Locations API
     put:
-      operationId: update_opening_hours_public_locations__location_id__opening_hours__opening_hours_id__put
+      operationId: update_opening_hours
       summary: Update opening hours
       parameters:
         - name: location_id
@@ -435,7 +435,7 @@ paths:
       tags:
         - Saved Locations API
     delete:
-      operationId: delete_opening_hours_public_locations__location_id__opening_hours__opening_hours_id__delete
+      operationId: delete_opening_hours
       summary: Delete opening hours
       parameters:
         - name: location_id
@@ -461,9 +461,9 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       tags:
         - Saved Locations API
-  '/v1/saved-locations/{location_id}/closures':
+  /v1/saved-locations/{location_id}/closures:
     post:
-      operationId: create_closure_public_locations__location_id__closures_post
+      operationId: create_closure
       summary: Create a closure for a location
       parameters:
         - name: location_id
@@ -494,7 +494,7 @@ paths:
       tags:
         - Saved Locations API
     get:
-      operationId: search_closures_public_locations__location_id__closures_get
+      operationId: list_closures
       summary: List closures for a location
       parameters:
         - name: location_id
@@ -534,9 +534,9 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       tags:
         - Saved Locations API
-  '/v1/saved-locations/{location_id}/closures/{closure_id}':
+  /v1/saved-locations/{location_id}/closures/{closure_id}:
     get:
-      operationId: get_closure_public_locations__location_id__closures__closure_id__get
+      operationId: get_closure
       summary: Get specific closure
       parameters:
         - name: location_id
@@ -567,7 +567,7 @@ paths:
       tags:
         - Saved Locations API
     delete:
-      operationId: delete_closure_public_locations__location_id__closures__closure_id__delete
+      operationId: delete_closure
       summary: Delete closure
       parameters:
         - name: location_id
@@ -781,12 +781,12 @@ components:
         effective_from:
           type: string
           format: date
-          default: '0001-01-01'
+          default: 0001-01-01
           title: Effective From
         effective_to:
           type: string
           format: date
-          default: '9999-12-31'
+          default: 9999-12-31
           title: Effective To
         slots:
           type: array
@@ -1452,7 +1452,7 @@ components:
             - retail
           title: Labels
         geojson:
-          description: 'An object containing the geographic information about a location. Represents the geometry associated with the event in the [GeoJSON format](https://geojson.org/).'
+          description: An object containing the geographic information about a location. Represents the geometry associated with the event in the [GeoJSON format](https://geojson.org/).
           $ref: '#/components/schemas/GeoJson-Output'
           examples:
             - type: Feature
@@ -1490,7 +1490,7 @@ components:
               ```
           type: string
           examples:
-            - '666 Mission St, San Francisco, CA 94105, USA'
+            - 666 Mission St, San Francisco, CA 94105, USA
           title: Formatted Address
         industry:
           description: The industry of your business.
@@ -1516,7 +1516,7 @@ components:
           type: string
           format: date-time
           examples:
-            - '2022-04-26T11:46:24+00:00'
+            - 2022-04-26T11:46:24+00:00
           title: Create Dt
         update_dt:
           description: |-
@@ -1527,7 +1527,7 @@ components:
           type: string
           format: date-time
           examples:
-            - '2022-04-26T11:46:24+00:00'
+            - 2022-04-26T11:46:24+00:00
           title: Update Dt
         enrich_dt:
           description: |-
@@ -1538,7 +1538,7 @@ components:
           type: string
           format: date-time
           examples:
-            - '2022-04-26T11:46:25+00:00'
+            - 2022-04-26T11:46:25+00:00
           title: Enrich Dt
         insights_dt:
           description: |-
@@ -1549,7 +1549,7 @@ components:
           type: string
           format: date-time
           examples:
-            - '2022-04-26T11:46:25+00:00'
+            - 2022-04-26T11:46:25+00:00
           title: Insights Dt
         user_id:
           description: |-
@@ -1610,7 +1610,7 @@ components:
             $ref: '#/components/schemas/SummaryInsights'
           title: Summary Insights
         places:
-          description: 'This is a list of (geonames) Places. It is based on the lowest level place_id in the [place_hierarchies](https://docs.predicthq.com/getting-started/guides/geolocation-guides/understanding-place-hierarchies). It will usually only contain 1 item in the list but will always be a list.'
+          description: This is a list of (geonames) Places. It is based on the lowest level place_id in the [place_hierarchies](https://docs.predicthq.com/getting-started/guides/geolocation-guides/understanding-place-hierarchies). It will usually only contain 1 item in the list but will always be a list.
           type: array
           items:
             $ref: '#/components/schemas/Place'
@@ -1629,14 +1629,14 @@ components:
           $ref: '#/components/schemas/AdditionalDetails'
       examples:
         - location_id: 7sdevIveOuIQmP0EL1lZoQ
-          create_dt: '2025-11-17T19:11:43+00:00'
-          update_dt: '2025-11-17T19:11:43+00:00'
-          enrich_dt: '2025-11-17T19:11:45+00:00'
-          insights_dt: '2025-11-17T19:11:46+00:00'
+          create_dt: 2025-11-17T19:11:43+00:00
+          update_dt: 2025-11-17T19:11:43+00:00
+          enrich_dt: 2025-11-17T19:11:45+00:00
+          insights_dt: 2025-11-17T19:11:46+00:00
           name: San Francisco
           place_ids:
             - 5391959
-          formatted_address: 'San Francisco, San Francisco County, California, United States [Locality]'
+          formatted_address: San Francisco, San Francisco County, California, United States [Locality]
           places:
             - place_id: 5391959
               type: locality
@@ -1654,8 +1654,8 @@ components:
           summary_insights:
             - date_range:
                 type: next_90d
-                start_dt: '2025-11-17T19:11:46+00:00'
-                end_dt: '2026-02-15T19:11:46+00:00'
+                start_dt: 2025-11-17T19:11:46+00:00
+                end_dt: 2026-02-15T19:11:46+00:00
               phq_attendance_sum: 2670581
               attended_event_count: 2568
               non_attended_event_count: 113
@@ -1762,14 +1762,14 @@ components:
       type: object
       properties:
         gte:
-          description: 'Opening time in HH:MM format (00:00-23:59)'
+          description: Opening time in HH:MM format (00:00-23:59)
           type: string
-          pattern: '^([01]?[0-9]|2[0-3]):[0-5][0-9]$'
+          pattern: ^([01]?[0-9]|2[0-3]):[0-5][0-9]$
           title: Gte
         lt:
-          description: 'Closing time in HH:MM format (00:00-24:00)'
+          description: Closing time in HH:MM format (00:00-24:00)
           type: string
-          pattern: '^(([01]?[0-9]|2[0-3]):[0-5][0-9]|24:00)$'
+          pattern: ^(([01]?[0-9]|2[0-3]):[0-5][0-9]|24:00)$
           title: Lt
       required:
         - gte
@@ -1789,14 +1789,14 @@ components:
       type: object
       properties:
         open:
-          description: 'Opening time in HH:MM format (00:00-23:59)'
+          description: Opening time in HH:MM format (00:00-23:59)
           type: string
-          pattern: '^([01]?[0-9]|2[0-3]):[0-5][0-9]$'
+          pattern: ^([01]?[0-9]|2[0-3]):[0-5][0-9]$
           title: Open
         close:
-          description: 'Closing time in HH:MM format (00:00-24:00)'
+          description: Closing time in HH:MM format (00:00-24:00)
           type: string
-          pattern: '^(([01]?[0-9]|2[0-3]):[0-5][0-9]|24:00)$'
+          pattern: ^(([01]?[0-9]|2[0-3]):[0-5][0-9]|24:00)$
           title: Close
       required:
         - open
@@ -1808,12 +1808,12 @@ components:
         effective_from:
           type: string
           format: date
-          default: '0001-01-01'
+          default: 0001-01-01
           title: Effective From
         effective_to:
           type: string
           format: date
-          default: '9999-12-31'
+          default: 9999-12-31
           title: Effective To
         slots:
           type: array

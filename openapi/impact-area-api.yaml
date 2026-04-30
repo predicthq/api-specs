@@ -2,22 +2,22 @@ openapi: 3.1.0
 info:
   title: PredictHQ Impact Area API
   description: Determine a suitable search area around your business when searching for events.
-  termsOfService: 'https://www.predicthq.com/legal/terms'
+  termsOfService: https://www.predicthq.com/legal/terms
   license:
     name: MIT
-    url: 'https://opensource.org/licenses/MIT'
+    url: https://opensource.org/licenses/MIT
   version: 1.0.0
 security:
   - BearerAuth: []
 tags:
   - name: Impact Area API
     externalDocs:
-      url: 'https://docs.predicthq.com/api/impact-area'
+      url: https://docs.predicthq.com/api/impact-area
       description: Impact Area API Docs
 servers:
-  - url: 'https://api.predicthq.com'
+  - url: https://api.predicthq.com
 externalDocs:
-  url: 'https://docs.predicthq.com'
+  url: https://docs.predicthq.com
   description: PredictHQ Tech Docs
 x-hideTryItPanel: true
 paths:
@@ -49,18 +49,18 @@ paths:
           schema:
             type: string
             examples:
-              - '37.7749,-122.4194'
-            pattern: '^-?\d{1,3}(?:\.\d+)?,\-?\d{1,3}(?:\.\d+)?$'
+              - 37.7749,-122.4194
+            pattern: ^-?\d{1,3}(?:\.\d+)?,\-?\d{1,3}(?:\.\d+)?$
         - name: area_type
           in: query
-          description: 'The shape used to represent the returned impact area. Defaults to `polygon`, which returns a GeoJSON Polygon that precisely follows the boundaries of the impact area. Use `radius` for a simpler representation - a GeoJSON Point with a radius property defining a circular impact area.'
+          description: The shape used to represent the returned impact area. Defaults to `polygon`, which returns a GeoJSON Polygon that precisely follows the boundaries of the impact area. Use `radius` for a simpler representation - a GeoJSON Point with a radius property defining a circular impact area.
           required: false
           schema:
             default: polygon
             $ref: '#/components/schemas/AreaType'
         - name: radius_unit
           in: query
-          description: 'The unit of measurement to be used for the radius if `area_type` is set to `radius`. This can be one of `m` (meters), `km` (kilometers), `ft` (feet), or `mi` (miles).'
+          description: The unit of measurement to be used for the radius if `area_type` is set to `radius`. This can be one of `m` (meters), `km` (kilometers), `ft` (feet), or `mi` (miles).
           required: false
           schema:
             default: m
@@ -74,7 +74,7 @@ paths:
                 $ref: '#/components/schemas/PredictedAreaResponse'
               examples:
                 polygon:
-                  summary: 'Polygon response (area_type=polygon, default)'
+                  summary: Polygon response (area_type=polygon, default)
                   value:
                     geojson:
                       type: Feature
@@ -139,7 +139,7 @@ paths:
               example:
                 error: Insufficient permissions
         '429':
-          description: 'Rate limit exceeded. See [Rate Limiting](https://docs.predicthq.com/api/overview/rate-limits) for details on limits and retry guidance.'
+          description: Rate limit exceeded. See [Rate Limiting](https://docs.predicthq.com/api/overview/rate-limits) for details on limits and retry guidance.
           content:
             application/json:
               schema:
@@ -166,12 +166,12 @@ components:
           const: Feature
           title: Type
         properties:
-          description: 'Feature properties, including radius details for Point geometries'
+          description: Feature properties, including radius details for Point geometries
           anyOf:
             - $ref: '#/components/schemas/RadiusProperties'
             - type: 'null'
         geometry:
-          description: 'The GeoJSON geometry (Point, Polygon, or MultiPolygon)'
+          description: The GeoJSON geometry (Point, Polygon, or MultiPolygon)
           discriminator:
             propertyName: type
             mapping:
@@ -286,7 +286,7 @@ components:
           const: Point
           title: Type
         coordinates:
-          description: 'GeoJSON position as [longitude, latitude]'
+          description: GeoJSON position as [longitude, latitude]
           anyOf:
             - prefixItems:
                 - type: number
@@ -315,7 +315,7 @@ components:
           const: Polygon
           title: Type
         coordinates:
-          description: 'Array of linear rings, each being an array of [longitude, latitude] positions'
+          description: Array of linear rings, each being an array of [longitude, latitude] positions
           type: array
           items:
             items:
