@@ -131,6 +131,21 @@ components:
         - details
       title: HTTPValidationError
     Industry:
+      description: |-
+        The industry category of the business location.
+
+        Different industries have different event impact profiles, which affect the size
+        and shape of the returned area.
+
+        - `accommodation` — Hotels, motels, and other lodging businesses
+        - `restaurants` — Restaurants, cafes, bars, and food service businesses
+        - `retail` — Retail stores and shopping centers
+        - `parking` — Parking lots and garages
+        - `cpg` — Consumer packaged goods and grocery
+        - `tourism` — Tourism and attractions
+        - `marketing` — Marketing and advertising campaigns
+        - `transportation` — Transportation and logistics
+        - `other` — General-purpose fallback for industries not listed above
       type: string
       enum:
         - parking
@@ -145,8 +160,7 @@ components:
       title: Industry
     LocationResponse:
       description: |-
-        A json object representing the geo location of the event.
-
+        The origin location coordinates provided in the request.
 
         E.g.:
         ```json
@@ -174,6 +188,11 @@ components:
         The unit of the radius returned.
 
         This will be the unit specified in the radius_unit parameter in the call made.
+
+        - `m` — Meters
+        - `km` — Kilometers
+        - `ft` — Feet
+        - `mi` — Miles
       type: string
       enum:
         - m
