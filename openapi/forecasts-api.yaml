@@ -553,7 +553,9 @@ components:
         generate_baseline:
           type: boolean
           default: false
-          title: Generate Baseline
+          title: Generate Baseline Model
+          description: >
+              When true, generates a baseline model using historical demand data only - without PredictHQ demand intelligence - for benchmarking accuracy against the enhanced model.
         label:
           description: Set of labels you can use to better identify or group your forecast models.
           type: array
