@@ -29,6 +29,7 @@ paths:
     get:
       operationId: list_saved_locations
       summary: Search Saved Locations
+      description: Returns a paginated list of Saved Locations for the authenticated organization. Supports full-text search, filtering by location ID, and sorting by various fields including event counts and spend metrics.
       parameters:
         - name: q
           in: query
@@ -140,11 +141,28 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Authorization required
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Bearer token scope insufficient
       tags:
         - Saved Locations API
     post:
       operationId: create_saved_location
       summary: Create a Saved Location
+      description: Creates a new Saved Location. Provide either `origin_geojson` (recommended, to auto-calculate a Predicted Impact Area), `geojson` (manual area), or `place_ids` (city/state/country). The location will be enriched asynchronously after creation.
       requestBody:
         required: true
         content:
@@ -160,6 +178,7 @@ paths:
                 type: object
                 properties:
                   location_id:
+                    description: The unique identifier of the newly created Saved Location.
                     type: string
                 required:
                   - location_id
@@ -169,12 +188,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Authorization required
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Bearer token scope insufficient
       tags:
         - Saved Locations API
   /v1/saved-locations/{location_id}:
     get:
       operationId: get_saved_location
       summary: Get a Saved Location
+      description: Returns a single Saved Location by ID, including its geographic data, summary insights, and enrichment status.
       parameters:
         - name: location_id
           in: path
@@ -196,11 +232,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Authorization required
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Bearer token scope insufficient
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Location not found
       tags:
         - Saved Locations API
     put:
       operationId: update_saved_location
       summary: Update (replace) a Saved Location
+      description: Replaces an existing Saved Location with the provided data. All fields from the create request apply. The location will be re-enriched asynchronously after the update.
       parameters:
         - name: location_id
           in: path
@@ -224,11 +285,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Authorization required
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Bearer token scope insufficient
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Location not found
       tags:
         - Saved Locations API
     delete:
       operationId: delete_saved_location
       summary: Delete a Saved Location
+      description: Deletes a Saved Location by ID. This is a permanent operation.
       parameters:
         - name: location_id
           in: path
@@ -246,13 +332,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Authorization required
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Bearer token scope insufficient
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Location not found
       tags:
         - Saved Locations API
   /v1/saved-locations/{location_id}/insights/events:
     get:
       operationId: list_saved_location_insight_events
       summary: Search Events for a Saved Location
-      description: Please refer to the [Events API](https://docs.predicthq.com/api/events/search-events) docs for the available query parameters in addition to those listed below.
+      description: Returns events that impact the specified Saved Location. Please refer to the [Events API](https://docs.predicthq.com/api/events/search-events) docs for the available query parameters in addition to those listed below.
       parameters:
         - name: location_id
           in: path
@@ -290,15 +400,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Authorization required
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Bearer token scope insufficient
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Location not found
       tags:
         - Saved Locations API
   /v1/saved-locations/{location_id}/opening-hours:
     post:
       operationId: create_opening_hours
       summary: Create opening hours for a location
+      description: Creates a new opening hours record for a location. Slots define the open/close times for each day of the week. The `effective_from` and `effective_to` date range must not overlap with existing opening hours for the same location.
       parameters:
         - name: location_id
           in: path
+          description: An existing Saved Location ID.
           required: true
           schema:
             type: string
@@ -322,20 +458,55 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Authorization required
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Bearer token scope insufficient
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Location not found
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: 'Opening hours with overlapping date range already exist for this location (conflicting ID: abc123)'
       tags:
         - Saved Locations API
     get:
       operationId: list_opening_hours
       summary: List opening hours for a location
+      description: Returns a paginated list of opening hours records for a location. Optionally filter by date range using `active_from` and `active_to`.
       parameters:
         - name: location_id
           in: path
+          description: An existing Saved Location ID.
           required: true
           schema:
             type: string
             title: Location Id
         - name: active_from
           in: query
+          description: Filter to opening hours records active on or after this date in `YYYY-MM-DD` format.
           required: false
           schema:
             type: string
@@ -343,6 +514,7 @@ paths:
             title: Active From
         - name: active_to
           in: query
+          description: Filter to opening hours records active on or before this date in `YYYY-MM-DD` format.
           required: false
           schema:
             type: string
@@ -363,21 +535,48 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Authorization required
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Bearer token scope insufficient
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Location not found
       tags:
         - Saved Locations API
   /v1/saved-locations/{location_id}/opening-hours/{opening_hours_id}:
     get:
       operationId: get_opening_hours
       summary: Get specific opening hours
+      description: Returns a single opening hours record by ID for the specified location.
       parameters:
         - name: location_id
           in: path
+          description: An existing Saved Location ID.
           required: true
           schema:
             type: string
             title: Location Id
         - name: opening_hours_id
           in: path
+          description: An existing opening hours record ID.
           required: true
           schema:
             type: string
@@ -395,20 +594,47 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Authorization required
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Bearer token scope insufficient
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Opening hours record not found
       tags:
         - Saved Locations API
     put:
       operationId: update_opening_hours
       summary: Update opening hours
+      description: Replaces an existing opening hours record. The `effective_from` and `effective_to` date range must not overlap with other opening hours for the same location.
       parameters:
         - name: location_id
           in: path
+          description: An existing Saved Location ID.
           required: true
           schema:
             type: string
             title: Location Id
         - name: opening_hours_id
           in: path
+          description: An existing opening hours record ID.
           required: true
           schema:
             type: string
@@ -432,20 +658,55 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Authorization required
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Bearer token scope insufficient
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Opening hours record not found
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: 'Opening hours with overlapping date range already exist for this location (conflicting ID: abc123)'
       tags:
         - Saved Locations API
     delete:
       operationId: delete_opening_hours
       summary: Delete opening hours
+      description: Deletes an opening hours record by ID for the specified location.
       parameters:
         - name: location_id
           in: path
+          description: An existing Saved Location ID.
           required: true
           schema:
             type: string
             title: Location Id
         - name: opening_hours_id
           in: path
+          description: An existing opening hours record ID.
           required: true
           schema:
             type: string
@@ -459,15 +720,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Authorization required
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Bearer token scope insufficient
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Opening hours record not found
       tags:
         - Saved Locations API
   /v1/saved-locations/{location_id}/closures:
     post:
       operationId: create_closure
       summary: Create a closure for a location
+      description: Creates a closure for a location. A closure represents a period during which the location is closed. The `effective_from` and `effective_to` date range must not overlap with existing closures for the same location.
       parameters:
         - name: location_id
           in: path
+          description: An existing Saved Location ID.
           required: true
           schema:
             type: string
@@ -491,20 +778,55 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Authorization required
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Bearer token scope insufficient
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Location not found
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: 'Closure with overlapping date range already exists for this location (conflicting ID: abc123)'
       tags:
         - Saved Locations API
     get:
       operationId: list_closures
       summary: List closures for a location
+      description: Returns a paginated list of closures for a location. Optionally filter by date range using `active_from` and `active_to`.
       parameters:
         - name: location_id
           in: path
+          description: An existing Saved Location ID.
           required: true
           schema:
             type: string
             title: Location Id
         - name: active_from
           in: query
+          description: Filter to closure records active on or after this date in `YYYY-MM-DD` format.
           required: false
           schema:
             type: string
@@ -512,6 +834,7 @@ paths:
             title: Active From
         - name: active_to
           in: query
+          description: Filter to closure records active on or before this date in `YYYY-MM-DD` format.
           required: false
           schema:
             type: string
@@ -532,21 +855,48 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Authorization required
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Bearer token scope insufficient
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Location not found
       tags:
         - Saved Locations API
   /v1/saved-locations/{location_id}/closures/{closure_id}:
     get:
       operationId: get_closure
       summary: Get specific closure
+      description: Returns a single closure by ID for the specified location.
       parameters:
         - name: location_id
           in: path
+          description: An existing Saved Location ID.
           required: true
           schema:
             type: string
             title: Location Id
         - name: closure_id
           in: path
+          description: An existing closure record ID.
           required: true
           schema:
             type: string
@@ -564,20 +914,47 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Authorization required
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Bearer token scope insufficient
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Closure not found
       tags:
         - Saved Locations API
     delete:
       operationId: delete_closure
       summary: Delete closure
+      description: Deletes a closure by ID for the specified location.
       parameters:
         - name: location_id
           in: path
+          description: An existing Saved Location ID.
           required: true
           schema:
             type: string
             title: Location Id
         - name: closure_id
           in: path
+          description: An existing closure record ID.
           required: true
           schema:
             type: string
@@ -591,6 +968,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Authorization required
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Bearer token scope insufficient
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Closure not found
       tags:
         - Saved Locations API
 components:
@@ -613,29 +1014,36 @@ components:
         default: 0
   schemas:
     AdditionalDetails:
+      description: Supplementary operational data for a location, including upcoming opening hours and closures.
       type: object
       properties:
         opening_hours:
+          description: Opening hour slots that fall within the rolling window for this location.
           type: array
           items:
             $ref: '#/components/schemas/OpeningHourSlot-Output'
           title: Opening Hours
         closures:
+          description: Closures that fall within the rolling window for this location.
           type: array
           items:
             $ref: '#/components/schemas/AdditionalDetailsClosure'
           title: Closures
       title: AdditionalDetails
     AdditionalDetailsClosure:
+      description: A closure record within the additional details rolling window.
       type: object
       properties:
         effective_from:
+          description: The start date of the closure period.
           type: string
           title: Effective From
         effective_to:
+          description: The end date of the closure period.
           type: string
           title: Effective To
         title:
+          description: A short descriptive title for the closure.
           type: string
           title: Title
       required:
@@ -644,34 +1052,43 @@ components:
         - title
       title: AdditionalDetailsClosure
     Closure:
+      description: A full closure record including metadata such as creation and update timestamps.
       type: object
       properties:
         closure_id:
+          description: The unique identifier for this closure record.
           type: string
           title: Closure Id
         location_id:
+          description: The identifier of the Saved Location this closure belongs to.
           type: string
           title: Location Id
         effective_from:
+          description: The start date of the closure period in `YYYY-MM-DD` format.
           type: string
           format: date
           title: Effective From
         effective_to:
+          description: The end date of the closure period in `YYYY-MM-DD` format.
           type: string
           format: date
           title: Effective To
         title:
+          description: A short descriptive title for the closure.
           type: string
           title: Title
         create_dt:
+          description: The date and time the closure was created in ISO 8601 format.
           type: string
           format: date-time
           title: Create Dt
         update_dt:
+          description: The date and time the closure was last updated in ISO 8601 format.
           type: string
           format: date-time
           title: Update Dt
         status:
+          description: The status of the closure. Either `active` or `deleted`.
           default: active
           $ref: '#/components/schemas/ClosureStatus'
       required:
@@ -684,30 +1101,38 @@ components:
         - update_dt
       title: Closure
     ClosureResponse:
+      description: A closure record as returned in single-resource responses.
       type: object
       properties:
         closure_id:
+          description: The unique identifier for this closure record.
           type: string
           title: Closure Id
         location_id:
+          description: The identifier of the Saved Location this closure belongs to.
           type: string
           title: Location Id
         effective_from:
+          description: The start date of the closure period in `YYYY-MM-DD` format.
           type: string
           format: date
           title: Effective From
         effective_to:
+          description: The end date of the closure period in `YYYY-MM-DD` format.
           type: string
           format: date
           title: Effective To
         title:
+          description: A short descriptive title for the closure.
           type: string
           title: Title
         create_dt:
+          description: The date and time the closure was created in ISO 8601 format.
           type: string
           format: date-time
           title: Create Dt
         update_dt:
+          description: The date and time the closure was last updated in ISO 8601 format.
           type: string
           format: date-time
           title: Update Dt
@@ -721,24 +1146,30 @@ components:
         - update_dt
       title: ClosureResponse
     ClosureStatus:
+      description: The status of a closure record.
       type: string
       enum:
         - active
         - deleted
       title: ClosureStatus
     ClosuresSearchResponse:
+      description: A paginated list of closure records.
       type: object
       properties:
         count:
+          description: Total number of closure records found.
           type: integer
           title: Count
         previous:
+          description: URL of the previous page of results, or null if on the first page.
           type: string
           title: Previous
         next:
+          description: URL of the next page of results, or null if on the last page.
           type: string
           title: Next
         closures:
+          description: List of closure records.
           type: array
           items:
             $ref: '#/components/schemas/ClosureResponse'
@@ -748,17 +1179,21 @@ components:
         - closures
       title: ClosuresSearchResponse
     CreateClosureRequest:
+      description: The request body for creating a new closure.
       type: object
       properties:
         effective_from:
+          description: The start date of the closure period in `YYYY-MM-DD` format.
           type: string
           format: date
           title: Effective From
         effective_to:
+          description: The end date of the closure period in `YYYY-MM-DD` format.
           type: string
           format: date
           title: Effective To
         title:
+          description: A short descriptive title for the closure.
           type: string
           title: Title
       required:
@@ -767,28 +1202,34 @@ components:
         - title
       title: CreateClosureRequest
     CreateClosureResponse:
+      description: The response returned after successfully creating a closure.
       type: object
       properties:
         closure_id:
+          description: The unique identifier of the newly created closure.
           type: string
           title: Closure Id
       required:
         - closure_id
       title: CreateClosureResponse
     CreateOpeningHoursRequest:
+      description: The request body for creating a new opening hours record.
       type: object
       properties:
         effective_from:
+          description: The start date from which these opening hours apply in `YYYY-MM-DD` format. Defaults to `0001-01-01` (effectively unbounded).
           type: string
           format: date
           default: 0001-01-01
           title: Effective From
         effective_to:
+          description: The end date until which these opening hours apply in `YYYY-MM-DD` format. Defaults to `9999-12-31` (effectively unbounded).
           type: string
           format: date
           default: 9999-12-31
           title: Effective To
         slots:
+          description: A list of day-and-time-slot pairs defining when the location is open. At least one slot is required.
           type: array
           items:
             $ref: '#/components/schemas/OpeningHourSlot-Input'
@@ -798,15 +1239,18 @@ components:
         - slots
       title: CreateOpeningHoursRequest
     CreateOpeningHoursResponse:
+      description: The response returned after successfully creating an opening hours record.
       type: object
       properties:
         opening_hours_id:
+          description: The unique identifier of the newly created opening hours record.
           type: string
           title: Opening Hours Id
       required:
         - opening_hours_id
       title: CreateOpeningHoursResponse
     CreateSavedLocationRequest:
+      description: The request body for creating a new Saved Location. Provide location geometry via `origin_geojson` (recommended), `geojson`, or `place_ids`.
       type: object
       properties:
         location_code:
@@ -885,6 +1329,7 @@ components:
             type: integer
           title: Place Ids
         formatted_address:
+          description: The street address of the location.
           type: string
           title: Formatted Address
         industry:
@@ -914,15 +1359,19 @@ components:
                   - 37.61911449999999
       title: CreateSavedLocationRequest
     DateRange:
+      description: A date range over which insight metrics are calculated.
       type: object
       properties:
         type:
+          description: The type of date range. Currently only `next_90d` is supported.
           $ref: '#/components/schemas/DateRangeType'
         start_dt:
+          description: The start of the date range in ISO 8601 format.
           type: string
           format: date-time
           title: Start Dt
         end_dt:
+          description: The end of the date range in ISO 8601 format.
           type: string
           format: date-time
           title: End Dt
@@ -932,10 +1381,12 @@ components:
         - end_dt
       title: DateRange
     DateRangeType:
+      description: The type of date range for insight calculations. Currently only `next_90d` is supported.
       type: string
       const: next_90d
       title: DateRangeType
     DayOfWeek:
+      description: A day of the week.
       type: string
       enum:
         - monday
@@ -947,15 +1398,19 @@ components:
         - sunday
       title: DayOfWeek
     GeoJson-Input:
+      description: A GeoJSON Feature representing the geographic area of a location. Supported geometry types are Point, Polygon, MultiPolygon, LineString, and MultiLineString.
       type: object
       properties:
         type:
+          description: The GeoJSON object type. Always `Feature`.
           type: string
           const: Feature
           title: Type
         properties:
+          description: Optional properties for the feature, such as radius and radius unit for Point geometries.
           $ref: '#/components/schemas/Properties'
         geometry:
+          description: The geometry of the feature. Must be one of the supported geometry types.
           discriminator:
             propertyName: type
             mapping:
@@ -976,15 +1431,19 @@ components:
         - geometry
       title: GeoJSON (Input)
     GeoJson-Output:
+      description: A GeoJSON Feature representing the geographic area of a location as returned in responses.
       type: object
       properties:
         type:
+          description: The GeoJSON object type. Always `Feature`.
           type: string
           const: Feature
           title: Type
         properties:
+          description: Optional properties for the feature, such as radius and radius unit for Point geometries.
           $ref: '#/components/schemas/Properties'
         geometry:
+          description: The geometry of the feature.
           discriminator:
             propertyName: type
             mapping:
@@ -1005,16 +1464,20 @@ components:
         - geometry
       title: GeoJSON (Output)
     HTTPValidationError:
+      description: A validation error response containing field-level error details.
       type: object
       properties:
         error:
+          description: A summary error message.
           type: string
         details:
+          description: A list of field-level validation errors.
           type: array
           items:
             $ref: '#/components/schemas/ValidationError'
       title: HTTPValidationError
     Industry:
+      description: The industry classification of a business location.
       type: string
       enum:
         - parking
@@ -1028,14 +1491,17 @@ components:
         - other
       title: Industry
     LineString:
+      description: A GeoJSON LineString geometry.
       type: object
       properties:
         type:
+          description: The geometry type. Always `LineString`.
           type: string
           default: LineString
           const: LineString
           title: Type
         coordinates:
+          description: An array of two or more positions.
           type: array
           items:
             anyOf:
@@ -1057,6 +1523,7 @@ components:
         - coordinates
       title: LineString
     LocationType:
+      description: The type of geographic definition used for a Saved Location.
       type: string
       enum:
         - place_id
@@ -1065,14 +1532,17 @@ components:
         - impact_area
       title: LocationType
     MultiLineString:
+      description: A GeoJSON MultiLineString geometry containing multiple LineString geometries.
       type: object
       properties:
         type:
+          description: The geometry type. Always `MultiLineString`.
           type: string
           default: MultiLineString
           const: MultiLineString
           title: Type
         coordinates:
+          description: An array of LineString coordinate arrays.
           type: array
           items:
             items:
@@ -1096,14 +1566,17 @@ components:
         - coordinates
       title: MultiLineString
     MultiPolygon:
+      description: A GeoJSON MultiPolygon geometry containing multiple Polygon geometries.
       type: object
       properties:
         type:
+          description: The geometry type. Always `MultiPolygon`.
           type: string
           default: MultiPolygon
           const: MultiPolygon
           title: Type
         coordinates:
+          description: An array of Polygon coordinate arrays.
           type: array
           items:
             items:
@@ -1129,58 +1602,73 @@ components:
         - coordinates
       title: MultiPolygon
     OpeningHourSlot-Input:
+      description: A day-and-time-slot pair defining when a location is open.
       type: object
       properties:
         day:
+          description: The day of the week this slot applies to.
           $ref: '#/components/schemas/DayOfWeek'
         slot:
+          description: The time range for this opening slot.
           $ref: '#/components/schemas/TimeSlot-Input'
       required:
         - day
         - slot
       title: OpeningHourSlot
     OpeningHourSlot-Output:
+      description: A day-and-time-slot pair defining when a location is open, as returned in responses.
       type: object
       properties:
         day:
+          description: The day of the week this slot applies to.
           $ref: '#/components/schemas/DayOfWeek'
         slot:
+          description: The time range for this opening slot.
           $ref: '#/components/schemas/TimeSlot-Output'
       required:
         - day
         - slot
       title: OpeningHourSlot
     OpeningHours:
+      description: A full opening hours record including metadata such as creation and update timestamps.
       type: object
       properties:
         opening_hours_id:
+          description: The unique identifier for this opening hours record.
           type: string
           title: Opening Hours Id
         location_id:
+          description: The identifier of the Saved Location these opening hours belong to.
           type: string
           title: Location Id
         effective_from:
+          description: The start date from which these opening hours apply in `YYYY-MM-DD` format.
           type: string
           format: date
           title: Effective From
         effective_to:
+          description: The end date until which these opening hours apply in `YYYY-MM-DD` format.
           type: string
           format: date
           title: Effective To
         slots:
+          description: A list of day-and-time-slot pairs defining when the location is open.
           type: array
           items:
             $ref: '#/components/schemas/OpeningHourSlot-Output'
           title: Slots
         create_dt:
+          description: The date and time the opening hours record was created in ISO 8601 format.
           type: string
           format: date-time
           title: Create Dt
         update_dt:
+          description: The date and time the opening hours record was last updated in ISO 8601 format.
           type: string
           format: date-time
           title: Update Dt
         status:
+          description: The status of the opening hours record. Either `active` or `deleted`.
           default: active
           $ref: '#/components/schemas/OpeningHoursStatus'
       required:
@@ -1191,32 +1679,40 @@ components:
         - update_dt
       title: OpeningHours
     OpeningHoursResponse:
+      description: An opening hours record as returned in single-resource responses.
       type: object
       properties:
         opening_hours_id:
+          description: The unique identifier for this opening hours record.
           type: string
           title: Opening Hours Id
         location_id:
+          description: The identifier of the Saved Location these opening hours belong to.
           type: string
           title: Location Id
         effective_from:
+          description: The start date from which these opening hours apply in `YYYY-MM-DD` format.
           type: string
           format: date
           title: Effective From
         effective_to:
+          description: The end date until which these opening hours apply in `YYYY-MM-DD` format.
           type: string
           format: date
           title: Effective To
         slots:
+          description: A list of day-and-time-slot pairs defining when the location is open.
           type: array
           items:
             $ref: '#/components/schemas/OpeningHourSlot-Output'
           title: Slots
         create_dt:
+          description: The date and time the opening hours record was created in ISO 8601 format.
           type: string
           format: date-time
           title: Create Dt
         update_dt:
+          description: The date and time the opening hours record was last updated in ISO 8601 format.
           type: string
           format: date-time
           title: Update Dt
@@ -1228,18 +1724,23 @@ components:
         - update_dt
       title: OpeningHoursResponse
     OpeningHoursSearchResponse:
+      description: A paginated list of opening hours records.
       type: object
       properties:
         count:
+          description: Total number of opening hours records found.
           type: integer
           title: Count
         previous:
+          description: URL of the previous page of results, or null if on the first page.
           type: string
           title: Previous
         next:
+          description: URL of the next page of results, or null if on the last page.
           type: string
           title: Next
         opening_hours:
+          description: List of opening hours records.
           type: array
           items:
             $ref: '#/components/schemas/OpeningHoursResponse'
@@ -1249,26 +1750,31 @@ components:
         - opening_hours
       title: OpeningHoursSearchResponse
     OpeningHoursStatus:
+      description: The status of an opening hours record.
       type: string
       enum:
         - active
         - deleted
       title: OpeningHoursStatus
     OriginGeoJson:
+      description: A GeoJSON Feature with a Point geometry representing the exact origin location of a business.
       type: object
       properties:
         type:
+          description: The GeoJSON object type. Always `Feature`.
           type: string
           default: Feature
           const: Feature
           title: Type
         geometry:
+          description: A Point geometry defining the origin coordinates.
           $ref: '#/components/schemas/Point'
       additionalProperties: false
       required:
         - geometry
       title: OriginGeoJson
     PhqEvents:
+      description: A paginated list of events impacting a Saved Location.
       type: object
       properties:
         count:
@@ -1291,27 +1797,35 @@ components:
         - results
       title: PhqEvents
     Place:
+      description: A geographic place resolved from a Geonames place ID.
       type: object
       properties:
         place_id:
+          description: The Geonames place identifier.
           type: integer
           title: Place Id
         type:
+          description: The type of place, such as `locality`, `county`, `region`, or `country`.
           type: string
           title: Type
         name:
+          description: The name of the place.
           type: string
           title: Name
         county:
+          description: The county the place belongs to, if applicable.
           type: string
           title: County
         region:
+          description: The region or state the place belongs to, if applicable.
           type: string
           title: Region
         country:
+          description: The ISO 3166-1 alpha-2 country code.
           type: string
           title: Country
         geojson:
+          description: The geographic representation of the place in GeoJSON format.
           $ref: '#/components/schemas/PlaceGeoJson'
       required:
         - place_id
@@ -1320,14 +1834,17 @@ components:
         - geojson
       title: Place
     PlaceGeoJson:
+      description: A GeoJSON Feature representing the geographic geometry of a place.
       type: object
       properties:
         type:
+          description: The GeoJSON object type. Always `Feature`.
           type: string
           default: Feature
           const: Feature
           title: Type
         geometry:
+          description: The geometry of the place.
           anyOf:
             - $ref: '#/components/schemas/Point'
             - $ref: '#/components/schemas/Polygon'
@@ -1339,14 +1856,17 @@ components:
         - geometry
       title: PlaceGeoJson
     Point:
+      description: A GeoJSON Point geometry. Coordinates are `[longitude, latitude]`.
       type: object
       properties:
         type:
+          description: The geometry type. Always `Point`.
           type: string
           default: Point
           const: Point
           title: Type
         coordinates:
+          description: The position as `[longitude, latitude]` or `[longitude, latitude, altitude]`.
           anyOf:
             - prefixItems:
                 - type: number
@@ -1366,14 +1886,17 @@ components:
         - coordinates
       title: Point
     Polygon:
+      description: A GeoJSON Polygon geometry. The first ring is the outer boundary; subsequent rings are holes.
       type: object
       properties:
         type:
+          description: The geometry type. Always `Polygon`.
           type: string
           default: Polygon
           const: Polygon
           title: Type
         coordinates:
+          description: An array of linear rings. Each ring is an array of `[longitude, latitude]` positions where the first and last positions are identical.
           type: array
           items:
             items:
@@ -1401,9 +1924,11 @@ components:
       type: object
       properties:
         radius:
+          description: The radius around the Point geometry, defining the area of impact.
           type: number
           title: Radius
         radius_unit:
+          description: The unit of measurement for the radius value.
           $ref: '#/components/schemas/RadiusUnit'
       title: Properties
     RadiusUnit:
@@ -1416,6 +1941,7 @@ components:
         - mi
       title: RadiusUnit
     SavedLocationResponse:
+      description: A Saved Location record including geographic data, summary insights, and enrichment status.
       type: object
       properties:
         location_code:
@@ -1438,6 +1964,10 @@ components:
           examples:
             - My Parking Building
           title: Name
+        description:
+          description: A user-supplied description of the location.
+          type: string
+          title: Description
         labels:
           description: |-
             A list of user defined labels for the location.
@@ -1478,11 +2008,10 @@ components:
           title: Place Ids
         formatted_address:
           description: |-
-            The address of the location. This can be supplied when created a location. 
-            If it's not supplied it will be populated by a reverse geocode.
+            The address of the location. This can be supplied when creating a location.
 
 
-            E.g. 
+            E.g.
               ```json
                 {
                   "formatted_address": "666 Mission St, San Francisco, CA 94105, USA",
@@ -1553,8 +2082,8 @@ components:
           title: Insights Dt
         user_id:
           description: |-
-            The ID of the user who created the saved location. 
-            This is present for location created in the WebApp. 
+            The ID of the user who created the saved location.
+            This is present for locations created in the WebApp.
             For locations created via the API this field will not be populated.
 
 
@@ -1565,12 +2094,12 @@ components:
           title: User Id
         subscription_valid_types:
           description: |-
-            The value is a list of different (subscription) types that this location is valid for. 
+            The value is a list of different (subscription) types that this location is valid for.
             The possible values are `events`, `broadcasts`, `notifications`, `features_api`.
 
 
-            It is possible to create locations outside of what your subscription has access to. 
-            In this case this field will be empty and you will not be able to view events for the location
+            It is possible to create locations outside of what your subscription has access to.
+            In this case this field will be empty and you will not be able to view events for the location.
 
 
             E.g. `["events"]`
@@ -1582,6 +2111,7 @@ components:
             - features_api
           title: Subscription Valid Types
         location_type:
+          description: The type of geographic definition used for this location. Possible values are `place_id`, `point`, `polygon`, or `impact_area`.
           $ref: '#/components/schemas/LocationType'
         status:
           description: |-
@@ -1592,8 +2122,8 @@ components:
 
 
             Typically locations only have the `pending` status for a short time.
-                  
-                  
+
+
             E.g. `active`
           $ref: '#/components/schemas/SavedLocationStatus'
           examples:
@@ -1626,6 +2156,7 @@ components:
             - 8gZ2rn8BRcTjM_3SWdjP
           title: Location Id
         additional_details:
+          description: Contains supplementary operational data for the location, including opening hours and closures that fall within a rolling window.
           $ref: '#/components/schemas/AdditionalDetails'
       examples:
         - location_id: 7sdevIveOuIQmP0EL1lZoQ
@@ -1675,6 +2206,7 @@ components:
         - location_id
       title: SavedLocationResponse
     SavedLocationStatus:
+      description: The status of a Saved Location. Locations start as `pending` and become `active` after enrichment.
       type: string
       enum:
         - active
@@ -1682,6 +2214,7 @@ components:
         - pending
       title: SavedLocationStatus
     SavedLocationsResponse:
+      description: A paginated list of Saved Location records.
       type: object
       properties:
         count:
@@ -1699,6 +2232,7 @@ components:
         - locations
       title: SavedLocationsResponse
     SubscriptionValidType:
+      description: A subscription feature type that a location is valid for.
       type: string
       enum:
         - broadcasts
@@ -1707,38 +2241,50 @@ components:
         - notifications
       title: SubscriptionValidType
     SummaryInsights:
+      description: Aggregated event and spend metrics for a location over a rolling date range.
       type: object
       properties:
         date_range:
+          description: The date range over which the insight metrics were calculated.
           $ref: '#/components/schemas/DateRange'
         phq_attendance_sum:
+          description: The total predicted attendance across all attended events.
           type: integer
           title: Phq Attendance Sum
         attended_event_count:
+          description: The number of attended events impacting this location.
           type: integer
           title: Attended Event Count
         non_attended_event_count:
+          description: The number of non-attended events impacting this location.
           type: integer
           title: Non Attended Event Count
         unscheduled_event_count:
+          description: The number of unscheduled events impacting this location.
           type: integer
           title: Unscheduled Event Count
         demand_surge_count:
+          description: The number of demand surges impacting this location.
           type: integer
           title: Demand Surge Count
         venue_count:
+          description: The number of venues within the location area.
           type: integer
           title: Venue Count
         pes_total_sum:
+          description: Total predicted event spend across all categories in USD.
           type: integer
           title: Pes Total Sum
         pes_accommodation_sum:
+          description: Predicted event spend for the accommodation category.
           type: integer
           title: Pes Accommodation Sum
         pes_hospitality_sum:
+          description: Predicted event spend for the hospitality category.
           type: integer
           title: Pes Hospitality Sum
         pes_transportation_sum:
+          description: Predicted event spend for the transportation category.
           type: integer
           title: Pes Transportation Sum
       required:
@@ -1749,16 +2295,7 @@ components:
         - unscheduled_event_count
       title: SummaryInsights
     TimeSlot-Input:
-      description: |-
-        Time slot with dual field naming: technical precision internally, user-friendly API externally.
-
-        Field configuration creates different interfaces:
-        - Internal usage: Code accesses .gte/.lt attributes (technical, precise field names)
-        - Model input: Accepts both "gte"/"open" and "lt"/"close" via AliasChoices validation
-        - API output: FastAPI serializes as "open"/"close" using by_alias=True (user-friendly field names)
-
-        This separation allows internal code to use precise technical terminology while
-        providing an intuitive customer-facing API interface.
+      description: A time slot defining when a location is open on a given day.
       type: object
       properties:
         gte:
@@ -1776,16 +2313,7 @@ components:
         - lt
       title: TimeSlot
     TimeSlot-Output:
-      description: |-
-        Time slot with dual field naming: technical precision internally, user-friendly API externally.
-
-        Field configuration creates different interfaces:
-        - Internal usage: Code accesses .gte/.lt attributes (technical, precise field names)
-        - Model input: Accepts both "gte"/"open" and "lt"/"close" via AliasChoices validation
-        - API output: FastAPI serializes as "open"/"close" using by_alias=True (user-friendly field names)
-
-        This separation allows internal code to use precise technical terminology while
-        providing an intuitive customer-facing API interface.
+      description: A time slot defining when a location is open on a given day.
       type: object
       properties:
         open:
@@ -1803,19 +2331,23 @@ components:
         - close
       title: TimeSlot
     UpdateOpeningHoursRequest:
+      description: The request body for updating an existing opening hours record.
       type: object
       properties:
         effective_from:
+          description: The start date from which these opening hours apply in `YYYY-MM-DD` format. Defaults to `0001-01-01` (effectively unbounded).
           type: string
           format: date
           default: 0001-01-01
           title: Effective From
         effective_to:
+          description: The end date until which these opening hours apply in `YYYY-MM-DD` format. Defaults to `9999-12-31` (effectively unbounded).
           type: string
           format: date
           default: 9999-12-31
           title: Effective To
         slots:
+          description: A list of day-and-time-slot pairs defining when the location is open. At least one slot is required.
           type: array
           items:
             $ref: '#/components/schemas/OpeningHourSlot-Input'
@@ -1825,17 +2357,32 @@ components:
         - slots
       title: UpdateOpeningHoursRequest
     ValidationError:
+      description: A single field-level validation error.
       type: object
       properties:
         field:
+          description: The field path that caused the error.
           type: string
         msg:
+          description: A human-readable error message.
           type: string
           title: Message
         type:
+          description: The type of validation error.
           type: string
           title: Error Type
       title: ValidationError
+    ErrorResponse:
+      description: An error response containing a human-readable error message.
+      type: object
+      properties:
+        error:
+          description: Error message
+          type: string
+          title: Error
+      required:
+        - error
+      title: ErrorResponse
   securitySchemes:
     BearerAuth:
       type: http
