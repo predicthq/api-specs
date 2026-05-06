@@ -1220,13 +1220,13 @@ components:
           description: The start date from which these opening hours apply in `YYYY-MM-DD` format. Defaults to `0001-01-01` (effectively unbounded).
           type: string
           format: date
-          default: 0001-01-01
+          default: "0001-01-01"
           title: Effective From
         effective_to:
           description: The end date until which these opening hours apply in `YYYY-MM-DD` format. Defaults to `9999-12-31` (effectively unbounded).
           type: string
           format: date
-          default: 9999-12-31
+          default: "9999-12-31"
           title: Effective To
         slots:
           description: A list of day-and-time-slot pairs defining when the location is open. At least one slot is required.
@@ -2295,7 +2295,7 @@ components:
         - unscheduled_event_count
       title: SummaryInsights
     TimeSlot-Input:
-      description: A time slot defining when a location is open on a given day.
+      description: A time slot defining when a location is open on a given day. Uses `gte`/`lt` for input; responses return the same values as `open`/`close` (see TimeSlot-Output).
       type: object
       properties:
         gte:
@@ -2313,7 +2313,7 @@ components:
         - lt
       title: TimeSlot
     TimeSlot-Output:
-      description: A time slot defining when a location is open on a given day.
+      description: A time slot representing when a location is open on a given day, as returned in responses.
       type: object
       properties:
         open:
@@ -2338,13 +2338,13 @@ components:
           description: The start date from which these opening hours apply in `YYYY-MM-DD` format. Defaults to `0001-01-01` (effectively unbounded).
           type: string
           format: date
-          default: 0001-01-01
+          default: "0001-01-01"
           title: Effective From
         effective_to:
           description: The end date until which these opening hours apply in `YYYY-MM-DD` format. Defaults to `9999-12-31` (effectively unbounded).
           type: string
           format: date
-          default: 9999-12-31
+          default: "9999-12-31"
           title: Effective To
         slots:
           description: A list of day-and-time-slot pairs defining when the location is open. At least one slot is required.
