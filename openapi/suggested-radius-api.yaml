@@ -137,21 +137,21 @@ components:
         Different industries have different event impact profiles, which affect the
         returned suggested radius.
 
-        - `accommodation` — Hotels, motels, and other lodging businesses
-        - `restaurants` — Restaurants, cafes, bars, and food service businesses
-        - `retail` — Retail stores and shopping centers
-        - `parking` — Parking lots and garages
-        - `cpg` — Consumer packaged goods and grocery
-        - `tourism` — Tourism and attractions
-        - `marketing` — Marketing and advertising campaigns
-        - `transportation` — Transportation and logistics
-        - `other` — General-purpose fallback for industries not listed above
+        - `accommodation` — Accommodation providers, travel tech, and OTAs
+        - `cpg` — Consumer packaged goods companies
+        - `tourism` — Leisure, travel, and tourism businesses (e.g. Expedia, DMOs, travel platforms)
+        - `marketing` — Advertising and marketing services
+        - `parking` — Parking facility operators
+        - `restaurants` — Food and beverage businesses including restaurant groups
+        - `retail` — Non-food retail and retail tech
+        - `transportation` — On-demand transport and delivery
+        - `other` — All other industries
       type: string
       enum:
-        - parking
+        - accommodation
         - restaurants
         - retail
-        - accommodation
+        - parking
         - cpg
         - tourism
         - marketing

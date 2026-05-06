@@ -1,14 +1,12 @@
 openapi: 3.1.0
 info:
-  title: PredictHQ Impact Area API
+  title: PredictHQ Predicted Impact Area API
   description: |-
-    The Impact Area API returns the geographic area around a location that is likely to be impacted by events, based on the industry of your business. Use it to determine a suitable search area when querying the Events API for events that may affect your business location.
+    The Predicted Impact Area API returns the geographic area around a business location that is likely to be impacted by events, calibrated to the industry of the business.
 
-    The API supports two response shapes:
-    - `polygon` (default) — a GeoJSON Polygon or MultiPolygon precisely following the boundaries of the impact area
-    - `radius` — a GeoJSON Point with a radius property defining a circular impact area
+    Different industries have different event impact profiles — for example, a hotel (`accommodation`) will have a different impact area than a retail store (`retail`).
 
-    Different industries have different event impact profiles. For example, a hotel (`accommodation`) will have a different impact area than a retail store (`retail`).
+    Use this API to preview the Predicted Impact Area for a location before creating a Saved Location. To use the area as a spatial filter when querying the Events, Features, or Beam APIs, create a Saved Location with `origin_geojson` — PredictHQ will automatically calculate and store the Predicted Impact Area, and the resulting `location_id` is what those APIs accept for location-scoped queries.
   termsOfService: https://www.predicthq.com/legal/terms
   license:
     name: MIT
@@ -17,10 +15,10 @@ info:
 security:
   - BearerAuth: []
 tags:
-  - name: Impact Area API
+  - name: Predicted Impact Area
     externalDocs:
       url: https://docs.predicthq.com/api/impact-area
-      description: Impact Area API Docs
+      description: Predicted Impact Area Docs
 servers:
   - url: https://api.predicthq.com
 externalDocs:
@@ -31,8 +29,16 @@ paths:
   /v1/impact-area/:
     get:
       operationId: get_impact_area
-      summary: Get Impact Area
-      description: Returns an impact area GeoJSON (Polygon or Point with radius) for the given location and industry.
+      summary: Get Predicted Impact Area
+      description: |-
+        Returns the Predicted Impact Area for a given location and industry as a GeoJSON feature.
+
+        Two response shapes are supported via area_type:
+
+        - `polygon` (default, recommended) — a GeoJSON Polygon or MultiPolygon that precisely follows the true boundaries of the impact area. This is the best practice as real impact areas are rarely circular.
+        - `radius` — a GeoJSON Point with a radius property defining a circular approximation. Supported but not recommended, as it sacrifices accuracy for simplicity.
+
+        The returned GeoJSON cannot be passed directly to the Events, Features, or Beam APIs. To query events or features within this area, create a Saved Location using `origin_geojson` — the Predicted Impact Area will be calculated and stored automatically, and the `location_id` can then be used across those APIs.
       parameters:
         - name: industry
           in: query
@@ -40,15 +46,15 @@ paths:
             The industry of interest for which the area will be calculated. For different industries, the area will be different based on the various types of events that would impact the location. For example, if you were getting the impact area around a hotel you'd specify accommodation as the industry.
 
             Supported values:
-            - `accommodation` — Hotels, motels, and other lodging businesses
-            - `restaurants` — Restaurants, cafes, bars, and food service businesses
-            - `retail` — Retail stores and shopping centers
-            - `parking` — Parking lots and garages
-            - `cpg` — Consumer packaged goods and grocery
-            - `tourism` — Tourism and attractions
-            - `marketing` — Marketing and advertising campaigns
-            - `transportation` — Transportation and logistics
-            - `other` — General-purpose fallback for industries not listed above (default)
+            - `accommodation` — Accommodation providers, travel tech, and OTAs
+            - `cpg` — Consumer packaged goods companies
+            - `tourism` — Leisure, travel, and tourism businesses (e.g. Expedia, DMOs, travel platforms)
+            - `marketing` — Advertising and marketing services
+            - `parking` — Parking facility operators
+            - `restaurants` — Food and beverage businesses including restaurant groups
+            - `retail` — Non-food retail and retail tech
+            - `transportation` — On-demand transport and delivery
+            - `other` — All other industries (default)
 
             E.g. `?industry=accommodation`
           required: false
@@ -165,7 +171,7 @@ paths:
               example:
                 error: Too many requests. Please retry later.
       tags:
-        - Impact Area API
+        - Predicted Impact Area
 components:
   schemas:
     AreaType:
@@ -229,21 +235,21 @@ components:
         Different industries have different event impact profiles, which affect the size
         and shape of the returned area.
 
-        - `accommodation` — Hotels, motels, and other lodging businesses
-        - `restaurants` — Restaurants, cafes, bars, and food service businesses
-        - `retail` — Retail stores and shopping centers
-        - `parking` — Parking lots and garages
-        - `cpg` — Consumer packaged goods and grocery
-        - `tourism` — Tourism and attractions
-        - `marketing` — Marketing and advertising campaigns
-        - `transportation` — Transportation and logistics
-        - `other` — General-purpose fallback for industries not listed above
+        - `accommodation` — Accommodation providers, travel tech, and OTAs
+        - `cpg` — Consumer packaged goods companies
+        - `tourism` — Leisure, travel, and tourism businesses (e.g. Expedia, DMOs, travel platforms)
+        - `marketing` — Advertising and marketing services
+        - `parking` — Parking facility operators
+        - `restaurants` — Food and beverage businesses including restaurant groups
+        - `retail` — Non-food retail and retail tech
+        - `transportation` — On-demand transport and delivery
+        - `other` — All other industries
       type: string
       enum:
-        - parking
+        - accommodation
         - restaurants
         - retail
-        - accommodation
+        - parking
         - cpg
         - tourism
         - marketing
