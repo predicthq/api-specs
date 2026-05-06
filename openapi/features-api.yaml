@@ -28,15 +28,15 @@ paths:
       description: |-
         Returns aggregated ML-ready features for the specified location and date range.
 
-        Features represent pre-computed event intelligence signals — attendance, rank, viewership, spend, and impact — aggregated per day or per week. Each feature corresponds to an event category or subcategory and returns statistical summaries (count, sum, min, max, avg, median, std_dev) that can be fed directly into demand forecasting models.
+        Returns pre-built ML-ready features for the specified location and date range, aggregated per day or per week. Features are opt-in: only features included in the request body are returned.
 
-        **Location** must be specified via one of: `location.geo` (lat/lon + radius), `location.place_id`, or `location.saved_location_id`. Alternatively, provide a `beam` object to derive location and feature selection from a Beam analysis.
+        **Beam (recommended):** Provide a `beam` object with an `analysis_id` to automatically derive location, interval, and feature selection from a Beam analysis. This is the recommended approach. When using `beam`, you must not specify `location` or individual features separately — these are determined by the analysis.
 
-        **Date range** (`active`) is required and uses local time. Multi-day events are included for each day they are active within the range. Results are limited to 100 intervals per page.
+        **Manual configuration:** If not using Beam, location must be specified via `location.geo` (lat/lon + radius), `location.place_id`, or `location.saved_location_id`, and features must be explicitly requested.
 
-        **Feature selection** is opt-in: only features included in the request body are returned. Pass `true` for default statistics, or a `PhqStatisticsFeatureCriteria` object to customise which stats are returned and to filter by `phq_rank` or `local_rank` range.
+        **Feature families:** `phq_attendance_*`, `phq_impact_*`, `phq_spend_*`, and `phq_viewership_*` features return statistical summaries (`count`, `sum`, `min`, `max`, `avg`, `median`, `std_dev`) — pass `true` for defaults (`count` and `sum`), or a criteria object to customise stats and filter by `phq_rank` or `local_rank`. `phq_rank_*` features return a `rank_levels` object (counts bucketed into 5 severity levels) and are requested by setting the field to `true`.
 
-        Results are paginated with `offset` and `limit`. Use the `accept` header to receive results as JSON or CSV.
+        **Date range** (`active`) is required in all cases and uses local time. Multi-day occurrences are included for each day they are active within the range. Results are paginated with `offset` and `limit`, and can be returned as JSON or CSV via the `Accept` header.
       parameters:
         - $ref: '#/components/parameters/OffsetParam'
         - $ref: '#/components/parameters/LimitParam'
