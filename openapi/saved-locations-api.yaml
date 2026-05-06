@@ -29,7 +29,12 @@ paths:
     get:
       operationId: list_saved_locations
       summary: Search Saved Locations
-      description: Returns a paginated list of Saved Locations for the authenticated organization. Supports full-text search, filtering by location ID, and sorting by various fields including event counts and spend metrics.
+      description: |-
+        Search and list Saved Locations. Supports full-text search across `name`, `description`, `location_code`, `formatted_address`, and `labels` via the `q` parameter.
+
+        Saved Locations are standalone geographic entities that exist independently of any other PredictHQ product. Creating a Saved Location does not create a Beam Analysis — those must be created separately.
+
+        The returned `location_id` values can be passed directly to the Events API, Features API, and Beam API without needing to supply coordinates each time.
       parameters:
         - name: q
           in: query
@@ -162,7 +167,12 @@ paths:
     post:
       operationId: create_saved_location
       summary: Create a Saved Location
-      description: Creates a new Saved Location. Provide either `origin_geojson` (recommended, to auto-calculate a Predicted Impact Area), `geojson` (manual area), or `place_ids` (city/state/country). The location will be enriched asynchronously after creation.
+      description: |-
+        Create a new Saved Location. The recommended approach is to provide only `origin_geojson` (a GeoJSON Point at the exact location of the business) together with an `industry` value, without specifying `geojson`. PredictHQ will automatically calculate and store a Predicted Impact Area in the `geojson` field, calibrated for the business type.
+
+        Only specify `geojson` directly if you need a custom area rather than the auto-calculated Predicted Impact Area. Use `place_ids` instead of `geojson` when the location represents an entire city, state, or country.
+
+        Returns a `location_id` that can be reused across the Events, Features, and Beam APIs without re-supplying coordinates.
       requestBody:
         required: true
         content:
@@ -210,7 +220,12 @@ paths:
     get:
       operationId: get_saved_location
       summary: Get a Saved Location
-      description: Returns a single Saved Location by ID, including its geographic data, summary insights, and enrichment status.
+      description: |-
+        Retrieve full details for a single Saved Location by ID.
+
+        Response includes the `geojson` field (which stores the Predicted Impact Area boundary), `origin_geojson` (exact business point), `industry`, `labels`, `formatted_address`, and `summary_insights` — which contain attended/non-attended event counts, PHQ attendance sum, and Predicted Event Spend metrics for the next 90-day window.
+
+        The `status` field reflects enrichment state: `pending` means the Predicted Impact Area and `summary_insights` are still being calculated (typically resolves within seconds); `active` means the location is fully enriched and ready to use.
       parameters:
         - name: location_id
           in: path
@@ -261,7 +276,10 @@ paths:
     put:
       operationId: update_saved_location
       summary: Update (replace) a Saved Location
-      description: Replaces an existing Saved Location with the provided data. All fields from the create request apply. The location will be re-enriched asynchronously after the update.
+      description: |-
+        Fully replace an existing Saved Location. This is a PUT (full replacement) — all fields should be provided, not just the ones being changed.
+
+        To trigger a recalculation of the Predicted Impact Area, provide `origin_geojson` without specifying `geojson`, the same as when creating a location.
       parameters:
         - name: location_id
           in: path
@@ -314,7 +332,7 @@ paths:
     delete:
       operationId: delete_saved_location
       summary: Delete a Saved Location
-      description: Deletes a Saved Location by ID. This is a permanent operation.
+      description: Permanently delete a saved location by ID. This action is irreversible — the location and all associated insights data will be removed.
       parameters:
         - name: location_id
           in: path
