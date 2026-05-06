@@ -247,11 +247,11 @@ paths:
           required: true
           schema:
             type: string
-            examples:
-              - application/json
             enum:
               - text/csv
               - application/x-ndjson
+              - application/json
+            examples:
               - application/json
       requestBody:
         required: true
@@ -550,6 +550,14 @@ components:
         forecast_window:
           description: Number of days into the future to forecast.
           $ref: '#/components/schemas/ForecastWindowDay'
+        generate_baseline:
+          description: |-
+            When true, generates a baseline model using historical demand data only
+            - without PredictHQ demand intelligence
+            - for benchmarking accuracy against the enhanced model.
+          type: boolean
+          default: false
+          title: Generate Baseline Model
         label:
           description: Set of labels you can use to better identify or group your forecast models.
           type: array
