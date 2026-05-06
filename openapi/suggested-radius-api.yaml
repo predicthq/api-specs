@@ -134,8 +134,8 @@ components:
       description: |-
         The industry category of the business location.
 
-        Different industries have different event impact profiles, which affect the size
-        and shape of the returned area.
+        Different industries have different event impact profiles, which affect the
+        returned suggested radius.
 
         - `accommodation` — Hotels, motels, and other lodging businesses
         - `restaurants` — Restaurants, cafes, bars, and food service businesses
