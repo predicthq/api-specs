@@ -25,6 +25,18 @@ paths:
     post:
       operationId: get_features
       summary: Get ML Features
+      description: |-
+        Returns aggregated ML-ready features for the specified location and date range.
+
+        Returns pre-built ML-ready features for the specified location and date range, aggregated per day or per week. Features are opt-in: only features included in the request body are returned.
+
+        **Beam (recommended):** Provide a `beam` object with an `analysis_id` to automatically derive location, interval, and feature selection from a Beam analysis. This is the recommended approach. When using `beam`, you must not specify `location` or individual features separately — these are determined by the analysis.
+
+        **Manual configuration:** If not using Beam, location must be specified via `location.geo` (lat/lon + radius), `location.place_id`, or `location.saved_location_id`, and features must be explicitly requested.
+
+        **Feature families:** `phq_attendance_*`, `phq_impact_*`, `phq_spend_*`, and `phq_viewership_*` features return statistical summaries (`count`, `sum`, `min`, `max`, `avg`, `median`, `std_dev`) — pass `true` for defaults (`count` and `sum`), or a criteria object to customise stats and filter by `phq_rank` or `local_rank`. `phq_rank_*` features return a `rank_levels` object (counts bucketed into 5 severity levels) and are requested by setting the field to `true`.
+
+        **Date range** (`active`) is required in all cases and uses local time. Multi-day occurrences are included for each day they are active within the range. Results are paginated with `offset` and `limit`, and can be returned as JSON or CSV via the `Accept` header.
       parameters:
         - $ref: '#/components/parameters/OffsetParam'
         - $ref: '#/components/parameters/LimitParam'
@@ -66,12 +78,62 @@ paths:
                   - |-
                     date,feature1,feature2
                     2025-01-01,value1,value2
-        '422':
+        '400':
           description: Validation Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+              example:
+                errors:
+                  error: Request contains invalid data
+                  details:
+                    - field: body.active.gte
+                      msg: Value error, invalid active date range gte constraint
+                      type: value_error
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+                  - $ref: '#/components/schemas/WrappedErrorResponse'
+              examples:
+                authError:
+                  summary: Authentication failure
+                  value:
+                    error: Authorization required
+                missingSubscription:
+                  summary: Missing subscription
+                  value:
+                    errors:
+                      error: Missing features-api subscription.
+        '402':
+          description: Payment Required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WrappedErrorResponse'
+              example:
+                errors:
+                  error: Payment Required
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Bearer token scope insufficient
+        '415':
+          description: Unsupported Media Type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Invalid content type, application/json expected.
       tags:
         - Features API
 components:
@@ -97,18 +159,22 @@ components:
       type: object
       properties:
         gt:
+          description: Date greater than (exclusive)
           type: string
           format: date
           title: Gt
         gte:
+          description: Date greater than or equal to
           type: string
           format: date
           title: Gte
         lt:
+          description: Date less than (exclusive)
           type: string
           format: date
           title: Lt
         lte:
+          description: Date less than or equal to
           type: string
           format: date
           title: Lte
@@ -133,24 +199,31 @@ components:
       type: object
       properties:
         count:
+          description: Number of events contributing to this feature
           type: integer
           title: Count
         sum:
+          description: Sum of the feature values
           type: integer
           title: Sum
         min:
+          description: Minimum feature value
           type: integer
           title: Min
         max:
+          description: Maximum feature value
           type: integer
           title: Max
         avg:
+          description: Average feature value
           type: integer
           title: Avg
         median:
+          description: Median feature value
           type: integer
           title: Median
         std_dev:
+          description: Standard deviation of feature values
           type: integer
           title: Std Dev
       title: FeatureStats
@@ -771,34 +844,29 @@ components:
         - lon
         - lat
       title: GeoDistancePoint
-    HTTPValidationError:
-      type: object
-      properties:
-        detail:
-          type: array
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          title: Detail
-      title: HTTPValidationError
     HourOfDayRange:
       type: object
       properties:
         gt:
+          description: Hour of day greater than (exclusive), 0-22
           type: integer
           exclusiveMaximum: 23
           minimum: 0
           title: Gt
         gte:
+          description: Hour of day greater than or equal to, 0-23
           type: integer
           maximum: 23
           minimum: 0
           title: Gte
         lt:
+          description: Hour of day less than (exclusive), 1-23
           type: integer
           exclusiveMinimum: 0
           maximum: 23
           title: Lt
         lte:
+          description: Hour of day less than or equal to, 0-23
           type: integer
           maximum: 23
           minimum: 0
@@ -821,6 +889,7 @@ components:
             type: integer
           title: Place Id
         geo:
+          description: Geo point with radius to aggregate within
           $ref: '#/components/schemas/GeoDistancePoint'
         saved_location_id:
           description: Saved location IDs to aggregate across
@@ -833,6 +902,7 @@ components:
       type: object
       properties:
         stats:
+          description: Aggregated attendance statistics for the feature
           $ref: '#/components/schemas/FeatureStats'
       required:
         - stats
@@ -974,6 +1044,7 @@ components:
       type: object
       properties:
         results:
+          description: List of feature results per date
           type: array
           items:
             $ref: '#/components/schemas/PhqFeatureSet'
@@ -998,6 +1069,7 @@ components:
       type: object
       properties:
         rank_levels:
+          description: Count of events in each PHQ Rank level bucket (1-5)
           $ref: '#/components/schemas/RankStats'
       required:
         - rank_levels
@@ -1029,21 +1101,25 @@ components:
           type: object
           properties:
             gt:
+              description: Rank greater than (exclusive), 0-99
               type: integer
               exclusiveMaximum: 100
               minimum: 0
               title: Gt
             gte:
+              description: Rank greater than or equal to, 0-100
               type: integer
               maximum: 100
               minimum: 0
               title: Gte
             lt:
+              description: Rank less than (exclusive), 1-100
               type: integer
               exclusiveMinimum: 0
               maximum: 100
               title: Lt
             lte:
+              description: Rank less than or equal to, 0-100
               type: integer
               maximum: 100
               minimum: 0
@@ -1054,21 +1130,25 @@ components:
           type: object
           properties:
             gt:
+              description: Rank greater than (exclusive), 0-99
               type: integer
               exclusiveMaximum: 100
               minimum: 0
               title: Gt
             gte:
+              description: Rank greater than or equal to, 0-100
               type: integer
               maximum: 100
               minimum: 0
               title: Gte
             lt:
+              description: Rank less than (exclusive), 1-100
               type: integer
               exclusiveMinimum: 0
               maximum: 100
               title: Lt
             lte:
+              description: Rank less than or equal to, 0-100
               type: integer
               maximum: 100
               minimum: 0
@@ -1079,6 +1159,7 @@ components:
       type: object
       properties:
         stats:
+          description: Aggregated viewership statistics for the feature
           $ref: '#/components/schemas/FeatureStats'
       required:
         - stats
@@ -1096,22 +1177,27 @@ components:
       type: object
       properties:
         '1':
+          description: Count of events at rank level 1 (Minor)
           type: integer
           default: 0
           title: '1'
         '2':
+          description: Count of events at rank level 2 (Moderate)
           type: integer
           default: 0
           title: '2'
         '3':
+          description: Count of events at rank level 3 (Important)
           type: integer
           default: 0
           title: '3'
         '4':
+          description: Count of events at rank level 4 (Significant)
           type: integer
           default: 0
           title: '4'
         '5':
+          description: Count of events at rank level 5 (Major)
           type: integer
           default: 0
           title: '5'
@@ -1120,27 +1206,6 @@ components:
       anyOf:
         - type: boolean
         - $ref: '#/components/schemas/PhqStatisticsFeatureCriteria'
-    ValidationError:
-      type: object
-      properties:
-        loc:
-          type: array
-          items:
-            anyOf:
-              - type: string
-              - type: integer
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      required:
-        - loc
-        - msg
-        - type
-      title: ValidationError
     Weekday:
       type: string
       default: monday
@@ -1153,6 +1218,75 @@ components:
         - saturday
         - sunday
       title: Weekday
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          description: Error message
+          type: string
+          title: Error
+      required:
+        - error
+      title: ErrorResponse
+    ValidationErrorDetail:
+      type: object
+      properties:
+        field:
+          description: The field that failed validation
+          type: string
+          title: Field
+        msg:
+          description: The validation error message
+          type: string
+          title: Message
+        type:
+          description: The type of validation error
+          type: string
+          title: Error Type
+      required:
+        - field
+        - msg
+        - type
+      title: ValidationErrorDetail
+    HTTPValidationError:
+      type: object
+      properties:
+        errors:
+          type: object
+          properties:
+            error:
+              description: Error summary message
+              type: string
+              title: Error
+            details:
+              description: List of validation error details
+              type: array
+              items:
+                $ref: '#/components/schemas/ValidationErrorDetail'
+              title: Details
+          required:
+            - error
+            - details
+          title: Errors
+      required:
+        - errors
+      title: HTTPValidationError
+    WrappedErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: object
+          properties:
+            error:
+              description: Error message
+              type: string
+              title: Error
+          required:
+            - error
+          title: Errors
+      required:
+        - errors
+      title: WrappedErrorResponse
   securitySchemes:
     BearerAuth:
       type: http
