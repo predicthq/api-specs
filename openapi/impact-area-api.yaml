@@ -1,7 +1,12 @@
 openapi: 3.1.0
 info:
-  title: PredictHQ Impact Area API
-  description: Determine a suitable search area around your business when searching for events.
+  title: PredictHQ Predicted Impact Area API
+  description: |-
+    The Predicted Impact Area API returns the geographic area around a business location that is likely to be impacted by events, calibrated to the industry of the business.
+
+    Different industries have different event impact profiles — for example, a hotel (`accommodation`) will have a different impact area than a retail store (`retail`).
+
+    Use this API to preview the Predicted Impact Area for a location before creating a Saved Location. To use the area as a spatial filter when querying the Events, Features, or Beam APIs, create a Saved Location with `origin_geojson` — PredictHQ will automatically calculate and store the Predicted Impact Area, and the resulting `location_id` is what those APIs accept for location-scoped queries.
   termsOfService: https://www.predicthq.com/legal/terms
   license:
     name: MIT
@@ -10,10 +15,10 @@ info:
 security:
   - BearerAuth: []
 tags:
-  - name: Impact Area API
+  - name: Predicted Impact Area
     externalDocs:
       url: https://docs.predicthq.com/api/impact-area
-      description: Impact Area API Docs
+      description: Predicted Impact Area Docs
 servers:
   - url: https://api.predicthq.com
 externalDocs:
@@ -24,13 +29,32 @@ paths:
   /v1/impact-area/:
     get:
       operationId: get_impact_area
-      summary: Get Impact Area
-      description: Returns an impact area GeoJSON (Polygon or Point with radius) for the given location and industry.
+      summary: Get Predicted Impact Area
+      description: |-
+        Returns the Predicted Impact Area for a given location and industry as a GeoJSON feature.
+
+        Two response shapes are supported via area_type:
+
+        - `polygon` (default, recommended) — a GeoJSON Polygon or MultiPolygon that precisely follows the true boundaries of the impact area. This is the best practice as real impact areas are rarely circular.
+        - `radius` — a GeoJSON Point with a radius property defining a circular approximation. Supported but not recommended, as it sacrifices accuracy for simplicity.
+
+        The returned GeoJSON cannot be passed directly to the Events, Features, or Beam APIs. To query events or features within this area, create a Saved Location using `origin_geojson` — the Predicted Impact Area will be calculated and stored automatically, and the `location_id` can then be used across those APIs.
       parameters:
         - name: industry
           in: query
           description: |-
-            The industry of interest for which the area will be calculated. For different industries, the area will be different based on the various types of events that would impact the location. For example, if you were getting the impact area around a hotel you'd specify accommodation as the industry.
+            The industry of interest for which the area will be calculated. For different industries, the area will be different based on the various types of events that would impact the location. For example, if you were getting the predicted impact area around a hotel you'd specify accommodation as the industry.
+
+            Supported values:
+            - `accommodation` — Accommodation providers, travel tech, and OTAs
+            - `cpg` — Consumer packaged goods companies
+            - `tourism` — Leisure, travel, and tourism businesses (e.g. Expedia, DMOs, travel platforms)
+            - `marketing` — Advertising and marketing services
+            - `parking` — Parking facility operators
+            - `restaurants` — Food and beverage businesses including restaurant groups
+            - `retail` — Non-food retail and retail tech
+            - `transportation` — On-demand transport and delivery
+            - `other` — All other industries (default)
 
             E.g. `?industry=accommodation`
           required: false
@@ -53,7 +77,7 @@ paths:
             pattern: ^-?\d{1,3}(?:\.\d+)?,\-?\d{1,3}(?:\.\d+)?$
         - name: area_type
           in: query
-          description: The shape used to represent the returned impact area. Defaults to `polygon`, which returns a GeoJSON Polygon that precisely follows the boundaries of the impact area. Use `radius` for a simpler representation - a GeoJSON Point with a radius property defining a circular impact area.
+          description: The shape used to represent the returned predicted impact area. Defaults to `polygon`, which returns a GeoJSON Polygon or MultiPolygon that precisely follows the boundaries of the predicted impact area. Use `radius` for a simpler representation - a GeoJSON Point with a radius property defining a circular predicted impact area.
           required: false
           schema:
             default: polygon
@@ -147,10 +171,11 @@ paths:
               example:
                 error: Too many requests. Please retry later.
       tags:
-        - Impact Area API
+        - Predicted Impact Area
 components:
   schemas:
     AreaType:
+      description: The shape used to represent the returned impact area.
       type: string
       enum:
         - polygon
@@ -204,12 +229,27 @@ components:
         - details
       title: HTTPValidationError
     Industry:
+      description: |-
+        The industry category of the business location.
+
+        Different industries have different event impact profiles, which affect the size
+        and shape of the returned predicted impact area.
+
+        - `accommodation` — Accommodation providers, travel tech, and OTAs
+        - `cpg` — Consumer packaged goods companies
+        - `tourism` — Leisure, travel, and tourism businesses (e.g. Expedia, DMOs, travel platforms)
+        - `marketing` — Advertising and marketing services
+        - `parking` — Parking facility operators
+        - `restaurants` — Food and beverage businesses including restaurant groups
+        - `retail` — Non-food retail and retail tech
+        - `transportation` — On-demand transport and delivery
+        - `other` — All other industries
       type: string
       enum:
-        - parking
+        - accommodation
         - restaurants
         - retail
-        - accommodation
+        - parking
         - cpg
         - tourism
         - marketing
@@ -218,7 +258,7 @@ components:
       title: Industry
     LocationResponse:
       description: |-
-        A json object representing the geo location of the event.
+        The origin location coordinates provided in the request.
 
         E.g.:
         ```json
@@ -377,6 +417,11 @@ components:
         The unit of the radius returned.
 
         This will be the unit specified in the radius_unit parameter in the call made.
+
+        - `m` — Meters
+        - `km` — Kilometers
+        - `ft` — Feet
+        - `mi` — Miles
       type: string
       enum:
         - m
