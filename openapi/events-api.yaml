@@ -1436,13 +1436,26 @@ components:
       in: query
       name: sort
       description: |-
-        A comma-separated list of fields to sort results by. The default is `-start`.
+        Comma-separated fields to sort results by. Default: `-start` (most recent first). Note: prefix with `-` to reverse direction. Direction varies by field:
 
-        Prefix the field name with `-` for descending order. Without the prefix, results are sorted in ascending order.
+        - `id` / `-id`: A–Z / Z–A
+        - `title` / `-title`: A–Z / Z–A
+        - `start` / `-start`: earliest first / most recent first
+        - `end` / `-end`: earliest first / most recent first
+        - `first_seen` / `-first_seen`: oldest first / newest first
+        - `predicted_end` / `-predicted_end`: earliest first / most recent first
+        - `updated` / `-updated`: oldest first / newest first
+        - `rank` / `-rank`: highest rank first / lowest rank first
+        - `local_rank` / `-local_rank`: highest rank first / lowest rank first
+        - `phq_attendance` / `-phq_attendance`: highest attendance first / lowest attendance first
+        - `category` / `-category`: A–Z / Z–A
+        - `duration` / `-duration`: shortest first / longest first
+        - `country` / `-country`: A–Z / Z–A
+        - `labels` / `-labels`: A–Z / Z–A
+        - `predicted_event_spend` / `-predicted_event_spend`: highest spend first / lowest spend first
+        - `predicted_event_spend_industry.*` / `-predicted_event_spend_industry.*`: highest spend first / lowest spend first
 
-        Some fields default to descending order (highest value first) even without the `-` prefix: `rank`, `local_rank`, `phq_attendance`, `predicted_event_spend`, `predicted_event_spend_industry.*`, and `relevance`. Adding a `-` prefix to these fields will reverse them to ascending order (lowest value first), except for `relevance` which always sorts most relevant first regardless of sort order.
-
-        Note when sorting on `predicted_end` or `local_rank` (regardless of sort order), events that do not have a `predicted_end`, `local_rank` will be placed last.
+        Note when sorting on `predicted_end` or `local_rank`, events without a value for that field will be placed last.
 
         Example: `country,-start`
       required: false
@@ -1487,7 +1500,6 @@ components:
             - -predicted_event_spend_industry.hospitality
             - predicted_event_spend_industry.transportation
             - -predicted_event_spend_industry.transportation
-            - relevance
       style: form
       explode: false
     StartDateConfidenceScoreGteParam:
@@ -2187,10 +2199,7 @@ components:
           type: string
           format: date-time
         private:
-          description: |-
-            Indicates whether the event is a private event (submitted via Loop).
-
-            Only present when the account has the Loop subscription.
+          description: Indicates whether this is a private event. Private events are submitted via Loop and, once processed, are available only to the submitting organisation. After review by PredictHQ they are made available to all users.
           type: boolean
       examples:
         - id: 3B9mLBbp36VUL4GbAu
