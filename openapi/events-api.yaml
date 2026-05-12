@@ -134,6 +134,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EventsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Invalid rank level. It must be a comma-separated list of numbers between 1 and 5.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Authorization required
+        '402':
+          description: Payment Required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Your subscription has expired.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Bearer token scope insufficient
       tags:
         - Events API
   /v1/events/count/:
@@ -247,6 +279,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EventsCountResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Invalid rank level. It must be a comma-separated list of numbers between 1 and 5.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Authorization required
+        '402':
+          description: Payment Required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Your subscription has expired.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Bearer token scope insufficient
       tags:
         - Events API
 components:
@@ -1372,11 +1436,26 @@ components:
       in: query
       name: sort
       description: |-
-        A comma-separated list of fields to sort results by. The default is `-start`.
+        Comma-separated fields to sort results by. Default: `-start` (most recent first). Note: prefix with `-` to reverse direction. Direction varies by field:
 
-        Prefix the field name with `-` for reverse order.
+        - `id` / `-id`: A–Z / Z–A
+        - `title` / `-title`: A–Z / Z–A
+        - `start` / `-start`: earliest first / most recent first
+        - `end` / `-end`: earliest first / most recent first
+        - `first_seen` / `-first_seen`: oldest first / newest first
+        - `predicted_end` / `-predicted_end`: earliest first / most recent first
+        - `updated` / `-updated`: oldest first / newest first
+        - `rank` / `-rank`: highest rank first / lowest rank first
+        - `local_rank` / `-local_rank`: highest rank first / lowest rank first
+        - `phq_attendance` / `-phq_attendance`: highest attendance first / lowest attendance first
+        - `category` / `-category`: A–Z / Z–A
+        - `duration` / `-duration`: shortest first / longest first
+        - `country` / `-country`: A–Z / Z–A
+        - `labels` / `-labels`: A–Z / Z–A
+        - `predicted_event_spend` / `-predicted_event_spend`: highest spend first / lowest spend first
+        - `predicted_event_spend_industry.*` / `-predicted_event_spend_industry.*`: highest spend first / lowest spend first
 
-        Note when sorting on `predicted_end` or `local_rank` (regardless of sort order), events that do not have a `predicted_end`, `local_rank` will be placed last.
+        Note when sorting on `predicted_end` or `local_rank`, events without a value for that field will be placed last.
 
         Example: `country,-start`
       required: false
@@ -1386,23 +1465,41 @@ components:
           type: string
           enum:
             - id
+            - -id
             - title
+            - -title
             - start
+            - -start
             - end
+            - -end
             - first_seen
+            - -first_seen
             - predicted_end
+            - -predicted_end
             - updated
+            - -updated
             - rank
+            - -rank
             - local_rank
+            - -local_rank
             - phq_attendance
+            - -phq_attendance
             - category
+            - -category
             - duration
+            - -duration
             - country
+            - -country
             - labels
+            - -labels
             - predicted_event_spend
+            - -predicted_event_spend
             - predicted_event_spend_industry.accommodation
+            - -predicted_event_spend_industry.accommodation
             - predicted_event_spend_industry.hospitality
+            - -predicted_event_spend_industry.hospitality
             - predicted_event_spend_industry.transportation
+            - -predicted_event_spend_industry.transportation
       style: form
       explode: false
     StartDateConfidenceScoreGteParam:
@@ -1693,8 +1790,10 @@ components:
               - type
             properties:
               entity_id:
+                description: The unique identifier of the entity.
                 type: string
               type:
+                description: The type of entity.
                 type: string
                 enum:
                   - airport
@@ -1703,23 +1802,30 @@ components:
                   - person
                   - venue
               labels:
+                description: Labels associated with the entity providing additional context (e.g. `recurring`, `residency`).
                 type: array
                 items:
                   type: string
               name:
+                description: The name of the entity.
                 type: string
               description:
+                description: A description of the entity, if available.
                 type: string
               category:
                 $ref: '#/components/schemas/EventCategory'
               formatted_address:
+                description: The formatted street address of the entity (typically for venues).
                 type: string
               timezone:
+                description: The timezone of the entity in TZ Database format.
                 type: string
               recurring:
+                description: Recurrence information for the entity, if applicable.
                 type: object
                 properties:
                   ical:
+                    description: An iCalendar (RFC 5545) recurrence rule describing the recurring schedule.
                     type: string
                 required:
                   - ical
@@ -1786,6 +1892,7 @@ components:
                   - phq_attendance
                   - phq_impact
               impacts:
+                description: An array of daily impact values showing the predicted impact for each day in the pattern.
                 type: array
                 items:
                   type: object
@@ -1862,28 +1969,34 @@ components:
                     - 222-229@8t2-fgc-z2k
                     - '@7f7-mcy-ndv'
                 address:
+                  description: The address of the event location, or null if not available.
                   oneOf:
                     - type: object
                       required:
                         - country_code
                       properties:
                         country_code:
+                          description: The country code in ISO 3166-1 alpha-2 format.
                           type: string
                           examples:
                             - US
                         formatted_address:
+                          description: The full formatted street address.
                           type: string
                           examples:
                             - 2350 Beach Blvd, Biloxi, MS 39531, USA
                         locality:
+                          description: The city or locality name.
                           type: string
                           examples:
                             - Biloxi
                         region:
+                          description: The state, province, or region name.
                           type: string
                           examples:
                             - Mississippi
                         postcode:
+                          description: The postal or zip code.
                           type: string
                           examples:
                             - '39531'
@@ -1930,8 +2043,10 @@ components:
               - weight
             properties:
               label:
+                description: The PHQ Label value.
                 type: string
               weight:
+                description: The weight of this label's contribution to the event. All weights for an event sum to 1.0.
                 type: number
                 maximum: 1
                 minimum: 0
@@ -2083,6 +2198,9 @@ components:
           description: The last modification date of the event in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format. All dates are in UTC.
           type: string
           format: date-time
+        private:
+          description: Indicates whether this is a private event. Private events are submitted via Loop and, once processed, are available only to the submitting organisation. After review by PredictHQ they are made available to all users.
+          type: boolean
       examples:
         - id: 3B9mLBbp36VUL4GbAu
           title: Katy Perry
@@ -2250,10 +2368,12 @@ components:
           type: boolean
           default: false
         previous:
+          description: URL to the previous page of results, or null if on the first page.
           type: string
           examples:
             - https://api.predicthq.com/v1/events/?limit=10&offset=10
         next:
+          description: URL to the next page of results, or null if on the last page.
           type: string
           examples:
             - https://api.predicthq.com/v1/events/?limit=10&offset=20
@@ -2763,6 +2883,17 @@ components:
                     items:
                       type: number
       title: GeoJSON Geometry
+    ErrorResponse:
+      description: An error response containing a human-readable error message.
+      type: object
+      properties:
+        error:
+          description: Error message
+          type: string
+          title: Error
+      required:
+        - error
+      title: ErrorResponse
   securitySchemes:
     BearerAuth:
       type: http
