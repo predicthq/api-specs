@@ -38,6 +38,7 @@ paths:
     get:
       operationId: list_algorithms
       summary: Get Algorithms
+      description: Returns the list of available forecasting algorithms. Currently one algorithm is offered (`phq-xgboost`) based on XGBoost.
       responses:
         '200':
           description: Successful Response
@@ -45,18 +46,47 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetAlgoResponse'
-        '422':
-          description: Validation Error
+        '401':
+          description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Authorization required
+        '402':
+          description: Payment Required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Payment required.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                insufficientScope:
+                  summary: Insufficient token scope
+                  value:
+                    error: Bearer token scope insufficient
+                missingSubscription:
+                  summary: Missing forecasts subscription
+                  value:
+                    error: Missing forecasts subscription.
       tags:
         - Algorithms
   /v1/forecasts/models:
     post:
       operationId: create_model
       summary: Create Model
+      description: |-
+        Creates a new forecast model. You must provide a `name` and a `location` (via a Saved Location ID). Optionally specify `demand_type`, `label`, `external_id`, `forecast_window`, `algo`, and `generate_baseline`.
+
+        After creating a model, upload historical demand data using the Create Demand Data endpoint, then trigger training.
       requestBody:
         required: true
         content:
@@ -70,17 +100,64 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateModelResponse'
-        '422':
-          description: Validation Error
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                oneOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+                  - $ref: '#/components/schemas/HTTPValidationError'
+              examples:
+                invalidRequest:
+                  summary: Invalid request parameter
+                  value:
+                    error: Request contains invalid data
+                    details:
+                      - field: body.location.saved_location_id
+                        msg: Field required
+                        type: missing
+                businessLogicError:
+                  summary: Business logic error
+                  value:
+                    error: Saved Location not found
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Authorization required
+        '402':
+          description: Payment Required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Payment required.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                insufficientScope:
+                  summary: Insufficient token scope
+                  value:
+                    error: Bearer token scope insufficient
+                missingSubscription:
+                  summary: Missing forecasts subscription
+                  value:
+                    error: Missing forecasts subscription.
       tags:
         - Models
     get:
       operationId: list_models
       summary: Search Models
+      description: Returns a paginated list of forecast models belonging to the authenticated organization. Supports full-text search across `name`, `label`, and `external_id` via the `q` parameter, and filtering by Saved Location ID and readiness status.
       parameters:
         - name: q
           in: query
@@ -90,15 +167,24 @@ paths:
             type: string
         - name: location.saved_location_id
           in: query
-          description: A coma-separated list of Saved Location IDs to filter on.
+          description: A comma-separated list of Saved Location IDs to filter on.
           required: false
           schema:
             type: array
             items:
               type: string
-        - name: status
+        - name: readiness_status
           in: query
-          description: A comma-separated list of forecast status.
+          description: |-
+            A comma-separated list of forecast model statuses to filter on.
+
+            - `created`: Model has been created but not yet trained.
+            - `preparing`: Model is locked and gathering data prior to training.
+            - `training`: Model is currently being trained on uploaded demand data.
+            - `forecasting`: Model is generating forecasts.
+            - `ready`: Model has successfully generated forecasts and is available for queries.
+            - `stale`: Model configuration or data has changed; retraining is required.
+            - `failed`: Processing encountered an error.
           required: false
           schema:
             type: array
@@ -121,21 +207,72 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SearchModelResponse'
-        '422':
-          description: Validation Error
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                oneOf:
+                  - $ref: '#/components/schemas/HTTPValidationError'
+                  - $ref: '#/components/schemas/QueryValidationError'
+              examples:
+                invalidQueryParameter:
+                  summary: Invalid query parameter
+                  value:
+                    error:
+                      - field: readiness_status
+                        msg: Input should be 'created', 'failed', 'forecasting', 'preparing', 'ready', 'stale' or 'training'
+                        type: enum
+                invalidPaginationParameter:
+                  summary: Pagination limit exceeded
+                  value:
+                    error: Request contains invalid data
+                    details:
+                      - field: query.limit/offset
+                        msg: Tried to fetch more results than the maximum allowed. Please reduce limit/offset.
+                        type: value_error
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Authorization required
+        '402':
+          description: Payment Required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Payment required.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                insufficientScope:
+                  summary: Insufficient token scope
+                  value:
+                    error: Bearer token scope insufficient
+                missingSubscription:
+                  summary: Missing forecasts subscription
+                  value:
+                    error: Missing forecasts subscription.
       tags:
         - Models
   /v1/forecasts/models/{model_id}:
     get:
       operationId: get_model
       summary: Get Model
+      description: Retrieves a single forecast model by ID, including its current readiness status, configuration, accuracy metrics, and location details.
       parameters:
         - name: model_id
           in: path
+          description: The unique identifier of the forecast model.
           required: true
           schema:
             type: string
@@ -147,20 +284,55 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetModelResponse'
-        '422':
-          description: Validation Error
+        '401':
+          description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Authorization required
+        '402':
+          description: Payment Required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Payment required.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                insufficientScope:
+                  summary: Insufficient token scope
+                  value:
+                    error: Bearer token scope insufficient
+                missingSubscription:
+                  summary: Missing forecasts subscription
+                  value:
+                    error: Missing forecasts subscription.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Model not found
       tags:
         - Models
     put:
       operationId: update_model
       summary: Replace Model
+      description: Replaces the full configuration of an existing forecast model. This is a full replacement — all mutable fields should be provided. Changes to `location`, `demand_type`, `forecast_window`, `algo`, or `generate_baseline` are blocked while the model is in `preparing`, `training`, or `forecasting` status. Changing any of those fields sets the model to `stale` status, requiring re-training to take effect.
       parameters:
         - name: model_id
           in: path
+          description: The unique identifier of the forecast model.
           required: true
           schema:
             type: string
@@ -174,20 +346,76 @@ paths:
       responses:
         '204':
           description: Successful Response
-        '422':
-          description: Validation Error
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                oneOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+                  - $ref: '#/components/schemas/HTTPValidationError'
+              examples:
+                invalidRequest:
+                  summary: Invalid request parameter
+                  value:
+                    error: Request contains invalid data
+                    details:
+                      - field: body.location.saved_location_id
+                        msg: Field required
+                        type: missing
+                businessLogicError:
+                  summary: Business logic error
+                  value:
+                    error: Saved Location not found
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Authorization required
+        '402':
+          description: Payment Required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Payment required.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                insufficientScope:
+                  summary: Insufficient token scope
+                  value:
+                    error: Bearer token scope insufficient
+                missingSubscription:
+                  summary: Missing forecasts subscription
+                  value:
+                    error: Missing forecasts subscription.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Model not found
       tags:
         - Models
     patch:
       operationId: patch_model
       summary: Update Model
+      description: Partially updates an existing forecast model. Only the fields provided in the request body will be changed. Changes to `location`, `demand_type`, `forecast_window`, `algo`, or `generate_baseline` are blocked while the model is in `preparing`, `training`, or `forecasting` status. Changing any of those fields sets the model to `stale` status, requiring re-training to take effect.
       parameters:
         - name: model_id
           in: path
+          description: The unique identifier of the forecast model.
           required: true
           schema:
             type: string
@@ -201,20 +429,76 @@ paths:
       responses:
         '204':
           description: Successful Response
-        '422':
-          description: Validation Error
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                oneOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+                  - $ref: '#/components/schemas/HTTPValidationError'
+              examples:
+                invalidRequest:
+                  summary: Invalid request parameter
+                  value:
+                    error: Request contains invalid data
+                    details:
+                      - field: body.location.saved_location_id
+                        msg: Field required
+                        type: missing
+                businessLogicError:
+                  summary: Business logic error
+                  value:
+                    error: Saved Location not found
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Authorization required
+        '402':
+          description: Payment Required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Payment required.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                insufficientScope:
+                  summary: Insufficient token scope
+                  value:
+                    error: Bearer token scope insufficient
+                missingSubscription:
+                  summary: Missing forecasts subscription
+                  value:
+                    error: Missing forecasts subscription.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Model not found
       tags:
         - Models
     delete:
       operationId: delete_model
       summary: Delete Model
+      description: Permanently deletes a forecast model and all associated demand data and forecasts. The model must not be in `preparing`, `training`, or `forecasting` status. This action is irreversible.
       parameters:
         - name: model_id
           in: path
+          description: The unique identifier of the forecast model.
           required: true
           schema:
             type: string
@@ -222,21 +506,72 @@ paths:
       responses:
         '204':
           description: Successful Response
-        '422':
-          description: Validation Error
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Current model readiness state is 'preparing', which doesn't allow deletion
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Authorization required
+        '402':
+          description: Payment Required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Payment required.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                insufficientScope:
+                  summary: Insufficient token scope
+                  value:
+                    error: Bearer token scope insufficient
+                missingSubscription:
+                  summary: Missing forecasts subscription
+                  value:
+                    error: Missing forecasts subscription.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Model not found
       tags:
         - Models
   /v1/forecasts/models/{model_id}/demand:
     post:
       operationId: create_demand_data
       summary: Create Model Demand
+      description: |-
+        Uploads historical demand data for a forecast model. The model must exist and belong to the authenticated organization.
+
+        You can use any of the following content types:
+        - `application/json`: A JSON object with a `demand` array of `{date, demand}` objects.
+        - `text/csv`: A CSV file with lowercase headers `date,demand` and one row per data point.
+        - `application/x-ndjson`: Newline-delimited JSON where each line is a `{date, demand}` object.
+
+        The `date` field should be in `YYYY-MM-DD` format and `demand` must be a non-negative number.
       parameters:
         - name: model_id
           in: path
+          description: The unique identifier of the forecast model.
           required: true
           schema:
             type: string
@@ -277,20 +612,80 @@ paths:
       responses:
         '201':
           description: Successful Response
-        '422':
-          description: Validation Error
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                oneOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+                  - $ref: '#/components/schemas/HTTPValidationError'
+              examples:
+                invalidRequest:
+                  summary: Invalid request parameter
+                  value:
+                    error: Request contains invalid data
+                    details:
+                      - field: body.demand[0].date
+                        msg: Input should be a valid date in YYYY-MM-DD format
+                        type: date_parsing
+                businessLogicError:
+                  summary: Business logic error
+                  value:
+                    error: Current model readiness state is 'training', which doesn't allow demand data upload
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Authorization required
+        '402':
+          description: Payment Required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Payment required.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                insufficientScope:
+                  summary: Insufficient token scope
+                  value:
+                    error: Bearer token scope insufficient
+                missingSubscription:
+                  summary: Missing forecasts subscription
+                  value:
+                    error: Missing forecasts subscription.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Model not found
       tags:
         - Demand Data
     get:
       operationId: list_demand_data
       summary: Get Demand Data
+      description: |-
+        Returns the demand data that has been uploaded to the model. Supports filtering by date range.
+
+        By setting the `Accept` header, you can specify the format of the response. The default is JSON.
+        Supported formats: `application/json`, `text/csv`, `application/x-ndjson`.
       parameters:
         - name: model_id
           in: path
+          description: The unique identifier of the forecast model.
           required: true
           schema:
             type: string
@@ -354,21 +749,93 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SearchDemandResponse'
-        '422':
-          description: Validation Error
+            application/x-ndjson:
+              schema:
+                type: string
+              example: |-
+                {"date": "2025-01-01", "demand": 100.0}
+                {"date": "2025-01-02", "demand": 150.0}
+            text/csv:
+              schema:
+                type: string
+              example: |-
+                date,demand
+                2025-01-01,100.0
+                2025-01-02,150.0
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                oneOf:
+                  - $ref: '#/components/schemas/HTTPValidationError'
+                  - $ref: '#/components/schemas/QueryValidationError'
+              examples:
+                invalidQueryParameter:
+                  summary: Invalid query parameter
+                  value:
+                    error:
+                      - field: date.gte
+                        msg: Input should be a valid date in YYYY-MM-DD format
+                        type: date_parsing
+                invalidPaginationParameter:
+                  summary: Pagination limit exceeded
+                  value:
+                    error: Request contains invalid data
+                    details:
+                      - field: query.limit/offset
+                        msg: Tried to fetch more results than the maximum allowed. Please reduce limit/offset.
+                        type: value_error
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Authorization required
+        '402':
+          description: Payment Required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Payment required.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                insufficientScope:
+                  summary: Insufficient token scope
+                  value:
+                    error: Bearer token scope insufficient
+                missingSubscription:
+                  summary: Missing forecasts subscription
+                  value:
+                    error: Missing forecasts subscription.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Model not found
       tags:
         - Demand Data
   /v1/forecasts/models/{model_id}/forecast:
     get:
       operationId: get_forecast
       summary: Get Forecast
+      description: Returns the generated forecast results for a trained model. Each result includes a date and predicted demand value. Supports filtering by date range.
       parameters:
         - name: model_id
           in: path
+          description: The unique identifier of the forecast model.
           required: true
           schema:
             type: string
@@ -425,7 +892,11 @@ paths:
             format: date
         - name: include
           in: query
-          description: A comma-separated list of fields to be included in the response. By default `phq_features` and `phq_explainability` are not included.
+          description: |-
+            A comma-separated list of additional fields to include in each forecast result. By default these fields are omitted:
+
+            - `phq_features`: The demand intelligence features used in training and forecasting.
+            - `phq_explainability`: The top events impacting demand on each forecasted date.
           required: false
           schema:
             type: array
@@ -444,21 +915,88 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SearchModelForecastResponse'
-        '422':
-          description: Validation Error
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                oneOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+                  - $ref: '#/components/schemas/HTTPValidationError'
+                  - $ref: '#/components/schemas/QueryValidationError'
+              examples:
+                invalidQueryParameter:
+                  summary: Invalid query parameter
+                  value:
+                    error:
+                      - field: date.gte
+                        msg: Input should be a valid date in YYYY-MM-DD format
+                        type: date_parsing
+                invalidPaginationParameter:
+                  summary: Pagination limit exceeded
+                  value:
+                    error: Request contains invalid data
+                    details:
+                      - field: query.limit/offset
+                        msg: Tried to fetch more results than the maximum allowed. Please reduce limit/offset.
+                        type: value_error
+                businessLogicError:
+                  summary: Business logic error
+                  value:
+                    error: PHQ explainability is not enabled on your subscription.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Authorization required
+        '402':
+          description: Payment Required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Payment required.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                insufficientScope:
+                  summary: Insufficient token scope
+                  value:
+                    error: Bearer token scope insufficient
+                missingSubscription:
+                  summary: Missing forecasts subscription
+                  value:
+                    error: Missing forecasts subscription.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Model not found
       tags:
         - Forecasts
   /v1/forecasts/models/{model_id}/train:
     post:
       operationId: train_model
       summary: Train Model
+      description: |-
+        Triggers training for the specified forecast model. The model must have demand data uploaded and be in a state that allows training (e.g. `ready` or `created` with demand data).
+
+        Training runs asynchronously — poll the model's `readiness.status` field to monitor progress.
       parameters:
         - name: model_id
           in: path
+          description: The unique identifier of the forecast model.
           required: true
           schema:
             type: string
@@ -466,12 +1004,53 @@ paths:
       responses:
         '204':
           description: Successful Response
-        '422':
-          description: Validation Error
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Current model readiness state is 'preparing', which doesn't allow triggering training
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Authorization required
+        '402':
+          description: Payment Required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Payment required.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                insufficientScope:
+                  summary: Insufficient token scope
+                  value:
+                    error: Bearer token scope insufficient
+                missingSubscription:
+                  summary: Missing forecasts subscription
+                  value:
+                    error: Missing forecasts subscription.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Model not found
       tags:
         - Models
 components:
@@ -479,7 +1058,7 @@ components:
     LimitParam:
       name: limit
       in: query
-      description: Limit the number of results.
+      description: The maximum number of results to return per page. Defaults to `10`.
       required: false
       schema:
         type: integer
@@ -487,7 +1066,7 @@ components:
     OffsetParam:
       name: offset
       in: query
-      description: Offset the results.
+      description: The number of results to skip before returning. Used for pagination. Defaults to `0`.
       required: false
       schema:
         type: integer
@@ -518,12 +1097,15 @@ components:
       type: object
       properties:
         algo:
+          description: Algorithm identifier.
           type: string
           const: phq-xgboost
         description:
+          description: Human-readable description of the algorithm.
           type: string
           minLength: 1
         status:
+          description: Current availability status of the algorithm.
           type: string
           default: current
           enum:
@@ -551,7 +1133,7 @@ components:
           description: Number of days into the future to forecast.
           $ref: '#/components/schemas/ForecastWindowDay'
         generate_baseline:
-          description: When true, generates a baseline model using historical demand data only - without PredictHQ demand intelligence - for benchmarking accuracy against the enhanced model.
+          description: When `true`, generates a baseline model using historical demand data only - without PredictHQ demand intelligence - for benchmarking accuracy against the enhanced model.
           type: boolean
           default: false
           title: Generate Baseline Model
@@ -577,6 +1159,7 @@ components:
           default: phq-xgboost
           const: phq-xgboost
         demand_type:
+          description: Configuration for the demand data type including the industry and time interval.
           $ref: '#/components/schemas/InputDemandType'
       additionalProperties: false
       required:
@@ -587,18 +1170,21 @@ components:
       type: object
       properties:
         errors:
+          description: List of error messages, if any.
           type: array
           items:
             type: string
           default: []
           title: Errors
         warnings:
+          description: List of warning messages, if any.
           type: array
           items:
             type: string
           default: []
           title: Warnings
         model_id:
+          description: Unique identifier for the newly created forecast model.
           type: string
           minLength: 1
           title: Model Id
@@ -609,10 +1195,12 @@ components:
       type: object
       properties:
         start:
+          description: Start date of the range.
           type: string
           format: date
           title: Start
         end:
+          description: End date of the range.
           type: string
           format: date
           title: End
@@ -624,6 +1212,7 @@ components:
       type: object
       properties:
         date_range:
+          description: The date range covered by the uploaded demand data.
           $ref: '#/components/schemas/DateRange'
       required:
         - date_range
@@ -632,31 +1221,38 @@ components:
       type: object
       properties:
         id:
+          description: Unique identifier of the event.
           type: string
           minLength: 1
           title: Id
         category:
+          description: Category classification of the event (e.g. `conferences`, `sports`, `concerts`).
           type: string
           minLength: 1
-          title: Title
+          title: Category
         title:
+          description: Display name of the event as it appears in the PredictHQ event catalog.
           type: string
           minLength: 1
           title: Title
         start_local:
+          description: Start date and time of the event in local time.
           type: string
           format: date-time
           title: Start
         end_local:
+          description: End date and time of the event in local time.
           type: string
           format: date-time
           title: End
         phq_rank:
+          description: PHQ Rank score from 0–100 indicating the predicted attendance impact of the event.
           type: integer
           maximum: 100
           minimum: 0
           title: PHQ Rank
         local_rank:
+          description: Local Rank score from 0–100 indicating relative local significance. Null for non-attended events.
           anyOf:
             - type: integer
               maximum: 100
@@ -674,10 +1270,12 @@ components:
       type: object
       properties:
         name:
+          description: Name of the demand intelligence feature.
           type: string
           minLength: 1
           title: Name
         value:
+          description: Numeric value of the feature's contribution to the forecast.
           type: number
           title: Value
       required:
@@ -699,18 +1297,21 @@ components:
       type: object
       properties:
         errors:
+          description: List of error messages, if any.
           type: array
           items:
             type: string
           default: []
           title: Errors
         warnings:
+          description: List of warning messages, if any.
           type: array
           items:
             type: string
           default: []
           title: Warnings
         results:
+          description: List of available forecasting algorithms.
           type: array
           items:
             $ref: '#/components/schemas/Algo'
@@ -720,31 +1321,25 @@ components:
       type: object
       properties:
         errors:
+          description: List of error messages, if any.
           type: array
           items:
             type: string
           default: []
           title: Errors
         warnings:
+          description: List of warning messages, if any.
           type: array
           items:
             type: string
           default: []
           title: Warnings
         model:
+          description: The forecast model object containing all configuration, status, and metrics.
           $ref: '#/components/schemas/PublicForecastModel'
       required:
         - model
       title: GetModelResponse
-    HTTPValidationError:
-      type: object
-      properties:
-        detail:
-          type: array
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          title: Detail
-      title: HTTPValidationError
     Industry:
       description: Choosing the right industry is important as this will determine the type of features used in the training and forecasting and will impact the accuracy of the results. We will use the applicable Predicted Impact Patterns for the specified industry.
       type: string
@@ -763,8 +1358,10 @@ components:
       type: object
       properties:
         interval:
+          description: The time interval for demand data aggregation. Currently only `day` is supported.
           $ref: '#/components/schemas/InputInterval'
         industry:
+          description: Industry classification determining which Predicted Impact Patterns are applied.
           $ref: '#/components/schemas/Industry'
       title: InputDemandType
     InputInterval:
@@ -775,6 +1372,7 @@ components:
       type: object
       properties:
         saved_location_id:
+          description: The unique identifier of a Saved Location defining the geographic area for this model.
           type: string
           minLength: 1
           title: Saved Location ID
@@ -786,6 +1384,7 @@ components:
       type: object
       properties:
         events:
+          description: List of events impacting demand on the associated date, ordered by impact.
           type: array
           items:
             $ref: '#/components/schemas/Event'
@@ -794,10 +1393,12 @@ components:
       type: object
       properties:
         date:
+          description: The date of the demand data point.
           type: string
           format: date
           title: Date
         demand:
+          description: The demand value for the date.
           type: number
           minimum: 0
           title: Demand
@@ -809,10 +1410,12 @@ components:
       type: object
       properties:
         interval:
+          description: The time interval for demand data aggregation.
           anyOf:
             - $ref: '#/components/schemas/PublicInterval'
             - type: 'null'
         industry:
+          description: Industry classification determining which Predicted Impact Patterns are applied.
           anyOf:
             - $ref: '#/components/schemas/Industry'
             - type: 'null'
@@ -821,13 +1424,16 @@ components:
       type: object
       properties:
         date:
+          description: The date of the forecast value.
           type: string
           format: date
           title: Date
         forecast:
+          description: The predicted demand value for the date.
           type: number
           title: Forecast
         phq_explainability:
+          description: Events impacting demand on this date, ranked by impact. Only present when `phq_explainability` is passed in the `include` query parameter.
           $ref: '#/components/schemas/PhqExplainability'
         phq_features:
           description: List of the features (from our Features API) that were shown to have an impact on the demand. These features were used in training the model and for forecasting.
@@ -844,24 +1450,30 @@ components:
       type: object
       properties:
         algo:
+          description: The forecasting algorithm used by this model.
           $ref: '#/components/schemas/AlgoType'
         create_dt:
+          description: Timestamp when the model was created.
           type: string
           format: date-time
           title: Create Dt
         demand_type:
+          description: Configuration for demand data type including industry and interval.
           anyOf:
             - $ref: '#/components/schemas/PublicDemandType'
             - type: 'null'
         external_id:
+          description: User-provided external identifier for cross-referencing with other systems.
           anyOf:
             - type: string
               minLength: 1
             - type: 'null'
           title: External Id
         forecast_window:
+          description: Number of days into the future this model forecasts.
           $ref: '#/components/schemas/ForecastWindowDay'
         label:
+          description: Set of labels for identifying or grouping forecast models.
           anyOf:
             - items:
                 type: string
@@ -871,28 +1483,35 @@ components:
             - type: 'null'
           title: Label
         location:
+          description: The geographic area associated with this model, defined by a Saved Location.
           $ref: '#/components/schemas/Location'
         metrics:
+          description: Training and accuracy metrics for the model. Null until the model has been trained.
           anyOf:
             - $ref: '#/components/schemas/PublicMetrics'
             - type: 'null'
         model_id:
+          description: Unique identifier for the forecast model.
           type: string
           minLength: 1
           title: Model Id
         name:
+          description: Name of the forecast model.
           type: string
           minLength: 1
           title: Name
         readiness:
+          description: Current readiness status of the model indicating where it is in the training/forecasting lifecycle.
           $ref: '#/components/schemas/Readiness'
         train_dt:
+          description: Timestamp when the model was last successfully trained. Null if never trained.
           anyOf:
             - type: string
               format: date-time
             - type: 'null'
           title: Train Dt
         update_dt:
+          description: Timestamp when the model was last updated.
           type: string
           format: date-time
           title: Update Dt
@@ -925,20 +1544,24 @@ components:
       type: object
       properties:
         name:
+          description: Name for the forecast model.
           type: string
           minLength: 1
           title: Name
         external_id:
+          description: User-provided external identifier for cross-referencing with other systems.
           anyOf:
             - type: string
               minLength: 1
             - type: 'null'
           title: External Id
         forecast_window:
+          description: Number of days into the future to forecast.
           anyOf:
             - $ref: '#/components/schemas/ForecastWindowDay'
             - type: 'null'
         label:
+          description: Set of labels you can use to better identify or group your forecast models.
           anyOf:
             - items:
                 type: string
@@ -948,12 +1571,15 @@ components:
             - type: 'null'
           title: Label
         location:
+          description: The geographic area for this model, specified by a Saved Location ID.
           $ref: '#/components/schemas/Location'
         algo:
+          description: Algorithm to use for forecasting.
           type: string
           default: phq-xgboost
           const: phq-xgboost
         demand_type:
+          description: Configuration for demand data type including industry and interval.
           anyOf:
             - $ref: '#/components/schemas/InputDemandType'
             - type: 'null'
@@ -966,31 +1592,37 @@ components:
       type: object
       properties:
         errors:
+          description: List of error messages, if any.
           type: array
           items:
             type: string
           default: []
           title: Errors
         warnings:
+          description: List of warning messages, if any.
           type: array
           items:
             type: string
           default: []
           title: Warnings
         count:
+          description: Total number of results matching the query.
           type: integer
           title: Count
         next:
+          description: URL for the next page of results. Null if no more results.
           anyOf:
             - type: string
             - type: 'null'
           title: Next
         previous:
+          description: URL for the previous page of results. Null if on the first page.
           anyOf:
             - type: string
             - type: 'null'
           title: Previous
         results:
+          description: Array of demand data results for the current page.
           type: array
           items:
             $ref: '#/components/schemas/PublicDemand'
@@ -1002,31 +1634,37 @@ components:
       type: object
       properties:
         errors:
+          description: List of error messages, if any.
           type: array
           items:
             type: string
           default: []
           title: Errors
         warnings:
+          description: List of warning messages, if any.
           type: array
           items:
             type: string
           default: []
           title: Warnings
         count:
+          description: Total number of results matching the query.
           type: integer
           title: Count
         next:
+          description: URL for the next page of results. Null if no more results.
           anyOf:
             - type: string
             - type: 'null'
           title: Next
         previous:
+          description: URL for the previous page of results. Null if on the first page.
           anyOf:
             - type: string
             - type: 'null'
           title: Previous
         results:
+          description: Array of forecast results for the current page.
           type: array
           items:
             $ref: '#/components/schemas/PublicForecast'
@@ -1038,31 +1676,37 @@ components:
       type: object
       properties:
         errors:
+          description: List of error messages, if any.
           type: array
           items:
             type: string
           default: []
           title: Errors
         warnings:
+          description: List of warning messages, if any.
           type: array
           items:
             type: string
           default: []
           title: Warnings
         count:
+          description: Total number of results matching the query.
           type: integer
           title: Count
         next:
+          description: URL for the next page of results. Null if no more results.
           anyOf:
             - type: string
             - type: 'null'
           title: Next
         previous:
+          description: URL for the previous page of results. Null if on the first page.
           anyOf:
             - type: string
             - type: 'null'
           title: Previous
         results:
+          description: Array of forecast model results for the current page.
           type: array
           items:
             $ref: '#/components/schemas/PublicForecastModel'
@@ -1074,14 +1718,17 @@ components:
       type: object
       properties:
         date_range:
+          description: The date range of demand data used for training the model.
           $ref: '#/components/schemas/DateRange'
         missing_pct:
+          description: Percentage of dates with missing demand data in the training range (0–100).
           type: number
           default: 0
           maximum: 100
           minimum: 0
           title: Missing Pct
         missing_dates:
+          description: List of dates with missing demand data. Null if no dates are missing.
           anyOf:
             - items:
                 type: string
@@ -1096,26 +1743,31 @@ components:
       type: object
       properties:
         name:
+          description: Name for the forecast model.
           anyOf:
             - type: string
               minLength: 1
             - type: 'null'
           title: Name
         external_id:
+          description: User-provided external identifier for cross-referencing with other systems.
           anyOf:
             - type: string
               minLength: 1
             - type: 'null'
           title: External Id
         forecast_window:
+          description: Number of days into the future to forecast.
           anyOf:
             - $ref: '#/components/schemas/ForecastWindowDay'
             - type: 'null'
         generate_baseline:
+          description: When `true`, generates a baseline model using historical demand data only - without PredictHQ demand intelligence - for benchmarking accuracy against the enhanced model.
           type: boolean
           default: false
           title: Generate Baseline
         label:
+          description: Set of labels you can use to better identify or group your forecast models.
           anyOf:
             - items:
                 type: string
@@ -1125,51 +1777,95 @@ components:
             - type: 'null'
           title: Label
         location:
+          description: The geographic area for this model, specified by a Saved Location ID.
           anyOf:
             - $ref: '#/components/schemas/Location'
             - type: 'null'
         algo:
+          description: Algorithm to use for forecasting.
           anyOf:
             - $ref: '#/components/schemas/AlgoType'
             - type: 'null'
         demand_type:
+          description: Configuration for demand data type including industry and interval.
           anyOf:
             - $ref: '#/components/schemas/InputDemandType'
             - type: 'null'
       additionalProperties: false
       title: UpdateModelRequest
-    ValidationError:
+    ErrorResponse:
       type: object
       properties:
-        loc:
-          type: array
-          items:
-            anyOf:
-              - type: string
-              - type: integer
-          title: Location
+        error:
+          description: Error message
+          type: string
+          title: Error
+      required:
+        - error
+      title: ErrorResponse
+    ValidationErrorDetail:
+      type: object
+      properties:
+        field:
+          description: The field that failed validation
+          type: string
+          title: Field
         msg:
+          description: The validation error message
           type: string
           title: Message
         type:
+          description: The type of validation error
           type: string
           title: Error Type
       required:
-        - loc
+        - field
         - msg
         - type
-      title: ValidationError
+      title: ValidationErrorDetail
+    HTTPValidationError:
+      type: object
+      properties:
+        error:
+          description: Error summary message
+          type: string
+          title: Error
+        details:
+          description: List of validation error details
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationErrorDetail'
+          title: Details
+      required:
+        - error
+        - details
+      title: HTTPValidationError
+    QueryValidationError:
+      type: object
+      properties:
+        error:
+          description: List of query parameter validation errors
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationErrorDetail'
+          title: Error
+      required:
+        - error
+      title: QueryValidationError
     Readiness:
       type: object
       properties:
         status:
+          description: Current lifecycle status of the forecast model.
           $ref: '#/components/schemas/ReadinessStatus'
         error_code:
+          description: Machine-readable error code when the model is in a failed state.
           anyOf:
             - type: string
             - type: 'null'
           title: Error Code
         error_message:
+          description: Human-readable error description when the model is in a failed state.
           anyOf:
             - type: string
             - type: 'null'
@@ -1181,6 +1877,7 @@ components:
       type: object
       properties:
         demand:
+          description: Array of demand data points to upload. Each item must include a date and demand value.
           type: array
           items:
             $ref: '#/components/schemas/DemandInput'
@@ -1213,12 +1910,15 @@ components:
       type: object
       properties:
         accuracy:
+          description: Forecast accuracy metrics. Null until training completes successfully.
           anyOf:
             - $ref: '#/components/schemas/Accuracy'
             - type: 'null'
         demand_data:
+          description: Statistics about the uploaded demand data including the date range covered.
           $ref: '#/components/schemas/DemandDataMetrics'
         training_data:
+          description: Training data statistics including date range and missing data information. Null until training completes.
           anyOf:
             - $ref: '#/components/schemas/TrainingDataMetrics'
             - type: 'null'
