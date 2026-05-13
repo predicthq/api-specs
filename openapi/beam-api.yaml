@@ -2516,7 +2516,7 @@ components:
           description: |-
             The list of existing analysis IDs to include in the group.
 
-            Analyses can belong to multiple groups. Analyses must have the same demand type (the `interval` must match 
+            Analyses can belong to multiple groups. Analyses must have the same demand type (the `interval` must match
             and, for weekly analyses, `week_start_day` must also be consistent).
             Every analysis in the group must have the same `industry`, if set.
           type: array
@@ -2626,7 +2626,7 @@ components:
           description: |-
             The list of existing analysis IDs to include in the group.
 
-            Analyses can belong to multiple groups. Analyses must have the same demand type (the `interval` must match 
+            Analyses can belong to multiple groups. Analyses must have the same demand type (the `interval` must match
             and, for weekly analyses, `week_start_day` must also be consistent).
             Every analysis in the group must have the same `industry`, if set.
           type: array
