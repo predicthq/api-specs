@@ -173,7 +173,7 @@ paths:
             type: array
             items:
               type: string
-        - name: status
+        - name: readiness_status
           in: query
           description: |-
             A comma-separated list of forecast model statuses to filter on.
@@ -749,6 +749,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SearchDemandResponse'
+            application/x-ndjson:
+              schema:
+                type: string
+              example: |-
+                {"date": "2025-01-01", "demand": 100.0}
+                {"date": "2025-01-02", "demand": 150.0}
+            text/csv:
+              schema:
+                type: string
+              example: |-
+                date,demand
+                2025-01-01,100.0
+                2025-01-02,150.0
         '400':
           description: Bad Request
           content:
@@ -1216,7 +1229,7 @@ components:
           description: Category classification of the event (e.g. `conferences`, `sports`, `concerts`).
           type: string
           minLength: 1
-          title: Title
+          title: Category
         title:
           description: Display name of the event as it appears in the PredictHQ event catalog.
           type: string
