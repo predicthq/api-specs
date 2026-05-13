@@ -54,16 +54,38 @@ paths:
                 anyOf:
                   - $ref: '#/components/schemas/ValidationError'
                   - $ref: '#/components/schemas/HTTPError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Authorization required
+        '403':
+          description: Bearer token scope insufficient
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Bearer token scope insufficient
       tags:
         - Analyses
     get:
       operationId: list_analyses
       summary: Search Analyses
-      description: Search for an existing Analysis.
+      description: |-
+        Returns a paginated list of your Beam Analyses. Supports filtering by `status`, `readiness_status`,
+        `industry`, `interval`, `label`, and date range.
       parameters:
         - name: status
           in: query
-          description: Comma-separated list used to filter Beam analyses by their status.
+          description: |-
+            Comma-separated list used to filter Beam analyses by their status.
+
+            - `active` — returns analyses that are currently in use.
+            - `deleted` — returns analyses that have been deleted.
           required: false
           schema:
             type: array
@@ -76,6 +98,13 @@ paths:
           style: form
         - name: readiness_status
           in: query
+          description: |-
+            Comma-separated list used to filter Beam analyses by their readiness status.
+
+            - `pending` — processing in progress.
+            - `ready` — processing completed successfully.
+            - `failed` — processing failed.
+            - `stale` — results are outdated and need refreshing.
           required: false
           schema:
             type: array
@@ -98,19 +127,36 @@ paths:
               - 3ED1zxXqAY
         - name: demand_type.interval
           in: query
-          description: Allows to filter Analyses by the demand type (interval) of their analyses.
+          description: |-
+            Filter analyses by their demand data interval.
+
+            - `day` — returns analyses with daily demand data.
+            - `week` — returns analyses with weekly demand data.
           required: false
           schema:
             type: array
             items:
               $ref: '#/components/schemas/Interval'
             examples:
-              - - accommodation
-                - tourism
+              - - day
+                - week
           explode: false
           style: form
         - name: demand_type.industry
           in: query
+          description: |-
+            Comma-separated list used to filter Beam analyses by industry. Only analyses matching
+            one of the specified industries are returned.
+
+            - `accommodation` — Accommodation providers, travel tech, and OTAs
+            - `cpg` — Consumer packaged goods companies
+            - `tourism` — Leisure, travel, and tourism businesses (e.g. Expedia, DMOs, travel platforms)
+            - `marketing` — Advertising and marketing services
+            - `parking` — Parking facility operators
+            - `restaurants` — Food and beverage businesses including restaurant groups
+            - `retail` — Non-food retail and retail tech
+            - `transportation` — On-demand transport and delivery
+            - `other` — All other industries
           required: false
           schema:
             type: array
@@ -163,7 +209,14 @@ paths:
           style: form
         - name: sort
           in: query
-          description: Comma-separated list used to sort Beam analyses.
+          description: |-
+            Comma-separated list used to sort Beam analyses.
+
+            Prefix a value with `-` for descending order.
+
+            - `name` / `-name`: A–Z / Z–A
+            - `created` / `-created`: oldest first / newest first
+            - `updated` / `-updated`: oldest first / newest first
           required: false
           schema:
             type: array
@@ -237,13 +290,29 @@ paths:
                 anyOf:
                   - $ref: '#/components/schemas/ValidationError'
                   - $ref: '#/components/schemas/HTTPError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Authorization required
+        '403':
+          description: Bearer token scope insufficient
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Bearer token scope insufficient
       tags:
         - Analyses
   /v1/beam/analyses/{analysis_id}:
     get:
       operationId: get_analysis
       summary: Get an Analysis
-      description: Get an existing Analysis.
+      description: Returns the full details of a single Analysis, including its location, demand type, rank, readiness status, and processing state.
       parameters:
         - name: analysis_id
           in: path
@@ -264,10 +333,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Authorization required
         '403':
           description: Bearer token scope insufficient
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Bearer token scope insufficient
         '404':
           description: Analysis not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Analysis not found
       tags:
         - Analyses
     put:
@@ -308,18 +397,47 @@ paths:
                 anyOf:
                   - $ref: '#/components/schemas/HTTPError'
                   - $ref: '#/components/schemas/ValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Authorization required
         '403':
           description: Bearer token scope insufficient
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Bearer token scope insufficient
         '404':
           description: Analysis not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Analysis not found
         '409':
-          description: A data conflict has occurred due to the analysis being modified elsewhere. Please retry your call later.
+          description: Data conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: A data conflict has occurred due to the analysis being modified elsewhere. Please retry your call later.
       tags:
         - Analyses
     patch:
       operationId: patch_analysis
       summary: Partially Update an Analysis
-      description: Partially update an existing Analysis.
+      description: |-
+        Update one or more fields on an existing Analysis without replacing the entire record.
+
+        Only the fields you provide will be updated; all other fields remain unchanged.
       parameters:
         - name: analysis_id
           in: path
@@ -344,17 +462,47 @@ paths:
                 anyOf:
                   - $ref: '#/components/schemas/HTTPError'
                   - $ref: '#/components/schemas/ValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Authorization required
         '403':
           description: Bearer token scope insufficient
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Bearer token scope insufficient
         '404':
           description: Analysis not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Analysis not found
         '409':
-          description: A data conflict has occurred due to the analysis being modified elsewhere. Please retry your call later.
+          description: Data conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: A data conflict has occurred due to the analysis being modified elsewhere. Please retry your call later.
       tags:
         - Analyses
     delete:
       operationId: delete_analysis
-      summary: Delete Analysis
+      summary: Delete an Analysis
+      description: |-
+        Delete an existing Analysis. The Analysis will no longer appear in default search results, but can
+        still be retrieved by filtering with `status=deleted`. Any Analysis Groups containing this Analysis
+        will be automatically refreshed.
       parameters:
         - name: analysis_id
           in: path
@@ -371,12 +519,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Authorization required
         '403':
           description: Bearer token scope insufficient
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Bearer token scope insufficient
         '404':
           description: Analysis not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Analysis not found
         '409':
-          description: A data conflict has occurred due to the analysis being modified elsewhere. Please retry your call later.
+          description: Data conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: A data conflict has occurred due to the analysis being modified elsewhere. Please retry your call later.
       tags:
         - Analyses
   /v1/beam/analyses/{analysis_id}/feature-importance:
@@ -413,10 +587,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Authorization required
         '403':
           description: Bearer token scope insufficient
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Bearer token scope insufficient
         '404':
           description: Analysis not found or no feature importance data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Analysis not found
       tags:
         - Analyses
   /v1/beam/analyses/{analysis_id}/sink:
@@ -455,7 +649,10 @@ paths:
           description: |-
             Content type of the uploaded payload.
 
-            Note that `application/x-ldjson` is deprecated please use application/x-ndjson.
+            - `text/csv` — CSV format with `date` and `demand` columns.
+            - `application/x-ndjson` — newline-delimited JSON, one `{"date": ..., "demand": ...}` object per line.
+            - `application/json` — a JSON array of `{"date": ..., "demand": ...}` objects.
+            - `application/x-ldjson` — deprecated, please use `application/x-ndjson`.
           required: true
           schema:
             type: string
@@ -479,19 +676,48 @@ paths:
                 anyOf:
                   - $ref: '#/components/schemas/HTTPError'
                   - $ref: '#/components/schemas/UploadErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Authorization required
         '403':
           description: Bearer token scope insufficient
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Bearer token scope insufficient
         '404':
           description: Analysis not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Analysis not found
         '409':
-          description: A data conflict has occurred due to the analysis being modified elsewhere. Please retry your call later.
+          description: Data conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: A data conflict has occurred due to the analysis being modified elsewhere. Please retry your call later.
       tags:
         - Analyses
   /v1/beam/analyses/{analysis_id}/refresh:
     post:
       operationId: refresh_analysis
       summary: Refresh an Analysis
-      description: Rerun the Beam correlation and analysis process.
+      description: |-
+        Rerun the Beam correlation and analysis process for an existing Analysis. The
+        `readiness_status` will be set to `pending` until processing completes. Returns 400 if the
+        Analysis is already being processed.
       parameters:
         - name: analysis_id
           in: path
@@ -508,12 +734,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Authorization required
         '403':
           description: Bearer token scope insufficient
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Bearer token scope insufficient
         '404':
           description: Analysis not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Analysis not found
         '409':
-          description: A data conflict has occurred due to the analysis being modified elsewhere. Please retry your call later.
+          description: Data conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: A data conflict has occurred due to the analysis being modified elsewhere. Please retry your call later.
       tags:
         - Analyses
   /v1/beam/analyses/{analysis_id}/correlate:
@@ -565,7 +817,13 @@ paths:
             examples:
               - 2025-01-07
         - $ref: '#/components/parameters/OffsetParam'
-        - $ref: '#/components/parameters/LimitParam'
+        - name: limit
+          in: query
+          description: Limit the number of results.
+          required: false
+          schema:
+            type: integer
+            default: 30
       responses:
         '200':
           description: Successful Response
@@ -581,10 +839,30 @@ paths:
                 anyOf:
                   - $ref: '#/components/schemas/ValidationError'
                   - $ref: '#/components/schemas/HTTPError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Authorization required
         '403':
           description: Bearer token scope insufficient
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Bearer token scope insufficient
         '404':
           description: Analysis or Derivative not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Analysis not found
         '500':
           description: Internal inconsistency detected. Please refresh the analysis
       tags:
@@ -593,7 +871,9 @@ paths:
     get:
       operationId: list_analysis_groups
       summary: Search Analysis Groups
-      description: Search for an existing Analysis Group.
+      description: |-
+        Returns a paginated list of your Analysis Groups. Supports filtering by `status`, `readiness_status`,
+        `industry`, `interval`, and date range.
       parameters:
         - name: updated.gt
           in: query
@@ -641,7 +921,11 @@ paths:
               - MyAnalysisGroup
         - name: status
           in: query
-          description: Comma-separated list used to filter Beam analyses by their status.
+          description: |-
+            Comma-separated list used to filter analysis groups by their status.
+
+            - `active` — returns groups that are currently in use.
+            - `deleted` — returns groups that have been deleted.
           required: false
           schema:
             type: array
@@ -654,7 +938,12 @@ paths:
           style: form
         - name: readiness_status
           in: query
-          description: Comma-separated list used to filter Analysis Groups by their readiness status.
+          description: |-
+            Comma-separated list used to filter analysis groups by their readiness status.
+
+            - `pending` — processing in progress.
+            - `ready` — processing completed successfully.
+            - `failed` — processing failed.
           required: false
           schema:
             type: array
@@ -667,20 +956,36 @@ paths:
           style: form
         - name: demand_type.interval
           in: query
-          description: Allows to filter Analysis Groups by the demand type (interval) of their analyses.
+          description: |-
+            Filter analysis groups by their demand data interval.
+
+            - `day` — returns groups with daily demand data.
+            - `week` — returns groups with weekly demand data.
           required: false
           schema:
             type: array
             items:
               $ref: '#/components/schemas/Interval'
             examples:
-              - - accommodation
-                - tourism
+              - - day
+                - week
           explode: false
           style: form
         - name: demand_type.industry
           in: query
-          description: Allows to filter Analysis Groups by industry.
+          description: |-
+            Comma-separated list used to filter analysis groups by industry. Only groups whose analyses match
+            one of the specified industries are returned.
+
+            - `accommodation` — Accommodation providers, travel tech, and OTAs
+            - `cpg` — Consumer packaged goods companies
+            - `tourism` — Leisure, travel, and tourism businesses (e.g. Expedia, DMOs, travel platforms)
+            - `marketing` — Advertising and marketing services
+            - `parking` — Parking facility operators
+            - `restaurants` — Food and beverage businesses including restaurant groups
+            - `retail` — Non-food retail and retail tech
+            - `transportation` — On-demand transport and delivery
+            - `other` — All other industries
           required: false
           schema:
             type: array
@@ -693,7 +998,14 @@ paths:
           style: form
         - name: sort
           in: query
-          description: Comma-separated list used to sort Beam analyses.
+          description: |-
+            Comma-separated list used to sort Analysis Groups.
+
+            Prefix a value with `-` for descending order.
+
+            - `name` / `-name`: A–Z / Z–A
+            - `created` / `-created`: oldest first / newest first
+            - `updated` / `-updated`: oldest first / newest first
           required: false
           schema:
             type: array
@@ -723,6 +1035,22 @@ paths:
                 anyOf:
                   - $ref: '#/components/schemas/ValidationError'
                   - $ref: '#/components/schemas/HTTPError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Authorization required
+        '403':
+          description: Bearer token scope insufficient
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Bearer token scope insufficient
       tags:
         - Analysis Groups
     post:
@@ -750,15 +1078,29 @@ paths:
                 anyOf:
                   - $ref: '#/components/schemas/ValidationError'
                   - $ref: '#/components/schemas/HTTPError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Authorization required
         '403':
           description: Bearer token scope insufficient
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Bearer token scope insufficient
       tags:
         - Analysis Groups
   /v1/beam/analysis-groups/{group_id}:
     get:
       operationId: get_analysis_group
       summary: Get an Analysis Group
-      description: Get an existing Analysis Group.
+      description: Returns the full details of a single Analysis Group, including its member analyses, demand type, readiness status, and processing state.
       parameters:
         - name: group_id
           in: path
@@ -781,10 +1123,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Authorization required
         '403':
           description: Bearer token scope insufficient
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Bearer token scope insufficient
         '404':
           description: Analysis Group not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Analysis Group not found
       tags:
         - Analysis Groups
     put:
@@ -825,12 +1187,38 @@ paths:
                 anyOf:
                   - $ref: '#/components/schemas/HTTPError'
                   - $ref: '#/components/schemas/ValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Authorization required
         '403':
           description: Bearer token scope insufficient
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Bearer token scope insufficient
         '404':
           description: Analysis Group not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Analysis Group not found
         '409':
-          description: A data conflict has occurred due to the analysis group being modified elsewhere. Please retry your call later.
+          description: Data conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: A data conflict has occurred due to the analysis group being modified elsewhere. Please retry your call later.
       tags:
         - Analysis Groups
     patch:
@@ -839,7 +1227,7 @@ paths:
       description: |-
         Partially update an existing Analysis Group.
 
-        This endpoint accepts the same request body fields as the Create an Analysis endpoint.
+        This endpoint accepts the same request body fields as the Create an Analysis Group endpoint.
 
         Remember this is a PATCH endpoint which means only the fields you provide will be updated.
 
@@ -870,18 +1258,44 @@ paths:
                 anyOf:
                   - $ref: '#/components/schemas/HTTPError'
                   - $ref: '#/components/schemas/ValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Authorization required
         '403':
           description: Bearer token scope insufficient
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Bearer token scope insufficient
         '404':
           description: Analysis Group not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Analysis Group not found
         '409':
-          description: A data conflict has occurred due to the analysis group being modified elsewhere. Please retry your call later.
+          description: Data conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: A data conflict has occurred due to the analysis group being modified elsewhere. Please retry your call later.
       tags:
         - Analysis Groups
     delete:
       operationId: delete_analysis_group
       summary: Delete an Analysis Group
-      description: Delete an existing Analysis Group.
+      description: Delete an existing Analysis Group. The individual Analyses within the group are not deleted.
       parameters:
         - name: group_id
           in: path
@@ -900,19 +1314,47 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Authorization required
         '403':
           description: Bearer token scope insufficient
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Bearer token scope insufficient
         '404':
           description: Analysis Group not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Analysis Group not found
         '409':
-          description: A data conflict has occurred due to the analysis group being modified elsewhere. Please retry your call later.
+          description: Data conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: A data conflict has occurred due to the analysis group being modified elsewhere. Please retry your call later.
       tags:
         - Analysis Groups
   /v1/beam/analysis-groups/{group_id}/refresh:
     post:
       operationId: refresh_analysis_group
       summary: Refresh an Analysis Group
-      description: Rerun the Beam Analysis Group aggregation process.
+      description: |-
+        Rerun the Beam Analysis Group aggregation process. The `readiness_status` will be set to
+        `pending` until processing completes. Returns 400 if the Group is already being processed.
       parameters:
         - name: group_id
           in: path
@@ -931,19 +1373,45 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Authorization required
         '403':
           description: Bearer token scope insufficient
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Bearer token scope insufficient
         '404':
           description: Analysis Group not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Analysis Group not found
         '409':
-          description: A data conflict has occurred due to the analysis group being modified elsewhere. Please retry your call later.
+          description: Data conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: A data conflict has occurred due to the analysis group being modified elsewhere. Please retry your call later.
       tags:
         - Analysis Groups
   /v1/beam/analysis-groups/{group_id}/feature-importance:
     get:
       operationId: get_analysis_group_feature_importance
       summary: Get Feature Importance for an Analysis Group
-      description: Get Feature Importance data for an Analysis Group.
+      description: This endpoint provides Feature Importance results aggregated across the Analyses in an existing Analysis Group, and returns a list of feature groups with associated Features API features and group p-values.
       parameters:
         - name: group_id
           in: path
@@ -966,10 +1434,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Authorization required
         '403':
           description: Bearer token scope insufficient
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Bearer token scope insufficient
         '404':
           description: Analysis Group not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+              example:
+                error: Analysis Group not found
       tags:
         - Analysis Groups
 components:
@@ -1001,10 +1489,12 @@ components:
       type: object
       properties:
         start:
+          description: Start date of the analysis data range.
           type: string
           format: date
           title: Start
         end:
+          description: End date of the analysis data range.
           type: string
           format: date
           title: End
@@ -1038,6 +1528,7 @@ components:
       type: object
       properties:
         group_id:
+          description: The autogenerated identifier for the analysis group.
           type: string
           title: Group Id
       title: AnalysisGroupIdResponse
@@ -1078,7 +1569,7 @@ components:
       description: |-
         Determines whether the Analysis Group has finished processing.
         When the group or its analyses are created, modified, or
-        refreshed, readiness_status will be pending until processing completes.
+        refreshed, `readiness_status` will be `pending` until processing completes.
       type: string
       enum:
         - pending
@@ -1091,6 +1582,7 @@ components:
       type: object
       properties:
         group_id:
+          description: The autogenerated identifier for the analysis group.
           type: string
           title: Group Id
         name:
@@ -1126,10 +1618,13 @@ components:
             It also includes an optional list of Analyses which were excluded from processing for various reasons.
           $ref: '#/components/schemas/AnalysisGroupProcessingCompleted'
         readiness_status:
+          description: The processing status of the analysis group (e.g. `pending`, `ready`, `failed`).
           $ref: '#/components/schemas/AnalysisGroupReadinessStatus'
         demand_type:
+          description: The demand type of the analyses within this group.
           $ref: '#/components/schemas/DemandTypeResponse'
         status:
+          description: The current status of the analysis group.
           $ref: '#/components/schemas/AnalysisGroupStatus'
         create_dt:
           description: The creation date time for the Analysis Group in ISO 8601 format.
@@ -1146,7 +1641,7 @@ components:
             - 2022-04-26T11:46:24+00:00
           title: Update Dt
         processed_dt:
-          description: Date and time when the Analysis processing completed (ISO 8601).
+          description: Date and time when the Analysis Group processing completed (ISO 8601).
           type: string
           format: date-time
           examples:
@@ -1198,6 +1693,7 @@ components:
       type: object
       properties:
         analysis_id:
+          description: The autogenerated identifier for the analysis.
           type: string
           title: Analysis Id
       examples:
@@ -1207,14 +1703,17 @@ components:
       type: object
       properties:
         correlation:
+          description: Indicates whether the correlation processing stage has completed.
           type: boolean
           default: false
           title: Correlation
         feature_importance:
+          description: Indicates whether the feature importance processing stage has completed.
           type: boolean
           default: false
           title: Feature Importance
         value_quant:
+          description: Indicates whether the value quantification processing stage has completed.
           type: boolean
           default: false
           title: Value Quant
@@ -1230,24 +1729,30 @@ components:
       type: object
       properties:
         date_range:
+          description: The start and end dates of the uploaded demand data.
           $ref: '#/components/schemas/AnalysisDateRange'
         error_code:
+          description: Error code if the readiness check failed.
           type: string
           title: Error Code
         missing_dates:
+          description: List of dates missing from the uploaded demand data.
           type: array
           items:
             type: string
           title: Missing Dates
         validation_response:
+          description: Detailed validation results from the demand data checks.
           type: object
           additionalProperties: true
           title: Validation Response
         best_practice:
+          description: Whether the analysis configuration meets all best practice requirements.
           type: boolean
           default: false
           title: Best Practice
         best_practice_checks:
+          description: Detailed results of individual best practice checks for the analysis configuration.
           $ref: '#/components/schemas/BestPracticeChecks'
       examples:
         - date_range:
@@ -1283,6 +1788,7 @@ components:
           minLength: 1
           title: Name
         location:
+          description: The geographic location configured for this analysis.
           $ref: '#/components/schemas/LocationResponse'
         rank:
           description: Specifies which rank type was set to use when calculating event impacts and anomaly detection.
@@ -1307,8 +1813,10 @@ components:
           examples:
             - active
         readiness_status:
+          description: The processing status of the analysis (e.g. `pending`, `ready`, `failed`, `stale`).
           $ref: '#/components/schemas/AnalysisReadinessStatus'
         readiness_checks:
+          description: Detailed validation check results from the analysis processing.
           $ref: '#/components/schemas/AnalysisReadinessChecks'
         processing_completed:
           description: |-
@@ -1321,6 +1829,7 @@ components:
             - correlation: true
               feature_importance: true
         demand_type:
+          description: The demand type configuration for this analysis.
           $ref: '#/components/schemas/DemandTypeResponse'
         group_ids:
           description: IDs of the groups this Analysis belongs to.
@@ -1372,6 +1881,7 @@ components:
           style: form
           title: Label
         saved_location:
+          description: Saved Location object at the time of processing the Analysis.
           $ref: '#/components/schemas/SavedLocationResponse'
       examples:
         - name: Analysis 1
@@ -1412,7 +1922,7 @@ components:
             correlation: true
             feature_importance: true
           access_type: full
-          status: draft
+          status: active
       required:
         - name
       title: AnalysisResponse
@@ -1436,19 +1946,17 @@ components:
       type: object
       properties:
         industry:
+          description: Indicates whether the analysis industry meets the best practice requirements.
           type: boolean
           default: false
           title: Industry
         rank:
+          description: Indicates whether the analysis rank configuration meets the best practice requirements.
           type: boolean
           default: false
           title: Rank
         radius:
-          description: |-
-            Must be an integer or a float number up to 2 decimal places. It represents the radius of the event search around
-            your `geopoint` to use for time series modelling and correlation. We **strongly recommend** using the
-            [Suggested Radius API](https://docs.predicthq.com/api/suggested-radius/get-suggested-radius) to find a
-            suitable radius for your location/industry.
+          description: Indicates whether the analysis location radius meets the best practice requirements.
           type: boolean
           default: false
           title: Radius
@@ -1503,7 +2011,7 @@ components:
             - SIGNIFICANT
           title: Impact Significance
         impact_significance_score:
-          description: Number specifying how unusual the remainder is for a given date. This value maps to impact_significance.
+          description: Number specifying how unusual the remainder is for a given date. This value maps to `impact_significance`.
           type: integer
           enum:
             - 0
@@ -1546,11 +2054,17 @@ components:
       type: object
       properties:
         industry:
+          description: The industry of the demand data being analysed. Determines which event categories and features are used.
           $ref: '#/components/schemas/Industry'
         interval:
+          description: |-
+            The time interval of the demand data. Defaults to `day`.
+
+            Possible values: `day`, `week`.
           default: day
           $ref: '#/components/schemas/Interval'
         week_start_day:
+          description: The day of the week that demand data starts on. Required when `interval` is `week`.
           $ref: '#/components/schemas/Weekday'
         unit_descriptor:
           description: |-
@@ -1560,6 +2074,7 @@ components:
           default: Sales
           title: Unit Descriptor
         currency_code:
+          description: The ISO 4217 currency code for the units of demand. Defaults to `USD`.
           default: USD
           $ref: '#/components/schemas/CurrencyCode'
         unit_currency_multiplier:
@@ -1581,13 +2096,17 @@ components:
       type: object
       properties:
         industry:
+          description: The detected or configured industry for the demand data.
           $ref: '#/components/schemas/Industry'
         interval:
-          description: 'Demand interval for analyses in the group. Possible values: day, week.'
+          description: |-
+            The time interval of the demand data.
+
+            Possible values: `day`, `week`.
           default: day
           $ref: '#/components/schemas/Interval'
         week_start_day:
-          description: Week start day (e.g. sunday, monday). Only present for weekly Analysis Groups.
+          description: Week start day (e.g. `sunday`, `monday`). Only present when `interval` is `week`.
           $ref: '#/components/schemas/Weekday'
         unit_descriptor:
           description: |-
@@ -1597,6 +2116,7 @@ components:
           default: Sales
           title: Unit Descriptor
         currency_code:
+          description: The ISO 4217 currency code for the units of demand.
           default: USD
           $ref: '#/components/schemas/CurrencyCode'
         unit_currency_multiplier:
@@ -1609,11 +2129,14 @@ components:
       type: object
       properties:
         analysis_id:
+          description: The ID of the excluded analysis.
           type: string
           title: Analysis Id
         reason:
+          description: The reason the analysis was excluded from group processing.
           $ref: '#/components/schemas/AnalysisExcludedReason'
         excluded_from:
+          description: The processing stages from which this analysis was excluded.
           type: array
           items:
             $ref: '#/components/schemas/ExcludedFromReason'
@@ -1636,8 +2159,8 @@ components:
           description: The name of the group. This typically aligns to an event category.
           type: string
           examples:
-            - - severe-weather
-              - concerts
+            - severe-weather
+            - concerts
           title: Feature Group
         features:
           description: The names of the features in the feature group. These refer directly to features available in Features API.
@@ -1646,6 +2169,7 @@ components:
             type: string
           examples:
             - - phq_attendance_concerts
+              - phq_attendance_sports
           title: Features
         p_value:
           description: |-
@@ -1659,7 +2183,7 @@ components:
         important:
           description: |-
             A true or false value indicating whether the feature group is considered important for this analysis.
-            Equivalent to p_value
+            Equivalent to `p_value`
             < 0.1. We suggest using this value to determine whether or not to include this group of features in your modeling.
           type: boolean
           title: Important
@@ -1673,6 +2197,7 @@ components:
       type: object
       properties:
         feature_importance:
+          description: A list of feature groups ranked by their statistical significance to the analysis demand data.
           type: array
           items:
             $ref: '#/components/schemas/FeatureGroup'
@@ -1682,8 +2207,17 @@ components:
       type: object
       properties:
         type:
+          description: The GeoJSON geometry type (e.g. `Point`, `Polygon`, `MultiPolygon`, `LineString`, `MultiLineString`).
           $ref: '#/components/schemas/GeoJsonGeometryType'
         coordinates:
+          description: |-
+            The GeoJSON coordinates array whose structure depends on the geometry `type`:
+
+            - `Point` — `[lon, lat]`
+            - `LineString` — an array of `[lon, lat]` positions
+            - `Polygon` — an array of linear rings, each a list of `[lon, lat]` positions
+            - `MultiLineString` — an array of `LineString` coordinate arrays
+            - `MultiPolygon` — an array of `Polygon` coordinate arrays
           type: array
           minItems: 1
           title: Coordinates
@@ -1713,6 +2247,13 @@ components:
           exclusiveMinimum: 0
           title: Radius
         radius_unit:
+          description: |-
+            The unit of measurement for the `radius` value:
+
+            - `m` — meters
+            - `km` — kilometers
+            - `mi` — miles
+            - `ft` — feet
           $ref: '#/components/schemas/RadiusUnit'
       required:
         - radius
@@ -1722,11 +2263,14 @@ components:
       type: object
       properties:
         type:
+          description: The GeoJSON object type. Always `Feature` for this schema.
           type: string
           title: Type
         properties:
+          description: Properties associated with the GeoJSON feature, such as radius and radius unit.
           $ref: '#/components/schemas/GeoJsonProperties'
         geometry:
+          description: The geometry object containing the coordinate data.
           $ref: '#/components/schemas/GeoJsonGeometry'
       required:
         - type
@@ -1739,10 +2283,12 @@ components:
       type: object
       properties:
         lat:
+          description: Latitude coordinate as a decimal number between -90 and 90.
           type: string
           pattern: ^[-+]?(90(\.0+)?|([1-8]\d|[1-9])(\.\d+)?|0+\.(\d+)?[1-9]+(\d+)?)$
           title: Lat
         lon:
+          description: Longitude coordinate as a decimal number between -180 and 180.
           type: string
           pattern: ^[-+]?(180(\.0+)?|(1[0-7]\d|\d\d|[1-9])(\.\d+)?|0+\.(\d+)?[1-9]+(\d+)?)$
           title: Lon
@@ -1754,10 +2300,12 @@ components:
       type: object
       properties:
         lat:
+          description: Latitude coordinate as a decimal number between -90 and 90.
           type: string
           pattern: ^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$
           title: Lat
         lon:
+          description: Longitude coordinate as a decimal number between -180 and 180.
           type: string
           pattern: ^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$
           title: Lon
@@ -1767,7 +2315,7 @@ components:
       title: GeoPointResponse
     Industry:
       description: |-
-        The industry of the demand data being analysed by Beam. Choosing the right industry is important as this will
+        The industry of the demand data being analysed by Beam. Choosing the right `industry` is important as this will
         determine the type of features used in the Analysis and will impact the accuracy of the results.
       type: string
       default: other
@@ -1798,6 +2346,7 @@ components:
       type: object
       properties:
         geopoint:
+          description: The latitude and longitude coordinates for the analysis location.
           $ref: '#/components/schemas/GeoPoint'
         radius:
           description: |-
@@ -1847,6 +2396,7 @@ components:
       type: object
       properties:
         geopoint:
+          description: The latitude and longitude coordinates of the analysis location.
           $ref: '#/components/schemas/GeoPointResponse'
         radius:
           description: |-
@@ -1890,9 +2440,11 @@ components:
       type: object
       properties:
         count:
+          description: Total number of analysis groups matching the query.
           type: integer
           title: Count
         groups:
+          description: The list of analysis groups in the current page.
           type: array
           items:
             $ref: '#/components/schemas/AnalysisGroupResponse'
@@ -1905,9 +2457,11 @@ components:
       type: object
       properties:
         count:
+          description: Total number of analyses matching the query.
           type: integer
           title: Count
         analyses:
+          description: The list of analyses in the current page.
           type: array
           items:
             $ref: '#/components/schemas/AnalysisResponse'
@@ -1925,15 +2479,19 @@ components:
       type: object
       properties:
         model_version:
+          description: The version identifier of the model used for the decomposition.
           type: string
           title: Model Version
         version:
+          description: The version number of the correlation data.
           type: integer
           title: Version
         count:
+          description: Total number of correlation result records.
           type: integer
           title: Count
         dates:
+          description: The list of correlation results per date.
           type: array
           items:
             $ref: '#/components/schemas/DemandDerivativeResponse'
@@ -1958,9 +2516,9 @@ components:
           description: |-
             The list of existing analysis IDs to include in the group.
 
-            Analyses can belong to multiple groups. Analyses must have the same demand type (the interval must match 
-            and, for weekly analyses, week_start_day must also be consistent).
-            Every analysis in the group must have the same industry, if set.
+            Analyses can belong to multiple groups. Analyses must have the same demand type (the `interval` must match
+            and, for weekly analyses, `week_start_day` must also be consistent).
+            Every analysis in the group must have the same `industry`, if set.
           type: array
           items:
             type: string
@@ -1972,7 +2530,7 @@ components:
           title: Analysis Ids
         demand_type:
           description: |-
-            Optional demand type settings for the group. Currently supports unit_descriptor to customize labels.
+            Optional demand type settings for the group. Currently supports `unit_descriptor` to customize labels.
             If omitted, settings are derived from the included analyses.
           $ref: '#/components/schemas/AnalysisGroupDemandTypeInput'
           examples:
@@ -1982,12 +2540,15 @@ components:
       type: object
       properties:
         name:
+          description: Name of the Analysis.
           type: string
           minLength: 1
           title: Name
         location:
+          description: The geographic location for the analysis.
           $ref: '#/components/schemas/Location'
         demand_type:
+          description: The demand type configuration for the analysis.
           $ref: '#/components/schemas/DemandType'
         external_id:
           description: External identifier associated with the Analysis (optional, user-defined).
@@ -2011,6 +2572,7 @@ components:
           style: form
           title: Label
         rank:
+          description: The rank type and level thresholds for event filtering.
           $ref: '#/components/schemas/Rank'
       additionalProperties: false
       title: PatchAnalysisRequest
@@ -2018,24 +2580,31 @@ components:
       type: object
       properties:
         place_id:
+          description: The Geonames Place ID.
           type: integer
           title: Place Id
         type:
+          description: The type of place (e.g. city, state, country).
           type: string
           title: Type
         name:
+          description: The name of the place.
           type: string
           title: Name
         county:
+          description: The county the place belongs to, if applicable.
           type: string
           title: County
         region:
+          description: The region or state the place belongs to, if applicable.
           type: string
           title: Region
         country:
+          description: The country the place belongs to.
           type: string
           title: Country
         geojson:
+          description: GeoJSON representation of the place geometry.
           $ref: '#/components/schemas/GeoJsonResponse'
       required:
         - place_id
@@ -2057,9 +2626,9 @@ components:
           description: |-
             The list of existing analysis IDs to include in the group.
 
-            Analyses can belong to multiple groups. Analyses must have the same demand type (the interval must match 
-            and, for weekly analyses, week_start_day must also be consistent).
-            Every analysis in the group must have the same industry, if set.
+            Analyses can belong to multiple groups. Analyses must have the same demand type (the `interval` must match
+            and, for weekly analyses, `week_start_day` must also be consistent).
+            Every analysis in the group must have the same `industry`, if set.
           type: array
           items:
             type: string
@@ -2071,7 +2640,7 @@ components:
           title: Analysis Ids
         demand_type:
           description: |-
-            Optional demand type settings for the group. Currently supports unit_descriptor to customize labels.
+            Optional demand type settings for the group. Currently supports `unit_descriptor` to customize labels.
             If omitted, settings are derived from the included analyses.
           $ref: '#/components/schemas/AnalysisGroupDemandTypeInput'
           examples:
@@ -2091,8 +2660,10 @@ components:
           minLength: 1
           title: Name
         location:
+          description: The geographic location for the analysis.
           $ref: '#/components/schemas/Location'
         demand_type:
+          description: The demand type configuration for the analysis.
           $ref: '#/components/schemas/DemandType'
         external_id:
           description: External identifier associated with the Analysis (optional, user-defined).
@@ -2116,6 +2687,7 @@ components:
           style: form
           title: Label
         rank:
+          description: The rank type and level thresholds for event filtering.
           $ref: '#/components/schemas/Rank'
       additionalProperties: false
       required:
@@ -2140,8 +2712,10 @@ components:
       type: object
       properties:
         type:
+          description: The rank type to use. `phq` uses PHQ Rank (global attendance-based), `local` uses Local Rank (locality-specific).
           $ref: '#/components/schemas/RankType'
         levels:
+          description: Minimum and maximum rank thresholds for filtering events. We recommend letting Beam set these automatically.
           $ref: '#/components/schemas/RankLevels'
       examples:
         - type: phq
@@ -2155,11 +2729,13 @@ components:
       type: object
       properties:
         min:
+          description: Minimum rank value (0-100).
           type: integer
           maximum: 100
           minimum: 0
           title: Min
         max:
+          description: Maximum rank value (0-100).
           type: integer
           maximum: 100
           minimum: 0
@@ -2171,8 +2747,10 @@ components:
       type: object
       properties:
         phq:
+          description: Rank level thresholds for PHQ Rank filtering.
           $ref: '#/components/schemas/RankLevel'
         local:
+          description: Rank level thresholds for Local Rank filtering.
           $ref: '#/components/schemas/RankLevel'
       additionalProperties: false
       title: RankLevels
@@ -2180,8 +2758,10 @@ components:
       type: object
       properties:
         phq:
+          description: Rank level thresholds for PHQ Rank filtering.
           $ref: '#/components/schemas/RankLevel'
         local:
+          description: Rank level thresholds for Local Rank filtering.
           $ref: '#/components/schemas/RankLevel'
       additionalProperties: false
       title: RankLevelsResponse
@@ -2189,8 +2769,10 @@ components:
       type: object
       properties:
         type:
+          description: The rank type in use. `phq` uses PHQ Rank (global attendance-based), `local` uses Local Rank (locality-specific).
           $ref: '#/components/schemas/RankTypeResponse'
         levels:
+          description: The rank level thresholds applied to this analysis.
           $ref: '#/components/schemas/RankLevelsResponse'
       required:
         - type
@@ -2260,6 +2842,7 @@ components:
             - - 2750405
           title: Place Ids
         place_hierarchies:
+          description: A list of place hierarchy strings for the saved location.
           type: array
           items:
             type: string
@@ -2278,6 +2861,7 @@ components:
         subscription_valid_types:
           description: |-
             The list of subscription types that this location is valid for.
+
             Possible values: `events`, `broadcasts`, `features_api`.
 
             It is possible to create locations outside of what your subscription has access to; in this case this field 
@@ -2308,6 +2892,7 @@ components:
       type: object
       properties:
         field:
+          description: The path to the field that failed validation.
           type: array
           items:
             anyOf:
@@ -2315,9 +2900,11 @@ components:
               - type: integer
           title: Location
         msg:
+          description: A human-readable validation error message.
           type: string
           title: Message
         type:
+          description: The type of validation error.
           type: string
           title: Error Type
       required:
@@ -2367,10 +2954,12 @@ components:
       type: object
       properties:
         code:
+          description: The error code identifying the type of error.
           type: string
           examples:
             - content_type_invalid
         message:
+          description: A human-readable error message describing the problem.
           type: string
           examples:
             - The `Content-Type` header is unsupported.
@@ -2379,10 +2968,12 @@ components:
       type: object
       properties:
         code:
+          description: The error code identifying the type of error.
           type: string
           examples:
             - data_validation_failed
         message:
+          description: A human-readable error message describing the problem.
           type: string
           examples:
             - The format of the data uploaded is incorrect.
@@ -2391,10 +2982,12 @@ components:
       type: object
       properties:
         code:
+          description: The error code identifying the type of error.
           type: string
           examples:
             - json_no_data
         message:
+          description: A human-readable error message describing the problem.
           type: string
           examples:
             - An empty JSON body was uploaded.
@@ -2403,10 +2996,12 @@ components:
       type: object
       properties:
         code:
+          description: The error code identifying the type of error.
           type: string
           examples:
             - json_invalid_format
         message:
+          description: A human-readable error message describing the problem.
           type: string
           examples:
             - The uploaded JSON is formatted incorrectly. Please ensure JSON data is correctly UTF-8 encoded and that there are no invalid escape sequences.
@@ -2415,10 +3010,12 @@ components:
       type: object
       properties:
         code:
+          description: The error code identifying the type of error.
           type: string
           examples:
             - ndjson_no_data
         message:
+          description: A human-readable error message describing the problem.
           type: string
           examples:
             - An empty NDJSON body was uploaded.
@@ -2427,10 +3024,12 @@ components:
       type: object
       properties:
         code:
+          description: The error code identifying the type of error.
           type: string
           examples:
             - ndjson_invalid_format
         message:
+          description: A human-readable error message describing the problem.
           type: string
           examples:
             - The NDJSON body is formatted incorrectly. Please ensure NDJSON data is correctly UTF-8 encoded and that there are no invalid escape sequences.
@@ -2439,10 +3038,12 @@ components:
       type: object
       properties:
         code:
+          description: The error code identifying the type of error.
           type: string
           examples:
             - csv_invalid_row
         message:
+          description: A human-readable error message describing the problem.
           type: string
           examples:
             - The uploaded CSV has an invalid row.
@@ -2451,10 +3052,12 @@ components:
       type: object
       properties:
         code:
+          description: The error code identifying the type of error.
           type: string
           examples:
             - csv_invalid_header
         message:
+          description: A human-readable error message describing the problem.
           type: string
           examples:
             - The uploaded CSV headers are incorrect. Please use `date,demand`.
@@ -2463,10 +3066,12 @@ components:
       type: object
       properties:
         code:
+          description: The error code identifying the type of error.
           type: string
           examples:
             - csv_no_data
         message:
+          description: A human-readable error message describing the problem.
           type: string
           examples:
             - The uploaded CSV is empty or only has headers set.
@@ -2475,10 +3080,12 @@ components:
       type: object
       properties:
         code:
+          description: The error code identifying the type of error.
           type: string
           examples:
             - csv_invalid_format
         message:
+          description: A human-readable error message describing the problem.
           type: string
           examples:
             - The uploaded CSV is formatted incorrectly. Please ensure CSV data is correctly UTF-8 encoded and that there are no invalid escape sequences.
@@ -2487,10 +3094,12 @@ components:
       type: object
       properties:
         code:
+          description: The error code identifying the type of error.
           type: string
           examples:
             - start_date_invalid
         message:
+          description: A human-readable error message describing the problem.
           type: string
           examples:
             - The earliest date in the uploaded demand data is before `2017-01-01`.
@@ -2499,10 +3108,12 @@ components:
       type: object
       properties:
         code:
+          description: The error code identifying the type of error.
           type: string
           examples:
             - end_date_invalid
         message:
+          description: A human-readable error message describing the problem.
           type: string
           examples:
             - The latest date in the uploaded demand data is more than 1 year into the future.
@@ -2511,10 +3122,12 @@ components:
       type: object
       properties:
         code:
+          description: The error code identifying the type of error.
           type: string
           examples:
             - duplicate_rows
         message:
+          description: A human-readable error message describing the problem.
           type: string
           examples:
             - The uploaded demand data contains duplicate dates. Please remove all duplicates before uploading.
@@ -2523,10 +3136,12 @@ components:
       type: object
       properties:
         code:
+          description: The error code identifying the type of error.
           type: string
           examples:
             - no_data
         message:
+          description: A human-readable error message describing the problem.
           type: string
           examples:
             - There is no demand data.
@@ -2535,10 +3150,12 @@ components:
       type: object
       properties:
         code:
+          description: The error code identifying the type of error.
           type: string
           examples:
             - weekly_demand_date_check_failed
         message:
+          description: A human-readable error message describing the problem.
           type: string
           examples:
             - The weekly demand dates do not start on the same weekday.
@@ -2547,10 +3164,12 @@ components:
       type: object
       properties:
         code:
+          description: The error code identifying the type of error.
           type: string
           examples:
             - below_minimum_threshold
         message:
+          description: A human-readable error message describing the problem.
           type: string
           examples:
             - There are not enough data points in the uploaded demand data.
@@ -2559,10 +3178,12 @@ components:
       type: object
       properties:
         code:
+          description: The error code identifying the type of error.
           type: string
           examples:
             - constant_demand_column
         message:
+          description: A human-readable error message describing the problem.
           type: string
           examples:
             - The demand column is constant.
@@ -2571,10 +3192,12 @@ components:
       type: object
       properties:
         code:
+          description: The error code identifying the type of error.
           type: string
           examples:
             - exceeding_missing_data_percentage
         message:
+          description: A human-readable error message describing the problem.
           type: string
           examples:
             - There are too many missing demand values.
@@ -2583,10 +3206,12 @@ components:
       type: object
       properties:
         code:
+          description: The error code identifying the type of error.
           type: string
           examples:
             - exceeding_consecutive_missing_data_volume
         message:
+          description: A human-readable error message describing the problem.
           type: string
           examples:
             - There are too many consecutive missing demand values.
@@ -2595,10 +3220,12 @@ components:
       type: object
       properties:
         code:
+          description: The error code identifying the type of error.
           type: string
           examples:
             - high_variance_difference_rate
         message:
+          description: A human-readable error message describing the problem.
           type: string
           examples:
             - The variance of the uploaded demand data is too large to be processed.
@@ -2607,10 +3234,12 @@ components:
       type: object
       properties:
         code:
+          description: The error code identifying the type of error.
           type: string
           examples:
             - unexpected_error
         message:
+          description: A human-readable error message describing the problem.
           type: string
           examples:
             - An unexpected error occurred.
@@ -2637,6 +3266,7 @@ components:
       type: object
       properties:
         error:
+          description: A human-readable error message.
           type: string
           title: Error
       required:
