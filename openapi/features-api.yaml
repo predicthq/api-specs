@@ -254,13 +254,13 @@ components:
           $ref: '#/components/schemas/ActiveDateRange'
         beam:
           description: |-
-            An optional beam analysis object which if provided will calculate the `location`, `interval`, `week_start_day`, `phq_*` features and `stats`, and `phq_rank` from the Beam analysis (and optionally its group).
+            An optional beam analysis object which if provided will calculate the `location`, `interval`, `week_start_day`, and `phq_*` feature selection (including per-feature `stats` and rank filters) from the Beam analysis (and optionally its group).
 
             **Fields:**
             - `analysis_id` (required if `beam` is present): Beam analysis ID
             - `group_id` (optional): Beam analysis group ID
 
-            If `beam.analysis_id` is provided, the `location`, `interval`, `week_start_day`, `phq_*` features including `stats`, and `phq_rank` will be calculated from the Beam analysis. Do not specify `location`, `interval`, or individual features in the request — doing so will result in a validation error.
+            If `beam.analysis_id` is provided, the `location`, `interval`, `week_start_day`, and `phq_*` feature selection (including per-feature `stats` and rank filters) will be calculated from the Beam analysis. Do not specify `location`, `interval`, or individual features in the request — doing so will result in a validation error.
 
             **E.g.**
             ```json
