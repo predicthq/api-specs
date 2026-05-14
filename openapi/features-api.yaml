@@ -30,7 +30,7 @@ paths:
 
         Returns pre-built ML-ready features for the specified location and date range, aggregated per day or per week. Features are opt-in: only features included in the request body are returned.
 
-        **Beam (recommended):** Provide a `beam` object with an `analysis_id` to automatically derive location, interval, and feature selection from a Beam analysis. This is the recommended approach. When using `beam`, you must not specify `location` or individual features separately — these are determined by the analysis.
+        **Beam (recommended):** Provide a `beam` object with an `analysis_id` to automatically derive location, interval, and feature selection from a Beam analysis. This is the recommended approach. When `beam.analysis_id` is provided, you must not specify `location`, `interval`, or individual features separately — these are determined by the analysis and the request will be rejected if they are included.
 
         **Manual configuration:** If not using Beam, location must be specified via `location.geo` (lat/lon + radius), `location.place_id`, or `location.saved_location_id`, and features must be explicitly requested.
 
@@ -260,7 +260,7 @@ components:
             - `analysis_id` (required if `beam` is present): Beam analysis ID
             - `group_id` (optional): Beam analysis group ID
 
-            If beam.analysis_id is provided, the `location`, `interval`, `week_start_day` , `phq_*` features including `stats` and `phq_rank` will be calculated from the Beam analysis.
+            If `beam.analysis_id` is provided, the `location`, `interval`, `week_start_day`, `phq_*` features including `stats`, and `phq_rank` will be calculated from the Beam analysis. Do not specify `location`, `interval`, or individual features in the request — doing so will result in a validation error.
 
             **E.g.**
             ```json
@@ -315,7 +315,9 @@ components:
           $ref: '#/components/schemas/HourOfDayRange'
         location:
           description: |
-            Location to calculate features for. You can specify the location as a latitude/longitude (with radius), Place ID(s) or [Saved Location IDs](https://docs.predicthq.com/api/saved-locations/overview). 
+            Location to calculate features for. Must not be specified when `beam.analysis_id` is provided — the location is derived from the Beam analysis and the request will be rejected if both are included.
+
+            You can specify the location as a latitude/longitude (with radius), Place ID(s) or [Saved Location IDs](https://docs.predicthq.com/api/saved-locations/overview). 
 
             We recommend using a lat/lon+radius or a saved location id (for a point and radius location) as they could define the location of your interest more accurately. To work out a suitable radius around your location we strongly recommend using our [Suggested Radius API](https://docs.predicthq.com/api/suggested-radius/get-suggested-radius).
 
@@ -365,10 +367,9 @@ components:
           $ref: '#/components/schemas/Location'
         interval:
           description: |
-            Aggregation interval.
+            Aggregation interval. Must not be specified when `beam.analysis_id` is provided — the interval is derived from the Beam analysis and the request will be rejected if both are included.
 
             Possible values:
-                **Fields:**
             - `day` (default) for daily aggregation
             - `week` for weekly aggregation
           $ref: '#/components/schemas/Interval'
@@ -385,7 +386,7 @@ components:
             - `saturday`
             - `sunday`
 
-            Only applicable when interval is set to week.
+            Only applicable when interval is set to week. When `beam.analysis_id` is provided, the interval and week start day are derived from the Beam analysis.
           $ref: '#/components/schemas/Weekday'
         predicted_events:
           description: Include or Exclude predicted events.
