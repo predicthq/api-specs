@@ -25,7 +25,10 @@ paths:
     get:
       operationId: get_suggested_radius
       summary: Get Suggested Radius
-      description: Returns a suggested radius for the given location and industry.
+      description: |-
+        **Deprecated:** Use the [Predicted Impact Area API](https://docs.predicthq.com/api/impact-area) instead, which provides a more accurate polygon representation of event impact rather than a simple radius.
+
+        Returns a suggested radius for the given location and industry.
       parameters:
         - name: radius_unit
           in: query
@@ -109,6 +112,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
               example:
                 error: Insufficient permissions
+      deprecated: true
       tags:
         - Suggested Radius API
 components:
