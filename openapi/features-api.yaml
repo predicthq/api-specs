@@ -300,7 +300,7 @@ components:
             - `lt` - less than
             - `lte` - less than or equal
 
-            The values are hours between 0 and 23 (i.e. 24h format).
+            The values are hours in 24h format. Valid values are 0-23 for `gte`/`lte`; for exclusive operators, `gt` must be less than 23 and `lt` must be greater than 0.
 
             E.g. only include events active between 9am and 5pm each day.
 
@@ -330,7 +330,7 @@ components:
             - `lt` - less than
             - `lte` - less than or equal
 
-            The values are hours between 0 and 23 (i.e. 24h format).
+            The values are hours in 24h format. Valid values are 0-23 for `gte`/`lte`; for exclusive operators, `gt` must be less than 23 and `lt` must be greater than 0.
 
             E.g. only include events starting between 1pm and 3pm each day.
 
@@ -360,7 +360,7 @@ components:
             - `lt` - less than
             - `lte` - less than or equal
 
-            The values are hours between 0 and 23 (i.e. 24h format).
+            The values are hours in 24h format. Valid values are 0-23 for `gte`/`lte`; for exclusive operators, `gt` must be less than 23 and `lt` must be greater than 0.
 
             E.g. only include events ending between 5pm and 9pm each day.
 
