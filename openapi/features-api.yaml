@@ -284,16 +284,17 @@ components:
             }
             ```
           $ref: '#/components/schemas/Beam'
-        hour_of_day_start:
+        hour_of_day_active:
           description: |
-            Time range (per day) to calculate features for.
+            Time range (per day) to calculate features for, based on the hours during which events are active.
 
-            Note: This field is currently only supported on `phq_viewership_*` features.
+            Supported on `phq_attendance_*`, `phq_impact_*`, `phq_spend_*`, and `phq_viewership_*` features. Not applicable to `phq_rank_*` features.
 
-            If your location only operates within certain hours of the day you can use this filter to only include records that are happening within those hours.
+            If your location only operates within certain hours of the day you can use this filter to only include events that are active during those hours. An event is considered active during an hour if it has started before or during that hour and ends during or after that hour.
 
-            Supports the following fields:
-            **Fields:**
+            Note: Only one of `hour_of_day_active`, `hour_of_day_start`, or `hour_of_day_end` may be specified per request.
+
+            **Supports the following fields:**
             - `gt` - greater than
             - `gte` - greater than or equal
             - `lt` - less than
@@ -301,7 +302,37 @@ components:
 
             The values are hours between 0 and 23 (i.e. 24h format).
 
-            E.g. only include events happening between 1pm and 3pm each day.
+            E.g. only include events active between 9am and 5pm each day.
+
+            **E.g.**
+            ```json
+            {
+              "hour_of_day_active": {
+                "gte": 9,
+                "lte": 17
+              }
+            }
+            ```
+          $ref: '#/components/schemas/HourOfDayRange'
+        hour_of_day_start:
+          description: |
+            Time range (per day) to calculate features for, based on event start hour.
+
+            Supported on `phq_attendance_*`, `phq_impact_*`, `phq_spend_*`, and `phq_viewership_*` features. Not applicable to `phq_rank_*` features.
+
+            If your location only operates within certain hours of the day you can use this filter to only include events that start within those hours.
+
+            Note: Only one of `hour_of_day_active`, `hour_of_day_start`, or `hour_of_day_end` may be specified per request.
+
+            **Supports the following fields:**
+            - `gt` - greater than
+            - `gte` - greater than or equal
+            - `lt` - less than
+            - `lte` - less than or equal
+
+            The values are hours between 0 and 23 (i.e. 24h format).
+
+            E.g. only include events starting between 1pm and 3pm each day.
 
             **E.g.**
             ```json
@@ -309,6 +340,36 @@ components:
               "hour_of_day_start": {
                 "gte": 13,
                 "lte": 15
+              }
+            }
+            ```
+          $ref: '#/components/schemas/HourOfDayRange'
+        hour_of_day_end:
+          description: |
+            Time range (per day) to calculate features for, based on event end hour.
+
+            Supported on `phq_attendance_*`, `phq_impact_*`, `phq_spend_*`, and `phq_viewership_*` features. Not applicable to `phq_rank_*` features.
+
+            If your location only operates within certain hours of the day you can use this filter to only include events that end within those hours.
+
+            Note: Only one of `hour_of_day_active`, `hour_of_day_start`, or `hour_of_day_end` may be specified per request.
+
+            **Supports the following fields:**
+            - `gt` - greater than
+            - `gte` - greater than or equal
+            - `lt` - less than
+            - `lte` - less than or equal
+
+            The values are hours between 0 and 23 (i.e. 24h format).
+
+            E.g. only include events ending between 5pm and 9pm each day.
+
+            **E.g.**
+            ```json
+            {
+              "hour_of_day_end": {
+                "gte": 17,
+                "lte": 21
               }
             }
             ```
