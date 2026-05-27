@@ -210,13 +210,14 @@ paths:
         - name: sort
           in: query
           description: |-
-            Comma-separated list used to sort Beam analyses.
+            Comma-separated list used to sort Beam analyses. Prefix a field name with `-` to reverse the default direction.
 
-            Prefix a value with `-` for descending order.
-
-            - `name` / `-name`: A–Z / Z–A
-            - `created` / `-created`: oldest first / newest first
-            - `updated` / `-updated`: oldest first / newest first
+            - `name`: sort alphabetically A–Z
+            - `-name`: sort alphabetically Z–A
+            - `created`: oldest first (ascending)
+            - `-created`: newest first (descending)
+            - `updated`: oldest first (ascending)
+            - `-updated`: newest first (descending)
           required: false
           schema:
             type: array
@@ -999,13 +1000,14 @@ paths:
         - name: sort
           in: query
           description: |-
-            Comma-separated list used to sort Analysis Groups.
+            Comma-separated list used to sort Analysis Groups. Prefix a field name with `-` to reverse the default direction.
 
-            Prefix a value with `-` for descending order.
-
-            - `name` / `-name`: A–Z / Z–A
-            - `created` / `-created`: oldest first / newest first
-            - `updated` / `-updated`: oldest first / newest first
+            - `name`: sort alphabetically A–Z
+            - `-name`: sort alphabetically Z–A
+            - `created`: oldest first (ascending)
+            - `-created`: newest first (descending)
+            - `updated`: oldest first (ascending)
+            - `-updated`: newest first (descending)
           required: false
           schema:
             type: array

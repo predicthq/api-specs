@@ -250,28 +250,36 @@ paths:
             title: First Seen.Tz
         - name: phq_viewership.gt
           in: query
-          description: 'Find broadcasts by their PHQ Viewership number: greater than the specified value.'
+          description: |-
+            Find broadcasts by their PHQ Viewership number:
+            greater than the specified value.
           required: false
           schema:
             type: integer
             title: Phq Viewership.Gt
         - name: phq_viewership.gte
           in: query
-          description: 'Find broadcasts by their PHQ Viewership number: greater than or equal to the specified value.'
+          description: |-
+            Find broadcasts by their PHQ Viewership number:
+            greater than or equal to the specified value.
           required: false
           schema:
             type: integer
             title: Phq Viewership.Gte
         - name: phq_viewership.lt
           in: query
-          description: 'Find broadcasts by their PHQ Viewership number: less than the specified value.'
+          description: |-
+            Find broadcasts by their PHQ Viewership number:
+            less than the specified value.
           required: false
           schema:
             type: integer
             title: Phq Viewership.Lt
         - name: phq_viewership.lte
           in: query
-          description: 'Find broadcasts by their PHQ Viewership number: less than or equal to the specified value.'
+          description: |-
+            Find broadcasts by their PHQ Viewership number:
+            less than or equal to the specified value.
           required: false
           schema:
             type: integer
@@ -318,7 +326,19 @@ paths:
           example: ?location.origin=40.730610,-73.935242
         - name: sort
           in: query
-          description: 'Field to sort results by. Prefix with `-` for descending order. Accepts: `start`, `-start`, `phq_viewership`, `-phq_viewership`, `updated`, `-updated`, `first_seen`, `-first_seen`. Defaults to `start` (earliest first).'
+          description: |-
+            Field to sort results by. Prefix a field name with `-` to reverse the default direction (sort descending instead of ascending).
+
+            - `start`: earliest first (ascending)
+            - `-start`: most recent first (descending)
+            - `phq_viewership`: lowest viewership first (ascending)
+            - `-phq_viewership`: highest viewership first (descending)
+            - `updated`: oldest first (ascending)
+            - `-updated`: newest first (descending)
+            - `first_seen`: oldest first (ascending)
+            - `-first_seen`: newest first (descending)
+
+            Defaults to `start` (earliest first).
           required: false
           schema:
             type: array
@@ -682,28 +702,36 @@ paths:
             title: First Seen.Tz
         - name: phq_viewership.gt
           in: query
-          description: 'Find broadcasts by their PHQ Viewership number: greater than the specified value.'
+          description: |-
+            Find broadcasts by their PHQ Viewership number:
+            greater than the specified value.
           required: false
           schema:
             type: integer
             title: Phq Viewership.Gt
         - name: phq_viewership.gte
           in: query
-          description: 'Find broadcasts by their PHQ Viewership number: greater than or equal to the specified value.'
+          description: |-
+            Find broadcasts by their PHQ Viewership number:
+            greater than or equal to the specified value.
           required: false
           schema:
             type: integer
             title: Phq Viewership.Gte
         - name: phq_viewership.lt
           in: query
-          description: 'Find broadcasts by their PHQ Viewership number: less than the specified value.'
+          description: |-
+            Find broadcasts by their PHQ Viewership number:
+            less than the specified value.
           required: false
           schema:
             type: integer
             title: Phq Viewership.Lt
         - name: phq_viewership.lte
           in: query
-          description: 'Find broadcasts by their PHQ Viewership number: less than or equal to the specified value.'
+          description: |-
+            Find broadcasts by their PHQ Viewership number:
+            less than or equal to the specified value.
           required: false
           schema:
             type: integer

@@ -434,15 +434,18 @@ paths:
         - name: sort
           in: query
           description: |-
-            Comma-separated list of sort options. Prefix the field name with - for reverse order (e.g., `-created`).
-            Possible values:
-            - `created`
-            - `updated`
-            - `version`
-            - `relevance`
+            Comma-separated list of sort options. Prefix a field name with `-` to reverse the default direction (sort descending instead of ascending).
 
+            - `created`: oldest first (ascending)
+            - `-created`: newest first (descending)
+            - `updated`: oldest first (ascending)
+            - `-updated`: newest first (descending)
+            - `version`: lowest version first (ascending)
+            - `-version`: highest version first (descending)
+            - `relevance`: most relevant first (descending)
+            - `-relevance`: least relevant first (ascending)
 
-            E.g. `?sort=-updated`
+            Example: `?sort=-updated`
           required: false
           schema:
             type: array
@@ -1057,13 +1060,16 @@ paths:
         - name: sort
           in: query
           description: |-
-            Comma-separated list of sort options.
+            Comma-separated list of sort options. Prefix a field name with `-` to reverse the default direction (sort descending instead of ascending).
 
+            - `created`: oldest first (ascending)
+            - `-created`: newest first (descending)
+            - `updated`: oldest first (ascending)
+            - `-updated`: newest first (descending)
+            - `relevance`: most relevant first (descending)
+            - `-relevance`: least relevant first (ascending)
 
-            Prefixed with - for achieves reverse order.
-
-
-            E.g. `?sort=-updated`
+            Example: `?sort=-updated`
           required: false
           schema:
             type: array
@@ -1330,10 +1336,18 @@ paths:
         - name: sort
           in: query
           description: |-
-            Comma-separated list of sort options.
+            Comma-separated list of sort options. Prefix a field name with `-` to reverse the default direction (sort descending instead of ascending).
 
+            - `created`: oldest first (ascending)
+            - `-created`: newest first (descending)
+            - `expires`: earliest expiry first (ascending)
+            - `-expires`: latest expiry first (descending)
+            - `name`: sort alphabetically A–Z
+            - `-name`: sort alphabetically Z–A
+            - `updated`: oldest first (ascending)
+            - `-updated`: newest first (descending)
 
-            E.g. `?sort=name`
+            Example: `?sort=name`
           required: false
           schema:
             description: A comma-separated list of sort params

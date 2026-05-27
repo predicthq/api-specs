@@ -57,10 +57,58 @@ paths:
         - name: sort
           in: query
           description: |-
-            A comma-separated list of fields to sort results by. Use the `-` prefix to sort descending.
+            A comma-separated list of fields to sort results by. Prefix a field name with `-` to reverse the default direction (sort descending instead of ascending).
 
+            - `created`: oldest first (ascending)
+            - `-created`: newest first (descending)
+            - `address`: sort alphabetically A–Z
+            - `-address`: sort alphabetically Z–A
+            - `name`: sort alphabetically A–Z
+            - `-name`: sort alphabetically Z–A
+            - `updated`: oldest first (ascending)
+            - `-updated`: newest first (descending)
+            - `attended_event_count`: lowest count first (ascending)
+            - `-attended_event_count`: highest count first (descending)
+            - `non_attended_event_count`: lowest count first (ascending)
+            - `-non_attended_event_count`: highest count first (descending)
+            - `phq_attendance_sum`: lowest sum first (ascending)
+            - `-phq_attendance_sum`: highest sum first (descending)
+            - `pes_accommodation_sum`: lowest sum first (ascending)
+            - `-pes_accommodation_sum`: highest sum first (descending)
+            - `pes_hospitality_sum`: lowest sum first (ascending)
+            - `-pes_hospitality_sum`: highest sum first (descending)
+            - `pes_total_sum`: lowest sum first (ascending)
+            - `-pes_total_sum`: highest sum first (descending)
+            - `pes_transportation_sum`: lowest sum first (ascending)
+            - `-pes_transportation_sum`: highest sum first (descending)
+            - `unscheduled_event_count`: lowest count first (ascending)
+            - `-unscheduled_event_count`: highest count first (descending)
+            - `next_90d.attended_event_count`: lowest count first (ascending)
+            - `-next_90d.attended_event_count`: highest count first (descending)
+            - `next_90d.non_attended_event_count`: lowest count first (ascending)
+            - `-next_90d.non_attended_event_count`: highest count first (descending)
+            - `next_90d.pes_accommodation_sum`: lowest sum first (ascending)
+            - `-next_90d.pes_accommodation_sum`: highest sum first (descending)
+            - `next_90d.pes_hospitality_sum`: lowest sum first (ascending)
+            - `-next_90d.pes_hospitality_sum`: highest sum first (descending)
+            - `next_90d.pes_total_sum`: lowest sum first (ascending)
+            - `-next_90d.pes_total_sum`: highest sum first (descending)
+            - `next_90d.pes_transportation_sum`: lowest sum first (ascending)
+            - `-next_90d.pes_transportation_sum`: highest sum first (descending)
+            - `next_90d.phq_attendance_sum`: lowest sum first (ascending)
+            - `-next_90d.phq_attendance_sum`: highest sum first (descending)
+            - `next_90d.unscheduled_event_count`: lowest count first (ascending)
+            - `-next_90d.unscheduled_event_count`: highest count first (descending)
+            - `attended_events`: lowest count first (ascending)
+            - `-attended_events`: highest count first (descending)
+            - `non_attended_events`: lowest count first (ascending)
+            - `-non_attended_events`: highest count first (descending)
+            - `attendance`: lowest value first (ascending)
+            - `-attendance`: highest value first (descending)
+            - `unscheduled_events`: lowest count first (ascending)
+            - `-unscheduled_events`: highest count first (descending)
 
-            E.g.: `?sort=-created`
+            Example: `?sort=-created`
           required: false
           schema:
             type: array
