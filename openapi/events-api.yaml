@@ -1436,24 +1436,40 @@ components:
       in: query
       name: sort
       description: |-
-        Comma-separated fields to sort results by. Default: `-start` (most recent first). Note: prefix with `-` to reverse direction. Direction varies by field:
+        Comma-separated fields to sort results by. Default: `-start` (most recent first). Prefix a field name with `-` to reverse the direction.
 
-        - `id` / `-id`: A–Z / Z–A
-        - `title` / `-title`: A–Z / Z–A
-        - `start` / `-start`: earliest first / most recent first
-        - `end` / `-end`: earliest first / most recent first
-        - `first_seen` / `-first_seen`: oldest first / newest first
-        - `predicted_end` / `-predicted_end`: earliest first / most recent first
-        - `updated` / `-updated`: oldest first / newest first
-        - `rank` / `-rank`: highest rank first / lowest rank first
-        - `local_rank` / `-local_rank`: highest rank first / lowest rank first
-        - `phq_attendance` / `-phq_attendance`: highest attendance first / lowest attendance first
-        - `category` / `-category`: A–Z / Z–A
-        - `duration` / `-duration`: shortest first / longest first
-        - `country` / `-country`: A–Z / Z–A
-        - `labels` / `-labels`: A–Z / Z–A
-        - `predicted_event_spend` / `-predicted_event_spend`: highest spend first / lowest spend first
-        - `predicted_event_spend_industry.*` / `-predicted_event_spend_industry.*`: highest spend first / lowest spend first
+        - `id`: sort alphabetically A–Z
+        - `-id`: sort alphabetically Z–A
+        - `title`: sort alphabetically A–Z
+        - `-title`: sort alphabetically Z–A
+        - `start`: earliest first (ascending)
+        - `-start`: most recent first (descending)
+        - `end`: earliest first (ascending)
+        - `-end`: most recent first (descending)
+        - `first_seen`: oldest first (ascending)
+        - `-first_seen`: newest first (descending)
+        - `predicted_end`: earliest first (ascending)
+        - `-predicted_end`: most recent first (descending)
+        - `updated`: oldest first (ascending)
+        - `-updated`: newest first (descending)
+        - `rank`: highest rank first (descending)
+        - `-rank`: lowest rank first (ascending)
+        - `local_rank`: highest rank first (descending)
+        - `-local_rank`: lowest rank first (ascending)
+        - `phq_attendance`: highest attendance first (descending)
+        - `-phq_attendance`: lowest attendance first (ascending)
+        - `category`: sort alphabetically A–Z
+        - `-category`: sort alphabetically Z–A
+        - `duration`: shortest first (ascending)
+        - `-duration`: longest first (descending)
+        - `country`: sort alphabetically A–Z
+        - `-country`: sort alphabetically Z–A
+        - `labels`: sort alphabetically A–Z
+        - `-labels`: sort alphabetically Z–A
+        - `predicted_event_spend`: highest spend first (descending)
+        - `-predicted_event_spend`: lowest spend first (ascending)
+        - `predicted_event_spend_industry.*`: highest spend first (descending)
+        - `-predicted_event_spend_industry.*`: lowest spend first (ascending)
 
         Note when sorting on `predicted_end` or `local_rank`, events without a value for that field will be placed last.
 
