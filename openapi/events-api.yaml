@@ -1355,6 +1355,8 @@ components:
         Filters events with a PHQ Rank greater than or equal to the specified value.
 
         Example: `80`
+
+        Must not be used in conjunction with `beam.analysis_id`. These two parameters are mutually exclusive — only one may be provided per request.
       required: false
       schema:
         type: integer
