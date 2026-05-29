@@ -382,6 +382,26 @@ components:
         An optional Beam Analysis filter which if provided will calculate the location, rank and categories from the Beam Analysis and optionally the Beam Analysis group (see `beam.group_id`).
 
         This is the best way to filter for events relevant to your business based on your Beam Analysis.
+
+        The following parameters are mutually exclusive with `beam.analysis_id` and cannot be used in the same request:
+
+        - `within`
+        - `category`
+        - `country`
+        - `local_rank.gt`
+        - `local_rank.gte`
+        - `local_rank.lt`
+        - `local_rank.lte`
+        - `local_rank_level`
+        - `place.scope`
+        - `place.exact`
+        - `placekey`
+        - `rank.gt`
+        - `rank.gte`
+        - `rank.lt`
+        - `rank.lte`
+        - `rank_level`
+        - `saved_location.location_id`
       required: false
       schema:
         type: string
@@ -479,6 +499,8 @@ components:
         Take a look at the [Event Categories](https://docs.predicthq.com/getting-started/predicthq-data/event-categories) page for an overview of the different categories.
 
         Example: `concerts,sports`
+
+        Must not be used in conjunction with `beam.analysis_id`. These two parameters are mutually exclusive — only one may be provided per request.
       required: false
       schema:
         type: array
@@ -512,6 +534,8 @@ components:
         A comma-separated list of 2-letter country codes.
 
         Example: `US`
+
+        Must not be used in conjunction with `beam.analysis_id`. These two parameters are mutually exclusive — only one may be provided per request.
       required: false
       schema:
         type: array
@@ -807,6 +831,8 @@ components:
         Events without a Local Rank will not be returned.
 
         Example: `80`
+
+        Must not be used in conjunction with `beam.analysis_id`. These two parameters are mutually exclusive — only one may be provided per request.
       required: false
       schema:
         type: integer
@@ -819,6 +845,8 @@ components:
         Filters events with a Local Rank greater than the specified value.
 
         Events without a Local Rank will not be returned.
+
+        Must not be used in conjunction with `beam.analysis_id`. These two parameters are mutually exclusive — only one may be provided per request.
       required: false
       schema:
         type: integer
@@ -839,6 +867,8 @@ components:
         - 5 - Major (rank between 81 and 100).
 
         Example: `4,5`
+
+        Must not be used in conjunction with `beam.analysis_id`. These two parameters are mutually exclusive — only one may be provided per request.
       required: false
       schema:
         type: array
@@ -861,6 +891,8 @@ components:
         Events without a Local Rank will not be returned.
 
         Example: `90`
+
+        Must not be used in conjunction with `beam.analysis_id`. These two parameters are mutually exclusive — only one may be provided per request.
       required: false
       schema:
         type: integer
@@ -873,6 +905,8 @@ components:
         Filters events with a Local Rank less than the specified value.
 
         Events without a Local Rank will not be returned.
+
+        Must not be used in conjunction with `beam.analysis_id`. These two parameters are mutually exclusive — only one may be provided per request.
       required: false
       schema:
         type: integer
@@ -1048,6 +1082,8 @@ components:
         A comma-separated list of Place IDs and/or IATA (3 character), ICAO (4 character), and UN/LOCODE (5 character) airport codes where the events occur.
 
         Results will contain events that apply to the specified place only. E.g. Regional school holidays only.
+
+        Must not be used in conjunction with `beam.analysis_id`. These two parameters are mutually exclusive — only one may be provided per request.
       required: false
       schema:
         type: array
@@ -1078,6 +1114,8 @@ components:
         Note that Placekey applies to our attended event categories. Some events do not contain a Placekey.
 
         Example: `225@63j-rqb-j7q,@627-s8j-z2k`
+
+        Must not be used in conjunction with `beam.analysis_id`. These two parameters are mutually exclusive — only one may be provided per request.
       required: false
       schema:
         type: array
@@ -1096,6 +1134,8 @@ components:
         Results will contain events that apply to the parent and children places of the specified place. E.g. National, regional and local school holidays that apply to a region.
 
         Example: `5128638,SFO`
+
+        Must not be used in conjunction with `beam.analysis_id`. These two parameters are mutually exclusive — only one may be provided per request.
       required: false
       schema:
         type: array
@@ -1365,7 +1405,10 @@ components:
     RankGtParam:
       in: query
       name: rank.gt
-      description: Filters events with a PHQ Rank greater than the specified value.
+      description: |-
+        Filters events with a PHQ Rank greater than the specified value.
+
+        Must not be used in conjunction with `beam.analysis_id`. These two parameters are mutually exclusive — only one may be provided per request.
       required: false
       schema:
         type: integer
@@ -1386,6 +1429,8 @@ components:
         - 5 - Major (rank between 81 and 100).
 
         Example: `4,5`
+
+        Must not be used in conjunction with `beam.analysis_id`. These two parameters are mutually exclusive — only one may be provided per request.
       required: false
       schema:
         type: array
@@ -1406,6 +1451,8 @@ components:
         Filters events with a PHQ Rank less than or equal to the specified value.
 
         Example: `90`
+
+        Must not be used in conjunction with `beam.analysis_id`. These two parameters are mutually exclusive — only one may be provided per request.
       required: false
       schema:
         type: integer
@@ -1414,7 +1461,10 @@ components:
     RankLtParam:
       in: query
       name: rank.lt
-      description: Filters events with a PHQ Rank less than the specified value.
+      description: |-
+        Filters events with a PHQ Rank less than the specified value.
+
+        Must not be used in conjunction with `beam.analysis_id`. These two parameters are mutually exclusive — only one may be provided per request.
       required: false
       schema:
         type: integer
@@ -1427,6 +1477,8 @@ components:
         A comma-separated list of saved location identifiers. Up to a maximum of 20 identifiers. This filters the events returned to events within the locations specified. Refer to the Saved Locations API for more details on managing locations.
 
         Example: `sFlb8HlsLa1j-S4UDEMEkQ`
+
+        Must not be used in conjunction with `beam.analysis_id`. These two parameters are mutually exclusive — only one may be provided per request.
       required: false
       schema:
         type: array
@@ -1712,6 +1764,8 @@ components:
         Note we always recommend using our Suggested Radius API to determine the relevant impact zone around your location.
 
         Example: `2.5mi@-36.844480,174.768368`
+
+        Must not be used in conjunction with `beam.analysis_id`. These two parameters are mutually exclusive — only one may be provided per request.
       required: false
       schema:
         type: string
