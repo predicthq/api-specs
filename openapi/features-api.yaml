@@ -260,7 +260,19 @@ components:
             - `analysis_id` (required if `beam` is present): Beam analysis ID
             - `group_id` (optional): Beam analysis group ID
 
-            If `beam.analysis_id` is provided, the `location`, `interval`, `week_start_day`, and `phq_*` feature selection (including per-feature `stats` and rank filters) will be calculated from the Beam analysis. Do not specify `location`, `interval`, or individual features in the request — doing so will result in a validation error.
+            If `beam.analysis_id` is provided, the `location`, `interval`, `week_start_day`, and `phq_*` feature selection (including per-feature `stats` and rank filters) will be calculated from the Beam analysis.
+
+            The following fields are mutually exclusive with `beam` and cannot be included in the same request:
+
+            - `location`
+            - `interval`
+            - All `phq_attendance_*` features
+            - All `phq_rank_*` features
+            - All `phq_impact_*` features
+            - All `phq_viewership_*` features
+            - All `phq_spend_*` features
+
+            Including any of the above when `beam` is present will result in a validation error.
 
             **E.g.**
             ```json
