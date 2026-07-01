@@ -165,6 +165,7 @@ paths:
                 - -unscheduled_events
             default:
               - created
+            maxItems: 100
           explode: false
           style: form
         - name: location_id
@@ -179,6 +180,8 @@ paths:
             type: array
             items:
               type: string
+              maxLength: 500
+            maxItems: 100
           explode: false
           style: form
       responses:
@@ -1261,6 +1264,7 @@ components:
         title:
           description: A short descriptive title for the closure.
           type: string
+          maxLength: 200
           title: Title
       required:
         - effective_from
@@ -1319,48 +1323,6 @@ components:
       description: The request body for creating a new Saved Location. Provide location geometry via `origin_geojson` (recommended), `geojson`, or `place_ids`.
       type: object
       properties:
-        location_code:
-          description: |-
-            An optional identifier for your location.
-
-
-            The intention here is to use your own identifier for the location if you have one. 
-            E.g., you might have stores/hotels/etc in your system with their own ID 
-            - use that ID here to make it easier to lookup the location later.
-          type: string
-          title: Location Code
-        name:
-          description: |-
-            Name of the Saved Location.
-
-            E.g. `My Location`
-          type: string
-          examples:
-            - My Location
-          title: Name
-        description:
-          description: Description of the location.
-          type: string
-          title: Description
-        labels:
-          description: |-
-            A list of labels to help you categorize your locations.
-            You can use these labels to search upon.
-
-
-            **E.g.**
-              ```json
-                {
-                  "labels": ["label1", "label2"]
-                }
-              ```
-          type: array
-          items:
-            type: string
-          examples:
-            - test
-            - retail
-          title: Labels
         geojson:
           description: |-
             We recommend omitting this parameter and providing only the `origin_geojson` field instead.
@@ -1394,10 +1356,6 @@ components:
           items:
             type: integer
           title: Place Ids
-        formatted_address:
-          description: The street address of the location.
-          type: string
-          title: Formatted Address
         industry:
           description: |-
             The industry of your business. This is used to calculate the Impact Area for your location when you specify
@@ -1423,6 +1381,58 @@ components:
                 coordinates:
                   - -122.3816274
                   - 37.61911449999999
+        location_code:
+          description: |-
+            An optional identifier for your location.
+
+
+            The intention here is to use your own identifier for the location if you have one. 
+            E.g., you might have stores/hotels/etc in your system with their own ID 
+            - use that ID here to make it easier to lookup the location later.
+          type: string
+          maxLength: 200
+          title: Location Code
+        name:
+          description: |-
+            Name of the Saved Location.
+
+            E.g. `My Location`
+          type: string
+          examples:
+            - My Location
+          maxLength: 200
+          title: Name
+        description:
+          description: Description of the location.
+          type: string
+          maxLength: 500
+          title: Description
+        labels:
+          description: |-
+            A list of labels to help you categorize your locations.
+            You can use these labels to search upon.
+
+
+            **E.g.**
+              ```json
+                {
+                  "labels": ["label1", "label2"]
+                }
+              ```
+          type: array
+          items:
+            type: string
+            maxLength: 100
+          examples:
+            - test
+            - retail
+          maxItems: 50
+          title: Labels
+        formatted_address:
+          description: The street address of the location.
+          type: string
+          maxLength: 500
+          title: Formatted Address
       title: CreateSavedLocationRequest
     DateRange:
       description: A date range over which insight metrics are calculated.
@@ -2010,6 +2020,46 @@ components:
       description: A Saved Location record including geographic data, summary insights, and enrichment status.
       type: object
       properties:
+        geojson:
+          description: An object containing the geographic information about a location. Represents the geometry associated with the event in the [GeoJSON format](https://geojson.org/).
+          $ref: '#/components/schemas/GeoJson-Output'
+          examples:
+            - type: Feature
+              properties:
+                radius: 3.17
+                radius_unit: mi
+              geometry:
+                type: Point
+                coordinates:
+                  - -122.3816274
+                  - 37.61911449999999
+        place_ids:
+          description: |-
+            An array of place ids (see the [Places API](https://docs.predicthq.com/api/places/search-places)) for locations that are defined as covering an area (see City, State, Country locations) rather than a point and radius.
+
+
+            E.g. `[2750405]`
+          type: array
+          items:
+            type: integer
+          examples:
+            - - 2750405
+          title: Place Ids
+        industry:
+          description: The industry of your business.
+          $ref: '#/components/schemas/Industry'
+        origin_geojson:
+          description: |-
+            An object containing the geographic information about a location. Represents the location of your business
+            in the [GeoJSON format](https://geojson.org/).
+          $ref: '#/components/schemas/OriginGeoJson'
+          examples:
+            - type: Feature
+              geometry:
+                type: Point
+                coordinates:
+                  - -122.3816274
+                  - 37.61911449999999
         location_code:
           description: |-
             The user-supplied identifier for the location.
@@ -2047,31 +2097,6 @@ components:
             - test
             - retail
           title: Labels
-        geojson:
-          description: An object containing the geographic information about a location. Represents the geometry associated with the event in the [GeoJSON format](https://geojson.org/).
-          $ref: '#/components/schemas/GeoJson-Output'
-          examples:
-            - type: Feature
-              properties:
-                radius: 3.17
-                radius_unit: mi
-              geometry:
-                type: Point
-                coordinates:
-                  - -122.3816274
-                  - 37.61911449999999
-        place_ids:
-          description: |-
-            An array of place ids (see the [Places API](https://docs.predicthq.com/api/places/search-places)) for locations that are defined as covering an area (see City, State, Country locations) rather than a point and radius.
-
-
-            E.g. `[2750405]`
-          type: array
-          items:
-            type: integer
-          examples:
-            - - 2750405
-          title: Place Ids
         formatted_address:
           description: |-
             The address of the location. This can be supplied when creating a location.
@@ -2087,21 +2112,6 @@ components:
           examples:
             - 666 Mission St, San Francisco, CA 94105, USA
           title: Formatted Address
-        industry:
-          description: The industry of your business.
-          $ref: '#/components/schemas/Industry'
-        origin_geojson:
-          description: |-
-            An object containing the geographic information about a location. Represents the location of your business
-            in the [GeoJSON format](https://geojson.org/).
-          $ref: '#/components/schemas/OriginGeoJson'
-          examples:
-            - type: Feature
-              geometry:
-                type: Point
-                coordinates:
-                  - -122.3816274
-                  - 37.61911449999999
         create_dt:
           description: |-
             The creation date time for the location in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601).
