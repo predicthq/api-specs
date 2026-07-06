@@ -165,7 +165,7 @@ paths:
                 - -unscheduled_events
             default:
               - created
-            maxItems: 100
+            maxItems: 48
           explode: false
           style: form
         - name: location_id
