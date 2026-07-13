@@ -94,6 +94,7 @@ paths:
             examples:
               - - active
                 - deleted
+            maxItems: 3
           explode: false
           style: form
         - name: readiness_status
@@ -113,6 +114,7 @@ paths:
             examples:
               - - pending
                 - ready
+            maxItems: 4
           explode: false
           style: form
         - name: group_id
@@ -123,8 +125,10 @@ paths:
             type: array
             items:
               type: string
+              maxLength: 256
             examples:
               - 3ED1zxXqAY
+            maxItems: 100
         - name: demand_type.interval
           in: query
           description: |-
@@ -140,6 +144,7 @@ paths:
             examples:
               - - day
                 - week
+            maxItems: 2
           explode: false
           style: form
         - name: demand_type.industry
@@ -165,6 +170,7 @@ paths:
             examples:
               - - accommodation
                 - tourism
+            maxItems: 9
           explode: false
           style: form
         - name: external_id
@@ -175,9 +181,11 @@ paths:
             type: array
             items:
               type: string
+              maxLength: 256
             examples:
               - - id1
                 - id2
+            maxItems: 100
           explode: false
           style: form
         - name: label
@@ -188,10 +196,12 @@ paths:
             type: array
             items:
               type: string
+              maxLength: 256
             examples:
               - - label1
                 - label2
                 - label3
+            maxItems: 100
           explode: false
           style: form
         - name: location.saved_location_id
@@ -202,9 +212,11 @@ paths:
             type: array
             items:
               type: string
+              maxLength: 256
             examples:
               - - id1
                 - id2
+            maxItems: 100
           explode: false
           style: form
         - name: sort
@@ -228,6 +240,7 @@ paths:
             examples:
               - - name
                 - created
+            maxItems: 8
           explode: false
           style: form
         - $ref: '#/components/parameters/LimitParam'
@@ -276,6 +289,7 @@ paths:
             type: string
             examples:
               - downt
+            maxLength: 500
       responses:
         '200':
           description: Successful Response
@@ -920,6 +934,7 @@ paths:
             type: string
             examples:
               - MyAnalysisGroup
+            maxLength: 500
         - name: status
           in: query
           description: |-
@@ -935,6 +950,7 @@ paths:
             examples:
               - - active
                 - deleted
+            maxItems: 2
           explode: false
           style: form
         - name: readiness_status
@@ -953,6 +969,7 @@ paths:
             examples:
               - - pending
                 - ready
+            maxItems: 3
           explode: false
           style: form
         - name: demand_type.interval
@@ -970,6 +987,7 @@ paths:
             examples:
               - - day
                 - week
+            maxItems: 2
           explode: false
           style: form
         - name: demand_type.industry
@@ -995,6 +1013,7 @@ paths:
             examples:
               - - accommodation
                 - tourism
+            maxItems: 9
           explode: false
           style: form
         - name: sort
@@ -1018,6 +1037,7 @@ paths:
             examples:
               - - name
                 - created
+            maxItems: 8
           explode: false
           style: form
         - $ref: '#/components/parameters/OffsetParam'
@@ -1524,6 +1544,7 @@ components:
             "Occupancy Rate", "Sales", "Number of Transactions").
           type: string
           default: Sales
+          maxLength: 256
           title: Unit Descriptor
       title: AnalysisGroupDemandTypeInput
     AnalysisGroupIdResponse:
@@ -2051,82 +2072,6 @@ components:
         - date
         - impact_significance
       title: DemandDerivativeResponse
-    DemandType:
-      description: Provides information about the demand type of the analysis.
-      type: object
-      properties:
-        industry:
-          description: The industry of the demand data being analysed. Determines which event categories and features are used.
-          $ref: '#/components/schemas/Industry'
-        interval:
-          description: |-
-            The time interval of the demand data. Defaults to `day`.
-
-            Possible values: `day`, `week`.
-          default: day
-          $ref: '#/components/schemas/Interval'
-        week_start_day:
-          description: The day of the week that demand data starts on. Required when `interval` is `week`.
-          $ref: '#/components/schemas/Weekday'
-        unit_descriptor:
-          description: |-
-            The description of the unit of demand, which specifies the type or measure being quantified (e.g.,
-            "Occupancy Rate", "Sales", "Number of Transactions").
-          type: string
-          default: Sales
-          title: Unit Descriptor
-        currency_code:
-          description: The ISO 4217 currency code for the units of demand. Defaults to `USD`.
-          default: USD
-          $ref: '#/components/schemas/CurrencyCode'
-        unit_currency_multiplier:
-          description: The multiplier used to adjust the unit of demand to its equivalent value in the specified currency.
-          type: number
-          default: 1
-          exclusiveMinimum: 0
-          title: Unit Currency Multiplier
-      examples:
-        - industry: restaurants
-          currency_code: USD
-          unit_currency_multiplier: 1
-          unit_descriptor: Sales
-      title: DemandType
-    DemandTypeResponse:
-      description: |-
-        Indicates the detected type of the uploaded demand data as well as other user-defined information about
-        the demand data.
-      type: object
-      properties:
-        industry:
-          description: The detected or configured industry for the demand data.
-          $ref: '#/components/schemas/Industry'
-        interval:
-          description: |-
-            The time interval of the demand data.
-
-            Possible values: `day`, `week`.
-          default: day
-          $ref: '#/components/schemas/Interval'
-        week_start_day:
-          description: Week start day (e.g. `sunday`, `monday`). Only present when `interval` is `week`.
-          $ref: '#/components/schemas/Weekday'
-        unit_descriptor:
-          description: |-
-            The description of the unit of demand, which specifies the type or measure being quantified (e.g.,
-            "Occupancy Rate", "Sales", "Number of Transactions").
-          type: string
-          default: Sales
-          title: Unit Descriptor
-        currency_code:
-          description: The ISO 4217 currency code for the units of demand.
-          default: USD
-          $ref: '#/components/schemas/CurrencyCode'
-        unit_currency_multiplier:
-          description: The multiplier used to adjust the unit of demand to its equivalent value in the specified currency.
-          type: number
-          default: 1
-          title: Unit Currency Multiplier
-      title: DemandTypeResponse
     ExcludedAnalysis:
       type: object
       properties:
@@ -2287,12 +2232,10 @@ components:
         lat:
           description: Latitude coordinate as a decimal number between -90 and 90.
           type: string
-          pattern: ^[-+]?(90(\.0+)?|([1-8]\d|[1-9])(\.\d+)?|0+\.(\d+)?[1-9]+(\d+)?)$
           title: Lat
         lon:
           description: Longitude coordinate as a decimal number between -180 and 180.
           type: string
-          pattern: ^[-+]?(180(\.0+)?|(1[0-7]\d|\d\d|[1-9])(\.\d+)?|0+\.(\d+)?[1-9]+(\d+)?)$
           title: Lon
       required:
         - lat
@@ -2304,12 +2247,12 @@ components:
         lat:
           description: Latitude coordinate as a decimal number between -90 and 90.
           type: string
-          pattern: ^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$
+          pattern: ^[+-]?(?:[0-8]?[0-9](?:\.[0-9]+)?|90(?:\.0+)?)$
           title: Lat
         lon:
           description: Longitude coordinate as a decimal number between -180 and 180.
           type: string
-          pattern: ^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$
+          pattern: ^[+-]?(?:180(?:\.0+)?|1[0-7][0-9](?:\.[0-9]+)?|[0-9]{1,2}(?:\.[0-9]+)?)$
           title: Lon
       required:
         - lat
@@ -2338,56 +2281,6 @@ components:
         - day
         - week
       title: Interval
-    Location:
-      description: |-
-        Location of the Analysis.
-
-        Supports one of the following location options:
-          - `saved_location_id`
-          - `geopoint` with `radius` and `unit`
-      type: object
-      properties:
-        geopoint:
-          description: The latitude and longitude coordinates for the analysis location.
-          $ref: '#/components/schemas/GeoPoint'
-        radius:
-          description: |-
-            Must be an integer or a float number up to 2 decimal places. It represents the radius of the event search around
-            your `geopoint` to use for time series modelling and correlation. We **strongly recommend** using the
-            [Suggested Radius API](https://docs.predicthq.com/api/suggested-radius/get-suggested-radius) to find a
-            suitable radius for your location/industry.
-          type: number
-          exclusiveMinimum: 0
-          title: Radius
-        unit:
-          description: |-
-            The unit for `radius` where
-              - `m` is meters
-              - `km` is kilometers
-              - `ft` is feet
-              - `mi` is miles
-          type: string
-          enum:
-            - m
-            - mi
-            - km
-            - ft
-          title: Unit
-        saved_location_id:
-          description: |-
-            The ID of a previously created Saved Location for your analysis as documented at
-            [Saved Locations API](https://docs.predicthq.com/api/saved-locations/create-a-saved-location)
-          type: string
-          minLength: 1
-          title: Saved Location Id
-      examples:
-        - saved_location_id: 8gZ2rn8BRcTjM_3SWdjP
-        - geopoint:
-            lat: '-36.849761'
-            lon: '174.7628903'
-          radius: 1.2
-          unit: km
-      title: Location
     LocationResponse:
       description: |-
         Location of the Analysis.
@@ -2512,6 +2405,7 @@ components:
           type: string
           examples:
             - My Analysis Group 1
+          maxLength: 256
           minLength: 1
           title: Name
         analysis_ids:
@@ -2524,11 +2418,13 @@ components:
           type: array
           items:
             type: string
+            maxLength: 256
           examples:
             - - zRa_kk7MlAA
               - 3aR-gbJp98I
               - JBb08XsZqAo
               - q9iX2XqFBxM
+          maxItems: 1200
           title: Analysis Ids
         demand_type:
           description: |-
@@ -2544,6 +2440,7 @@ components:
         name:
           description: Name of the Analysis.
           type: string
+          maxLength: 256
           minLength: 1
           title: Name
         location:
@@ -2557,6 +2454,7 @@ components:
           type: string
           examples:
             - abc123
+          maxLength: 256
           minLength: 1
           title: External Id
         label:
@@ -2564,12 +2462,14 @@ components:
           type: array
           items:
             type: string
+            maxLength: 256
             minLength: 1
           examples:
             - - label1
               - label2
               - label3
           explode: false
+          maxItems: 100
           minItems: 1
           style: form
           title: Label
@@ -2622,6 +2522,7 @@ components:
           type: string
           examples:
             - My Analysis Group 1
+          maxLength: 256
           minLength: 1
           title: Name
         analysis_ids:
@@ -2634,11 +2535,13 @@ components:
           type: array
           items:
             type: string
+            maxLength: 256
           examples:
             - - zRa_kk7MlAA
               - 3aR-gbJp98I
               - JBb08XsZqAo
               - q9iX2XqFBxM
+          maxItems: 1200
           title: Analysis Ids
         demand_type:
           description: |-
@@ -2659,6 +2562,7 @@ components:
           type: string
           examples:
             - My Location Analysis 1
+          maxLength: 256
           minLength: 1
           title: Name
         location:
@@ -2672,6 +2576,7 @@ components:
           type: string
           examples:
             - abc123
+          maxLength: 256
           minLength: 1
           title: External Id
         label:
@@ -2679,12 +2584,14 @@ components:
           type: array
           items:
             type: string
+            maxLength: 256
             minLength: 1
           examples:
             - - label1
               - label2
               - label3
           explode: false
+          maxItems: 100
           minItems: 1
           style: form
           title: Label
@@ -2925,6 +2832,135 @@ components:
         - saturday
         - sunday
       title: Weekday
+    DemandTypeResponse:
+      description: |-
+        Indicates the detected type of the uploaded demand data as well as other user-defined information about
+        the demand data.
+      type: object
+      properties:
+        industry:
+          description: The detected or configured industry for the demand data.
+          $ref: '#/components/schemas/Industry'
+        interval:
+          description: |-
+            The time interval of the demand data.
+
+            Possible values: `day`, `week`.
+          default: day
+          $ref: '#/components/schemas/Interval'
+        week_start_day:
+          description: Week start day (e.g. `sunday`, `monday`). Only present when `interval` is `week`.
+          $ref: '#/components/schemas/Weekday'
+        unit_descriptor:
+          description: |-
+            The description of the unit of demand, which specifies the type or measure being quantified (e.g.,
+            "Occupancy Rate", "Sales", "Number of Transactions").
+          type: string
+          default: Sales
+          title: Unit Descriptor
+        currency_code:
+          description: The ISO 4217 currency code for the units of demand.
+          default: USD
+          $ref: '#/components/schemas/CurrencyCode'
+        unit_currency_multiplier:
+          description: The multiplier used to adjust the unit of demand to its equivalent value in the specified currency.
+          type: number
+          default: 1
+          title: Unit Currency Multiplier
+      title: DemandTypeHistoric
+    DemandType:
+      description: Provides information about the demand type of the analysis.
+      type: object
+      properties:
+        industry:
+          description: The industry of the demand data being analysed. Determines which event categories and features are used.
+          $ref: '#/components/schemas/Industry'
+        interval:
+          description: |-
+            The time interval of the demand data. Defaults to `day`.
+
+            Possible values: `day`, `week`.
+          default: day
+          $ref: '#/components/schemas/Interval'
+        week_start_day:
+          description: The day of the week that demand data starts on. Required when `interval` is `week`.
+          $ref: '#/components/schemas/Weekday'
+        unit_descriptor:
+          description: |-
+            The description of the unit of demand, which specifies the type or measure being quantified (e.g.,
+            "Occupancy Rate", "Sales", "Number of Transactions").
+          type: string
+          default: Sales
+          maxLength: 256
+          title: Unit Descriptor
+        currency_code:
+          description: The ISO 4217 currency code for the units of demand. Defaults to `USD`.
+          default: USD
+          $ref: '#/components/schemas/CurrencyCode'
+        unit_currency_multiplier:
+          description: The multiplier used to adjust the unit of demand to its equivalent value in the specified currency.
+          type: number
+          default: 1
+          exclusiveMinimum: 0
+          title: Unit Currency Multiplier
+      additionalProperties: false
+      examples:
+        - industry: restaurants
+          currency_code: USD
+          unit_currency_multiplier: 1
+          unit_descriptor: Sales
+      title: DemandTypeInput
+    Location:
+      description: |-
+        Location of the Analysis.
+
+        Supports one of the following location options:
+          - `saved_location_id`
+          - `geopoint` with `radius` and `unit`
+      type: object
+      properties:
+        geopoint:
+          description: The latitude and longitude coordinates for the analysis location.
+          $ref: '#/components/schemas/GeoPoint'
+        radius:
+          description: |-
+            Must be an integer or a float number up to 2 decimal places. It represents the radius of the event search around
+            your `geopoint` to use for time series modelling and correlation. We **strongly recommend** using the
+            [Suggested Radius API](https://docs.predicthq.com/api/suggested-radius/get-suggested-radius) to find a
+            suitable radius for your location/industry.
+          type: number
+          exclusiveMinimum: 0
+          title: Radius
+        unit:
+          description: |-
+            The unit for `radius` where
+              - `m` is meters
+              - `km` is kilometers
+              - `ft` is feet
+              - `mi` is miles
+          type: string
+          enum:
+            - m
+            - mi
+            - km
+            - ft
+          title: Unit
+        saved_location_id:
+          description: |-
+            The ID of a previously created Saved Location for your analysis as documented at
+            [Saved Locations API](https://docs.predicthq.com/api/saved-locations/create-a-saved-location)
+          type: string
+          maxLength: 256
+          minLength: 1
+          title: Saved Location Id
+      examples:
+        - saved_location_id: 8gZ2rn8BRcTjM_3SWdjP
+        - geopoint:
+            lat: '-36.849761'
+            lon: '174.7628903'
+          radius: 1.2
+          unit: km
+      title: LocationInput
     UploadErrorResponse:
       description: |
         An unsuccessful HTTP response code could be returned for several reasons. In addition to an error message, there may
