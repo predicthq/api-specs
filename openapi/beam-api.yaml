@@ -2232,10 +2232,12 @@ components:
         lat:
           description: Latitude coordinate as a decimal number between -90 and 90.
           type: string
+          pattern: ^[+-]?(?:90(?:\.0+)?|[0-8]?[0-9](?:\.[0-9]+)?|9(?:\.0+)?)$
           title: Lat
         lon:
           description: Longitude coordinate as a decimal number between -180 and 180.
           type: string
+          pattern: ^[+-]?(?:180(?:\.0+)?|1[0-7][0-9](?:\.[0-9]+)?|[0-9]{1,2}(?:\.[0-9]+)?)$
           title: Lon
       required:
         - lat
