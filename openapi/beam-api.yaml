@@ -94,7 +94,7 @@ paths:
             examples:
               - - active
                 - deleted
-            maxItems: 3
+            maxItems: 2
           explode: false
           style: form
         - name: readiness_status
@@ -240,7 +240,7 @@ paths:
             examples:
               - - name
                 - created
-            maxItems: 8
+            maxItems: 6
           explode: false
           style: form
         - $ref: '#/components/parameters/LimitParam'
@@ -1037,7 +1037,7 @@ paths:
             examples:
               - - name
                 - created
-            maxItems: 8
+            maxItems: 6
           explode: false
           style: form
         - $ref: '#/components/parameters/OffsetParam'
@@ -2789,6 +2789,47 @@ components:
           examples:
             - 8gZ2rn8BRcTjM_3SWdjP
           title: Location Id
+        origin_geojson:
+          description: |-
+            A GeoJSON Feature with a Point geometry representing the exact origin location of the business
+            (as supplied via `origin_geojson` when the Saved Location was created).
+          type: object
+          additionalProperties: false
+          examples:
+            - type: Feature
+              geometry:
+                type: Point
+                coordinates:
+                  - -122.401
+                  - 37.7909
+          properties:
+            type:
+              type: string
+              default: Feature
+              const: Feature
+              title: Type
+            geometry:
+              type: object
+              additionalProperties: false
+              properties:
+                type:
+                  type: string
+                  default: Point
+                  const: Point
+                  title: Type
+                coordinates:
+                  type: array
+                  items:
+                    type: number
+                  maxItems: 3
+                  minItems: 2
+              required:
+                - type
+                - coordinates
+              title: Point
+          required:
+            - geometry
+          title: OriginGeoJson
       required:
         - location_id
       title: SavedLocationResponse
