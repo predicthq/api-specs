@@ -671,13 +671,13 @@ paths:
           required: true
           schema:
             type: string
+            examples:
+              - text/csv
             enum:
               - text/csv
               - application/x-ndjson
               - application/json
               - application/x-ldjson
-            examples:
-              - text/csv
       requestBody:
         $ref: '#/components/requestBodies/UploadDemandData'
       responses:
@@ -1564,28 +1564,28 @@ components:
         feature_importance:
           description: Indicates whether the aggregated Feature Importance is ready to be viewed for this Analysis Group.
           type: boolean
-          default: false
           examples:
             - true
+          default: false
           title: Feature Importance
         value_quant:
           description: Indicates whether the Value Quant is ready to be viewed for this Analysis Group.
           type: boolean
-          default: false
           examples:
             - true
+          default: false
           title: Value Quant
         excluded_analyses:
           description: A list of Analyses that were excluded from processing, with reasons.
           type: array
           items:
             $ref: '#/components/schemas/ExcludedAnalysis'
-          default: []
           examples:
             - - analysis_id: 0GTpLZ522Bc
                 reason: analysis_failed
               - analysis_id: 6OK88wZ_Pv0
                 reason: analysis_deleted
+          default: []
           title: Excluded Analyses
       title: AnalysisGroupProcessingCompleted
     AnalysisGroupReadinessStatus:
@@ -1766,11 +1766,13 @@ components:
           title: Missing Dates
         validation_response:
           description: Detailed validation results from the demand data checks.
-          type: object
-          additionalProperties: true
-          title: Validation Response
+          $ref: '#/components/schemas/ValidationResponse'
         best_practice:
-          description: Whether the analysis configuration meets all best practice requirements.
+          description: |-
+            Whether the analysis configuration meets all best practice requirements.
+
+            This is `true` only when the `industry`, `rank_per_category` and `impact_area` checks in
+            `best_practice_checks` all pass.
           type: boolean
           default: false
           title: Best Practice
@@ -1974,15 +1976,46 @@ components:
           default: false
           title: Industry
         rank:
-          description: Indicates whether the analysis rank configuration meets the best practice requirements.
+          description: |-
+            Indicates whether the analysis rank configuration meets the best practice requirements.
+
+            Superseded by `rank_per_category`, whose value this mirrors. Retained for backwards compatibility.
           type: boolean
           default: false
+          deprecated: true
           title: Rank
         radius:
-          description: Indicates whether the analysis location radius meets the best practice requirements.
+          description: |-
+            Indicates whether the analysis location meets the best practice requirements.
+
+            Superseded by `impact_area`, whose value this mirrors. Retained for backwards compatibility.
           type: boolean
           default: false
+          deprecated: true
           title: Radius
+        rank_per_category:
+          description: |-
+            Indicates whether the analysis is using rank thresholds calibrated per event category.
+
+            Applying a rank threshold to each event category individually is the best practice, as the level of impact
+            that makes an event worth including differs by category. Beam calibrates these thresholds for you, so this
+            check passes unless the analysis is using a single rank threshold across all categories.
+          type: boolean
+          default: false
+          title: Rank Per Category
+        impact_area:
+          description: |-
+            Indicates whether the analysis location is using a Predicted Impact Area.
+
+            A [Predicted Impact Area](https://docs.predicthq.com/api/impact-area) is an industry and location-specific
+            boundary of where event-driven demand impact actually occurs, and is the best practice rather than a fixed
+            radius. To use one, create a
+            [Saved Location](https://docs.predicthq.com/api/saved-locations/create-a-saved-location) with `origin_geojson`
+            (and no `geojson` area) — the Predicted Impact Area is then calculated and stored automatically — and set the
+            analysis location to that Saved Location's `saved_location_id`.
+          type: boolean
+          default: false
+          title: Impact Area
       title: BestPracticeChecks
     CurrencyCode:
       description: The ISO 4217 standard code representing the currency corresponding to the units of demand.
@@ -2733,6 +2766,47 @@ components:
               properties:
                 radius: 0.5
                 radius_unit: km
+        origin_geojson:
+          description: |-
+            A GeoJSON Feature with a Point geometry representing the exact origin location of the business
+            (as supplied via `origin_geojson` when the Saved Location was created).
+          type: object
+          additionalProperties: false
+          examples:
+            - type: Feature
+              geometry:
+                type: Point
+                coordinates:
+                  - -122.401
+                  - 37.7909
+          properties:
+            type:
+              type: string
+              default: Feature
+              const: Feature
+              title: Type
+            geometry:
+              type: object
+              additionalProperties: false
+              properties:
+                type:
+                  type: string
+                  default: Point
+                  const: Point
+                  title: Type
+                coordinates:
+                  type: array
+                  items:
+                    type: number
+                  maxItems: 3
+                  minItems: 2
+              required:
+                - type
+                - coordinates
+              title: Point
+          required:
+            - geometry
+          title: OriginGeoJson
         h3:
           description: A list of H3 indices that cover the saved location (if applicable).
           type: array
@@ -2789,47 +2863,6 @@ components:
           examples:
             - 8gZ2rn8BRcTjM_3SWdjP
           title: Location Id
-        origin_geojson:
-          description: |-
-            A GeoJSON Feature with a Point geometry representing the exact origin location of the business
-            (as supplied via `origin_geojson` when the Saved Location was created).
-          type: object
-          additionalProperties: false
-          examples:
-            - type: Feature
-              geometry:
-                type: Point
-                coordinates:
-                  - -122.401
-                  - 37.7909
-          properties:
-            type:
-              type: string
-              default: Feature
-              const: Feature
-              title: Type
-            geometry:
-              type: object
-              additionalProperties: false
-              properties:
-                type:
-                  type: string
-                  default: Point
-                  const: Point
-                  title: Type
-                coordinates:
-                  type: array
-                  items:
-                    type: number
-                  maxItems: 3
-                  minItems: 2
-              required:
-                - type
-                - coordinates
-              title: Point
-          required:
-            - geometry
-          title: OriginGeoJson
       required:
         - location_id
       title: SavedLocationResponse
@@ -2864,6 +2897,33 @@ components:
         - msg
         - type
       title: ValidationError
+    ValidationResponse:
+      type: object
+      properties:
+        error_message:
+          description: A human-readable message describing why the uploaded demand data could not be validated.
+          type: string
+          title: Error Message
+        missing_data_percentage:
+          description: The percentage of dates in the uploaded demand data that are missing a demand value.
+          type: number
+          title: Missing Data Percentage
+        consecutive_nan:
+          description: The largest number of consecutive dates in the uploaded demand data that are missing a demand value.
+          type: integer
+          title: Consecutive Nan
+        variance_difference_rate:
+          description: |-
+            The percentage difference in variance between the first and second half of the uploaded demand data.
+            A high value indicates the demand data is unstable over time.
+          type: number
+          title: Variance Difference Rate
+        durbin_watson_stats:
+          description: A measure of the autocorrelation in the uploaded demand data, derived from the Durbin-Watson statistic.
+          type: number
+          title: Durbin Watson Stats
+      additionalProperties: true
+      title: ValidationResponse
     Weekday:
       type: string
       enum:
