@@ -1,6 +1,6 @@
 openapi: 3.1.0
 info:
-  title: PredictHQ Forecasts API (Public Preview)
+  title: PredictHQ Forecasts API
   version: 1.0.0
   license:
     name: MIT
@@ -40,34 +40,34 @@ paths:
       summary: Get Algorithms
       description: Returns the list of available forecasting algorithms. Currently one algorithm is offered (`phq-xgboost`) based on XGBoost.
       responses:
-        '200':
+        "200":
           description: Successful Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetAlgoResponse'
-        '401':
+                $ref: "#/components/schemas/GetAlgoResponse"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: Authorization required
-        '402':
+        "402":
           description: Payment Required
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: Payment required.
-        '403':
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               examples:
                 insufficientScope:
                   summary: Insufficient token scope
@@ -92,22 +92,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateModelRequest'
+              $ref: "#/components/schemas/CreateModelRequest"
       responses:
-        '201':
+        "201":
           description: Successful Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateModelResponse'
-        '400':
+                $ref: "#/components/schemas/CreateModelResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 oneOf:
-                  - $ref: '#/components/schemas/ErrorResponse'
-                  - $ref: '#/components/schemas/HTTPValidationError'
+                  - $ref: "#/components/schemas/ErrorResponse"
+                  - $ref: "#/components/schemas/HTTPValidationError"
               examples:
                 invalidRequest:
                   summary: Invalid request parameter
@@ -121,28 +121,28 @@ paths:
                   summary: Business logic error
                   value:
                     error: Saved Location not found
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: Authorization required
-        '402':
+        "402":
           description: Payment Required
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: Payment required.
-        '403':
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               examples:
                 insufficientScope:
                   summary: Insufficient token scope
@@ -198,23 +198,23 @@ paths:
                 - ready
                 - stale
                 - training
-        - $ref: '#/components/parameters/LimitParam'
-        - $ref: '#/components/parameters/OffsetParam'
+        - $ref: "#/components/parameters/LimitParam"
+        - $ref: "#/components/parameters/OffsetParam"
       responses:
-        '200':
+        "200":
           description: Successful Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SearchModelResponse'
-        '400':
+                $ref: "#/components/schemas/SearchModelResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 oneOf:
-                  - $ref: '#/components/schemas/HTTPValidationError'
-                  - $ref: '#/components/schemas/QueryValidationError'
+                  - $ref: "#/components/schemas/HTTPValidationError"
+                  - $ref: "#/components/schemas/QueryValidationError"
               examples:
                 invalidQueryParameter:
                   summary: Invalid query parameter
@@ -231,28 +231,28 @@ paths:
                       - field: query.limit/offset
                         msg: Tried to fetch more results than the maximum allowed. Please reduce limit/offset.
                         type: value_error
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: Authorization required
-        '402':
+        "402":
           description: Payment Required
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: Payment required.
-        '403':
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               examples:
                 insufficientScope:
                   summary: Insufficient token scope
@@ -278,34 +278,34 @@ paths:
             type: string
             title: Model Id
       responses:
-        '200':
+        "200":
           description: Successful Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetModelResponse'
-        '401':
+                $ref: "#/components/schemas/GetModelResponse"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: Authorization required
-        '402':
+        "402":
           description: Payment Required
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: Payment required.
-        '403':
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               examples:
                 insufficientScope:
                   summary: Insufficient token scope
@@ -315,12 +315,12 @@ paths:
                   summary: Missing forecasts subscription
                   value:
                     error: Missing forecasts subscription.
-        '404':
+        "404":
           description: Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: Model not found
       tags:
@@ -342,18 +342,18 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ReplaceModelRequest'
+              $ref: "#/components/schemas/ReplaceModelRequest"
       responses:
-        '204':
+        "204":
           description: Successful Response
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 oneOf:
-                  - $ref: '#/components/schemas/ErrorResponse'
-                  - $ref: '#/components/schemas/HTTPValidationError'
+                  - $ref: "#/components/schemas/ErrorResponse"
+                  - $ref: "#/components/schemas/HTTPValidationError"
               examples:
                 invalidRequest:
                   summary: Invalid request parameter
@@ -367,28 +367,28 @@ paths:
                   summary: Business logic error
                   value:
                     error: Saved Location not found
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: Authorization required
-        '402':
+        "402":
           description: Payment Required
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: Payment required.
-        '403':
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               examples:
                 insufficientScope:
                   summary: Insufficient token scope
@@ -398,12 +398,12 @@ paths:
                   summary: Missing forecasts subscription
                   value:
                     error: Missing forecasts subscription.
-        '404':
+        "404":
           description: Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: Model not found
       tags:
@@ -425,18 +425,18 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateModelRequest'
+              $ref: "#/components/schemas/UpdateModelRequest"
       responses:
-        '204':
+        "204":
           description: Successful Response
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 oneOf:
-                  - $ref: '#/components/schemas/ErrorResponse'
-                  - $ref: '#/components/schemas/HTTPValidationError'
+                  - $ref: "#/components/schemas/ErrorResponse"
+                  - $ref: "#/components/schemas/HTTPValidationError"
               examples:
                 invalidRequest:
                   summary: Invalid request parameter
@@ -450,28 +450,28 @@ paths:
                   summary: Business logic error
                   value:
                     error: Saved Location not found
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: Authorization required
-        '402':
+        "402":
           description: Payment Required
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: Payment required.
-        '403':
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               examples:
                 insufficientScope:
                   summary: Insufficient token scope
@@ -481,12 +481,12 @@ paths:
                   summary: Missing forecasts subscription
                   value:
                     error: Missing forecasts subscription.
-        '404':
+        "404":
           description: Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: Model not found
       tags:
@@ -504,38 +504,38 @@ paths:
             type: string
             title: Model Id
       responses:
-        '204':
+        "204":
           description: Successful Response
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: Current model readiness state is 'preparing', which doesn't allow deletion
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: Authorization required
-        '402':
+        "402":
           description: Payment Required
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: Payment required.
-        '403':
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               examples:
                 insufficientScope:
                   summary: Insufficient token scope
@@ -545,12 +545,12 @@ paths:
                   summary: Missing forecasts subscription
                   value:
                     error: Missing forecasts subscription.
-        '404':
+        "404":
           description: Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: Model not found
       tags:
@@ -593,7 +593,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateModelDemandRequest'
+              $ref: "#/components/schemas/CreateModelDemandRequest"
           application/x-ndjson:
             schema:
               description: Newline-delimited JSON where each line is an object with date and demand.
@@ -610,16 +610,16 @@ paths:
               2025-01-01,100
               2025-01-02,150
       responses:
-        '201':
+        "201":
           description: Successful Response
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 oneOf:
-                  - $ref: '#/components/schemas/ErrorResponse'
-                  - $ref: '#/components/schemas/HTTPValidationError'
+                  - $ref: "#/components/schemas/ErrorResponse"
+                  - $ref: "#/components/schemas/HTTPValidationError"
               examples:
                 invalidRequest:
                   summary: Invalid request parameter
@@ -633,28 +633,28 @@ paths:
                   summary: Business logic error
                   value:
                     error: Current model readiness state is 'training', which doesn't allow demand data upload
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: Authorization required
-        '402':
+        "402":
           description: Payment Required
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: Payment required.
-        '403':
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               examples:
                 insufficientScope:
                   summary: Insufficient token scope
@@ -664,12 +664,12 @@ paths:
                   summary: Missing forecasts subscription
                   value:
                     error: Missing forecasts subscription.
-        '404':
+        "404":
           description: Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: Model not found
       tags:
@@ -740,15 +740,15 @@ paths:
           schema:
             type: string
             format: date
-        - $ref: '#/components/parameters/LimitParam'
-        - $ref: '#/components/parameters/OffsetParam'
+        - $ref: "#/components/parameters/LimitParam"
+        - $ref: "#/components/parameters/OffsetParam"
       responses:
-        '200':
+        "200":
           description: Successful Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SearchDemandResponse'
+                $ref: "#/components/schemas/SearchDemandResponse"
             application/x-ndjson:
               schema:
                 type: string
@@ -762,14 +762,14 @@ paths:
                 date,demand
                 2025-01-01,100.0
                 2025-01-02,150.0
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 oneOf:
-                  - $ref: '#/components/schemas/HTTPValidationError'
-                  - $ref: '#/components/schemas/QueryValidationError'
+                  - $ref: "#/components/schemas/HTTPValidationError"
+                  - $ref: "#/components/schemas/QueryValidationError"
               examples:
                 invalidQueryParameter:
                   summary: Invalid query parameter
@@ -786,28 +786,28 @@ paths:
                       - field: query.limit/offset
                         msg: Tried to fetch more results than the maximum allowed. Please reduce limit/offset.
                         type: value_error
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: Authorization required
-        '402':
+        "402":
           description: Payment Required
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: Payment required.
-        '403':
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               examples:
                 insufficientScope:
                   summary: Insufficient token scope
@@ -817,12 +817,12 @@ paths:
                   summary: Missing forecasts subscription
                   value:
                     error: Missing forecasts subscription.
-        '404':
+        "404":
           description: Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: Model not found
       tags:
@@ -906,24 +906,24 @@ paths:
                 - phq_features
                 - phq_explainability
             title: Include
-        - $ref: '#/components/parameters/LimitParam'
-        - $ref: '#/components/parameters/OffsetParam'
+        - $ref: "#/components/parameters/LimitParam"
+        - $ref: "#/components/parameters/OffsetParam"
       responses:
-        '200':
+        "200":
           description: Successful Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SearchModelForecastResponse'
-        '400':
+                $ref: "#/components/schemas/SearchModelForecastResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 oneOf:
-                  - $ref: '#/components/schemas/ErrorResponse'
-                  - $ref: '#/components/schemas/HTTPValidationError'
-                  - $ref: '#/components/schemas/QueryValidationError'
+                  - $ref: "#/components/schemas/ErrorResponse"
+                  - $ref: "#/components/schemas/HTTPValidationError"
+                  - $ref: "#/components/schemas/QueryValidationError"
               examples:
                 invalidQueryParameter:
                   summary: Invalid query parameter
@@ -944,28 +944,28 @@ paths:
                   summary: Business logic error
                   value:
                     error: PHQ explainability is not enabled on your subscription.
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: Authorization required
-        '402':
+        "402":
           description: Payment Required
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: Payment required.
-        '403':
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               examples:
                 insufficientScope:
                   summary: Insufficient token scope
@@ -975,12 +975,12 @@ paths:
                   summary: Missing forecasts subscription
                   value:
                     error: Missing forecasts subscription.
-        '404':
+        "404":
           description: Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: Model not found
       tags:
@@ -1002,38 +1002,38 @@ paths:
             type: string
             title: Model Id
       responses:
-        '204':
+        "204":
           description: Successful Response
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: Current model readiness state is 'preparing', which doesn't allow triggering training
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: Authorization required
-        '402':
+        "402":
           description: Payment Required
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: Payment required.
-        '403':
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               examples:
                 insufficientScope:
                   summary: Insufficient token scope
@@ -1043,12 +1043,12 @@ paths:
                   summary: Missing forecasts subscription
                   value:
                     error: Missing forecasts subscription.
-        '404':
+        "404":
           description: Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: Model not found
       tags:
@@ -1131,7 +1131,7 @@ components:
           minLength: 1
         forecast_window:
           description: Number of days into the future to forecast.
-          $ref: '#/components/schemas/ForecastWindowDay'
+          $ref: "#/components/schemas/ForecastWindowDay"
         generate_baseline:
           description: When `true`, generates a baseline model using historical demand data only - without PredictHQ demand intelligence - for benchmarking accuracy against the enhanced model.
           type: boolean
@@ -1152,7 +1152,7 @@ components:
 
             Please create a Saved Location first, that can be reused across multiple forecast
             models if needed.
-          $ref: '#/components/schemas/Location'
+          $ref: "#/components/schemas/Location"
         algo:
           description: Currently we offer one algorithm based on XGBoost. In the future we may offer additional algos.
           type: string
@@ -1160,7 +1160,7 @@ components:
           const: phq-xgboost
         demand_type:
           description: Configuration for the demand data type including the industry and time interval.
-          $ref: '#/components/schemas/InputDemandType'
+          $ref: "#/components/schemas/InputDemandType"
       additionalProperties: false
       required:
         - name
@@ -1213,7 +1213,7 @@ components:
       properties:
         date_range:
           description: The date range covered by the uploaded demand data.
-          $ref: '#/components/schemas/DateRange'
+          $ref: "#/components/schemas/DateRange"
       required:
         - date_range
       title: DemandDataMetrics
@@ -1257,7 +1257,7 @@ components:
             - type: integer
               maximum: 100
               minimum: 0
-            - type: 'null'
+            - type: "null"
           title: Local Rank
       required:
         - id
@@ -1314,7 +1314,7 @@ components:
           description: List of available forecasting algorithms.
           type: array
           items:
-            $ref: '#/components/schemas/Algo'
+            $ref: "#/components/schemas/Algo"
           title: Results
       title: GetAlgoResponse
     GetModelResponse:
@@ -1336,7 +1336,7 @@ components:
           title: Warnings
         model:
           description: The forecast model object containing all configuration, status, and metrics.
-          $ref: '#/components/schemas/PublicForecastModel'
+          $ref: "#/components/schemas/PublicForecastModel"
       required:
         - model
       title: GetModelResponse
@@ -1359,10 +1359,10 @@ components:
       properties:
         interval:
           description: The time interval for demand data aggregation. Currently only `day` is supported.
-          $ref: '#/components/schemas/InputInterval'
+          $ref: "#/components/schemas/InputInterval"
         industry:
           description: Industry classification determining which Predicted Impact Patterns are applied.
-          $ref: '#/components/schemas/Industry'
+          $ref: "#/components/schemas/Industry"
       title: InputDemandType
     InputInterval:
       type: string
@@ -1387,7 +1387,7 @@ components:
           description: List of events impacting demand on the associated date, ordered by impact.
           type: array
           items:
-            $ref: '#/components/schemas/Event'
+            $ref: "#/components/schemas/Event"
           minItems: 0
     PublicDemand:
       type: object
@@ -1412,13 +1412,13 @@ components:
         interval:
           description: The time interval for demand data aggregation.
           anyOf:
-            - $ref: '#/components/schemas/PublicInterval'
-            - type: 'null'
+            - $ref: "#/components/schemas/PublicInterval"
+            - type: "null"
         industry:
           description: Industry classification determining which Predicted Impact Patterns are applied.
           anyOf:
-            - $ref: '#/components/schemas/Industry'
-            - type: 'null'
+            - $ref: "#/components/schemas/Industry"
+            - type: "null"
       title: PublicDemandType
     PublicForecast:
       type: object
@@ -1434,12 +1434,12 @@ components:
           title: Forecast
         phq_explainability:
           description: Events impacting demand on this date, ranked by impact. Only present when `phq_explainability` is passed in the `include` query parameter.
-          $ref: '#/components/schemas/PhqExplainability'
+          $ref: "#/components/schemas/PhqExplainability"
         phq_features:
           description: List of the features (from our Features API) that were shown to have an impact on the demand. These features were used in training the model and for forecasting.
           type: array
           items:
-            $ref: '#/components/schemas/Feature'
+            $ref: "#/components/schemas/Feature"
           minItems: 1
           title: Phq Features
       required:
@@ -1451,7 +1451,7 @@ components:
       properties:
         algo:
           description: The forecasting algorithm used by this model.
-          $ref: '#/components/schemas/AlgoType'
+          $ref: "#/components/schemas/AlgoType"
         create_dt:
           description: Timestamp when the model was created.
           type: string
@@ -1460,18 +1460,18 @@ components:
         demand_type:
           description: Configuration for demand data type including industry and interval.
           anyOf:
-            - $ref: '#/components/schemas/PublicDemandType'
-            - type: 'null'
+            - $ref: "#/components/schemas/PublicDemandType"
+            - type: "null"
         external_id:
           description: User-provided external identifier for cross-referencing with other systems.
           anyOf:
             - type: string
               minLength: 1
-            - type: 'null'
+            - type: "null"
           title: External Id
         forecast_window:
           description: Number of days into the future this model forecasts.
-          $ref: '#/components/schemas/ForecastWindowDay'
+          $ref: "#/components/schemas/ForecastWindowDay"
         label:
           description: Set of labels for identifying or grouping forecast models.
           anyOf:
@@ -1480,16 +1480,16 @@ components:
                 minLength: 1
               type: array
               minItems: 1
-            - type: 'null'
+            - type: "null"
           title: Label
         location:
           description: The geographic area associated with this model, defined by a Saved Location.
-          $ref: '#/components/schemas/Location'
+          $ref: "#/components/schemas/Location"
         metrics:
           description: Training and accuracy metrics for the model. Null until the model has been trained.
           anyOf:
-            - $ref: '#/components/schemas/PublicMetrics'
-            - type: 'null'
+            - $ref: "#/components/schemas/PublicMetrics"
+            - type: "null"
         model_id:
           description: Unique identifier for the forecast model.
           type: string
@@ -1502,13 +1502,13 @@ components:
           title: Name
         readiness:
           description: Current readiness status of the model indicating where it is in the training/forecasting lifecycle.
-          $ref: '#/components/schemas/Readiness'
+          $ref: "#/components/schemas/Readiness"
         train_dt:
           description: Timestamp when the model was last successfully trained. Null if never trained.
           anyOf:
             - type: string
               format: date-time
-            - type: 'null'
+            - type: "null"
           title: Train Dt
         update_dt:
           description: Timestamp when the model was last updated.
@@ -1553,13 +1553,13 @@ components:
           anyOf:
             - type: string
               minLength: 1
-            - type: 'null'
+            - type: "null"
           title: External Id
         forecast_window:
           description: Number of days into the future to forecast.
           anyOf:
-            - $ref: '#/components/schemas/ForecastWindowDay'
-            - type: 'null'
+            - $ref: "#/components/schemas/ForecastWindowDay"
+            - type: "null"
         label:
           description: Set of labels you can use to better identify or group your forecast models.
           anyOf:
@@ -1568,11 +1568,11 @@ components:
                 minLength: 1
               type: array
               minItems: 1
-            - type: 'null'
+            - type: "null"
           title: Label
         location:
           description: The geographic area for this model, specified by a Saved Location ID.
-          $ref: '#/components/schemas/Location'
+          $ref: "#/components/schemas/Location"
         algo:
           description: Algorithm to use for forecasting.
           type: string
@@ -1581,8 +1581,8 @@ components:
         demand_type:
           description: Configuration for demand data type including industry and interval.
           anyOf:
-            - $ref: '#/components/schemas/InputDemandType'
-            - type: 'null'
+            - $ref: "#/components/schemas/InputDemandType"
+            - type: "null"
       additionalProperties: false
       required:
         - name
@@ -1613,19 +1613,19 @@ components:
           description: URL for the next page of results. Null if no more results.
           anyOf:
             - type: string
-            - type: 'null'
+            - type: "null"
           title: Next
         previous:
           description: URL for the previous page of results. Null if on the first page.
           anyOf:
             - type: string
-            - type: 'null'
+            - type: "null"
           title: Previous
         results:
           description: Array of demand data results for the current page.
           type: array
           items:
-            $ref: '#/components/schemas/PublicDemand'
+            $ref: "#/components/schemas/PublicDemand"
           title: Results
       required:
         - count
@@ -1655,19 +1655,19 @@ components:
           description: URL for the next page of results. Null if no more results.
           anyOf:
             - type: string
-            - type: 'null'
+            - type: "null"
           title: Next
         previous:
           description: URL for the previous page of results. Null if on the first page.
           anyOf:
             - type: string
-            - type: 'null'
+            - type: "null"
           title: Previous
         results:
           description: Array of forecast results for the current page.
           type: array
           items:
-            $ref: '#/components/schemas/PublicForecast'
+            $ref: "#/components/schemas/PublicForecast"
           title: Results
       required:
         - count
@@ -1697,19 +1697,19 @@ components:
           description: URL for the next page of results. Null if no more results.
           anyOf:
             - type: string
-            - type: 'null'
+            - type: "null"
           title: Next
         previous:
           description: URL for the previous page of results. Null if on the first page.
           anyOf:
             - type: string
-            - type: 'null'
+            - type: "null"
           title: Previous
         results:
           description: Array of forecast model results for the current page.
           type: array
           items:
-            $ref: '#/components/schemas/PublicForecastModel'
+            $ref: "#/components/schemas/PublicForecastModel"
           title: Results
       required:
         - count
@@ -1719,7 +1719,7 @@ components:
       properties:
         date_range:
           description: The date range of demand data used for training the model.
-          $ref: '#/components/schemas/DateRange'
+          $ref: "#/components/schemas/DateRange"
         missing_pct:
           description: Percentage of dates with missing demand data in the training range (0–100).
           type: number
@@ -1734,7 +1734,7 @@ components:
                 type: string
                 format: date
               type: array
-            - type: 'null'
+            - type: "null"
           title: Missing Dates
       required:
         - date_range
@@ -1747,20 +1747,20 @@ components:
           anyOf:
             - type: string
               minLength: 1
-            - type: 'null'
+            - type: "null"
           title: Name
         external_id:
           description: User-provided external identifier for cross-referencing with other systems.
           anyOf:
             - type: string
               minLength: 1
-            - type: 'null'
+            - type: "null"
           title: External Id
         forecast_window:
           description: Number of days into the future to forecast.
           anyOf:
-            - $ref: '#/components/schemas/ForecastWindowDay'
-            - type: 'null'
+            - $ref: "#/components/schemas/ForecastWindowDay"
+            - type: "null"
         generate_baseline:
           description: When `true`, generates a baseline model using historical demand data only - without PredictHQ demand intelligence - for benchmarking accuracy against the enhanced model.
           type: boolean
@@ -1774,23 +1774,23 @@ components:
                 minLength: 1
               type: array
               minItems: 1
-            - type: 'null'
+            - type: "null"
           title: Label
         location:
           description: The geographic area for this model, specified by a Saved Location ID.
           anyOf:
-            - $ref: '#/components/schemas/Location'
-            - type: 'null'
+            - $ref: "#/components/schemas/Location"
+            - type: "null"
         algo:
           description: Algorithm to use for forecasting.
           anyOf:
-            - $ref: '#/components/schemas/AlgoType'
-            - type: 'null'
+            - $ref: "#/components/schemas/AlgoType"
+            - type: "null"
         demand_type:
           description: Configuration for demand data type including industry and interval.
           anyOf:
-            - $ref: '#/components/schemas/InputDemandType'
-            - type: 'null'
+            - $ref: "#/components/schemas/InputDemandType"
+            - type: "null"
       additionalProperties: false
       title: UpdateModelRequest
     ErrorResponse:
@@ -1834,7 +1834,7 @@ components:
           description: List of validation error details
           type: array
           items:
-            $ref: '#/components/schemas/ValidationErrorDetail'
+            $ref: "#/components/schemas/ValidationErrorDetail"
           title: Details
       required:
         - error
@@ -1847,7 +1847,7 @@ components:
           description: List of query parameter validation errors
           type: array
           items:
-            $ref: '#/components/schemas/ValidationErrorDetail'
+            $ref: "#/components/schemas/ValidationErrorDetail"
           title: Error
       required:
         - error
@@ -1857,18 +1857,18 @@ components:
       properties:
         status:
           description: Current lifecycle status of the forecast model.
-          $ref: '#/components/schemas/ReadinessStatus'
+          $ref: "#/components/schemas/ReadinessStatus"
         error_code:
           description: Machine-readable error code when the model is in a failed state.
           anyOf:
             - type: string
-            - type: 'null'
+            - type: "null"
           title: Error Code
         error_message:
           description: Human-readable error description when the model is in a failed state.
           anyOf:
             - type: string
-            - type: 'null'
+            - type: "null"
           title: Error Message
       required:
         - status
@@ -1880,7 +1880,7 @@ components:
           description: Array of demand data points to upload. Each item must include a date and demand value.
           type: array
           items:
-            $ref: '#/components/schemas/DemandInput'
+            $ref: "#/components/schemas/DemandInput"
           minItems: 1
           title: Demand
       additionalProperties: false
@@ -1899,7 +1899,7 @@ components:
           type: number
           minimum: 0
         date:
-          description: 'Expected format: `2025-02-21`'
+          description: "Expected format: `2025-02-21`"
           type: string
           format: date
       additionalProperties: false
@@ -1912,16 +1912,16 @@ components:
         accuracy:
           description: Forecast accuracy metrics. Null until training completes successfully.
           anyOf:
-            - $ref: '#/components/schemas/Accuracy'
-            - type: 'null'
+            - $ref: "#/components/schemas/Accuracy"
+            - type: "null"
         demand_data:
           description: Statistics about the uploaded demand data including the date range covered.
-          $ref: '#/components/schemas/DemandDataMetrics'
+          $ref: "#/components/schemas/DemandDataMetrics"
         training_data:
           description: Training data statistics including date range and missing data information. Null until training completes.
           anyOf:
-            - $ref: '#/components/schemas/TrainingDataMetrics'
-            - type: 'null'
+            - $ref: "#/components/schemas/TrainingDataMetrics"
+            - type: "null"
       required:
         - demand_data
       title: PublicMetrics
@@ -1934,4 +1934,3 @@ components:
         Enter your PredictHQ API key. The Bearer prefix is added automatically.
 
         When calling the API directly, send: `Authorization: Bearer <YOUR_API_KEY>` as documented at [https://docs.predicthq.com/api/overview/authenticating](https://docs.predicthq.com/api/overview/authenticating)
-
